@@ -1,0 +1,357 @@
+/* MarkdownGuide 组件样式 */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-container {
+  background-color: white;
+  border-radius: 16px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+[data-theme="dark"] .modal-container {
+  background-color: #1a1a1a;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+[data-theme="dark"] .modal-header {
+  border-bottom-color: #374151;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+[data-theme="dark"] .modal-header h2 {
+  color: #f3f4f6;
+}
+
+.close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background-color: transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s;
+}
+
+.close-btn:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+[data-theme="dark"] .close-btn {
+  color: #9ca3af;
+}
+
+[data-theme="dark"] .close-btn:hover {
+  background-color: #374151;
+  color: #e5e7eb;
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px;
+}
+
+.guide-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.guide-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 16px;
+}
+
+[data-theme="dark"] .guide-section h3 {
+  color: #e5e7eb;
+}
+
+.syntax-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+[data-theme="dark"] .syntax-table {
+  border-color: #374151;
+}
+
+.syntax-table th,
+.syntax-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: top;
+}
+
+/* 包含代码的单元格特殊处理 */
+.syntax-table td:has(code) {
+  padding: 12px 8px;
+}
+
+[data-theme="dark"] .syntax-table th,
+[data-theme="dark"] .syntax-table td {
+  border-bottom-color: #374151;
+}
+
+.syntax-table thead th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+}
+
+[data-theme="dark"] .syntax-table thead th {
+  background-color: #1f2937;
+  color: #e5e7eb;
+}
+
+.syntax-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.syntax-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+[data-theme="dark"] .syntax-table tbody tr:hover {
+  background-color: #1f2937;
+}
+
+.syntax-table code {
+  background-color: #f3f4f6;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-family: 'SF Mono', Monaco, Consolas, monospace;
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.6;
+  white-space: pre-line;
+  text-align: left;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+[data-theme="dark"] .syntax-table code {
+  background-color: #374151;
+  color: #e5e7eb;
+  line-height: 1.6;
+  white-space: pre-line;
+  text-align: left;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.code-example {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+[data-theme="dark"] .code-example {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+.code-example p {
+  margin: 0 0 12px 0;
+  color: #4b5563;
+}
+
+[data-theme="dark"] .code-example p {
+  color: #d1d5db;
+}
+
+.code-example pre {
+  background-color: #1f2937;
+  color: #e5e7eb;
+  padding: 16px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+[data-theme="dark"] .code-example pre {
+  background-color: #111827;
+}
+
+.modal-footer {
+  padding: 20px 32px;
+  border-top: 1px solid #e5e7eb;
+}
+
+[data-theme="dark"] .modal-footer {
+  border-top-color: #374151;
+}
+
+.tip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+[data-theme="dark"] .tip {
+  color: #9ca3af;
+}
+
+.tip svg {
+  flex-shrink: 0;
+  color: #07c160;
+}
+
+/* 列表样式修复 */
+.syntax-table ul,
+.syntax-table ol {
+  margin: 0 !important;
+  padding-left: 1.5em !important;
+  list-style-position: outside !important;
+}
+
+.syntax-table ul {
+  list-style-type: disc !important;
+}
+
+.syntax-table ol {
+  list-style-type: decimal !important;
+}
+
+.syntax-table li {
+  margin: 4px 0 !important;
+  padding: 0 !important;
+  line-height: 1.4 !important;
+}
+
+.syntax-table ul ul {
+  margin-top: 4px !important;
+  margin-bottom: 0 !important;
+  padding-left: 1.2em !important;
+}
+
+.syntax-table ul ul li {
+  list-style-type: circle !important;
+  margin: 2px 0 !important;
+}
+
+/* 演示列表的特殊样式 */
+.demo-list {
+  margin: 0 !important;
+  padding-left: 1.5em !important;
+  list-style-position: outside !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+.demo-list li {
+  margin: 6px 0 !important;
+  padding: 0 !important;
+  color: #374151 !important;
+}
+
+[data-theme="dark"] .demo-list li {
+  color: #e5e7eb !important;
+}
+
+.demo-list ul {
+  margin-top: 4px !important;
+  margin-bottom: 0 !important;
+  padding-left: 1.2em !important;
+}
+
+.demo-list ul li {
+  margin: 3px 0 !important;
+  font-size: 13px !important;
+}
+
+/* 过渡动画 */
+.modal-enter-active,
+.modal-leave-active {
+  transition: all 0.3s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-from .modal-container,
+.modal-leave-to .modal-container {
+  transform: scale(0.9);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 0;
+  }
+  
+  .modal-container {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 0;
+  }
+  
+  .modal-header {
+    padding: 16px 20px;
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+  
+  .syntax-table {
+    font-size: 14px;
+  }
+  
+  .syntax-table th,
+  .syntax-table td {
+    padding: 8px 12px;
+  }
+}

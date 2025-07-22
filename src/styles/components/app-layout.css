@@ -1,0 +1,270 @@
+/* App 主布局样式 */
+
+#app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+}
+
+/* 应用头部 */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+
+
+.header-left h1 {
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 2px 0;
+  letter-spacing: -0.5px;
+}
+
+.header-subtitle {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+.header-center {
+  display: none;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 主内容区域 */
+.app-main {
+  flex: 1;
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  overflow: hidden;
+}
+
+/* 面板通用样式 */
+.editor-panel,
+.preview-panel {
+  flex: 1;
+  min-width: 400px;
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all var(--transition-normal);
+}
+
+.editor-panel:hover,
+.preview-panel:hover {
+  box-shadow: var(--shadow-xl);
+}
+
+/* 面板头部 */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: linear-gradient(to bottom, var(--bg-primary), var(--bg-secondary));
+  border-bottom: 1px solid var(--border-light);
+}
+
+.panel-header h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* 内容区域 */
+.editor-content,
+.preview-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* 应用页脚 */
+.app-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background-color: var(--bg-primary);
+  border-top: 1px solid var(--border-light);
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+}
+
+.footer-left,
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.footer-left span,
+.footer-right span {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+/* 状态指示器 */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.status-indicator::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  transition: all var(--transition-fast);
+}
+
+.status-indicator.ready {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+}
+
+.status-indicator.ready::before {
+  background-color: var(--primary-color);
+  animation: pulse 2s infinite;
+}
+
+.status-indicator.pending {
+  background-color: var(--gray-100);
+  color: var(--text-tertiary);
+}
+
+.status-indicator.pending::before {
+  background-color: var(--gray-400);
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.editor-panel {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.preview-panel {
+  animation: fadeInUp 0.5s ease-out 0.1s;
+  animation-fill-mode: both;
+}
+
+/* 主题切换动画 */
+* {
+  transition: background-color var(--transition-normal), 
+              color var(--transition-normal),
+              border-color var(--transition-normal);
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .app-main {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+  }
+  
+  .editor-panel,
+  .preview-panel {
+    min-width: 100%;
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    padding: 12px 16px;
+  }
+  
+  .header-left h1 {
+    font-size: 18px;
+  }
+  
+  .header-subtitle {
+    display: none;
+  }
+  
+  .app-main {
+    padding: 12px;
+    gap: 12px;
+  }
+  
+  .panel-header {
+    padding: 12px 16px;
+  }
+  
+  .panel-header h3 {
+    font-size: 15px;
+  }
+  
+  .app-footer {
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 16px;
+  }
+  
+  .footer-left,
+  .footer-right {
+    gap: 12px;
+  }
+}

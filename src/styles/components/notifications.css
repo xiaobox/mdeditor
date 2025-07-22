@@ -1,0 +1,146 @@
+/* 通知组件样式 */
+
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 1000;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideIn 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.notification.success {
+  background-color: rgba(212, 237, 218, 0.95);
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.notification.error {
+  background-color: rgba(248, 215, 218, 0.95);
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.notification.warning {
+  background-color: rgba(255, 243, 205, 0.95);
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.notification.info {
+  background-color: rgba(209, 236, 241, 0.95);
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+/* 暗色主题通知 */
+[data-theme="dark"] .notification.success {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+[data-theme="dark"] .notification.error {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+[data-theme="dark"] .notification.warning {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #fcd34d;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+[data-theme="dark"] .notification.info {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* 通知动画 */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.notification.slide-out {
+  animation: slideOut 0.3s ease forwards;
+}
+
+/* 通知图标 */
+.notification-icon {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+/* 通知关闭按钮 */
+.notification-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.notification-close:hover {
+  opacity: 1;
+}
+
+/* 通知堆叠 */
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+}
+
+/* 响应式通知 */
+@media (max-width: 768px) {
+  .notification,
+  .notification-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  
+  .notification {
+    padding: 16px 20px;
+    font-size: 16px;
+  }
+}

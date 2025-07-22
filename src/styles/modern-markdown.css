@@ -1,0 +1,468 @@
+/**
+ * GitHub Markdown CSS 主题 - 简洁版
+ * 基于 github-markdown-css 包，只保留必要的绿色主题样式
+ */
+
+/* 导入 GitHub Markdown CSS */
+@import 'github-markdown-css/github-markdown.css';
+
+/* 基础重置和容器样式 */
+.modern-markdown {
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 100%;
+  margin: 0;
+  padding: 32px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-size: 16px;
+  line-height: 1.6;
+  word-wrap: break-word;
+  background-color: #ffffff;
+  color: #1f2328;
+}
+
+/* 柔和的标题样式 */
+.modern-markdown h1 {
+  border-bottom: none !important;
+  position: relative;
+  padding-bottom: 16px;
+}
+
+.modern-markdown h1::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 3%;
+  right: 3%;
+  height: 3px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(0, 168, 107, 0.3) 10%,
+    rgba(0, 168, 107, 0.8) 30%,
+    rgba(0, 168, 107, 1) 50%,
+    rgba(0, 168, 107, 0.8) 70%,
+    rgba(0, 168, 107, 0.3) 90%,
+    transparent 100%
+  );
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(0, 168, 107, 0.2);
+}
+
+.modern-markdown h2 {
+  border-bottom: none !important;
+  position: relative;
+}
+
+/* 行内代码样式 */
+.modern-markdown code {
+  background: linear-gradient(145deg, rgba(0, 168, 107, 0.08) 0%, rgba(0, 168, 107, 0.12) 100%);
+  color: #00A86B;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+  font-size: 13px;
+  border: 1px solid rgba(0, 168, 107, 0.15);
+  box-shadow:
+    0 1px 3px rgba(0, 168, 107, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+/* 现代化 Mac 终端风格代码块 */
+.modern-markdown.markdown-body pre,
+.modern-markdown pre {
+  background: #1e1e1e !important;
+  border-radius: 12px !important;
+  padding: 48px 24px 24px 24px !important;
+  overflow-x: auto;
+  font-size: 14px !important;
+  line-height: 1.7 !important;
+  border: none !important;
+  position: relative;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', 'Liberation Mono', 'Courier New', monospace !important;
+  margin: 32px 0 !important;
+  font-weight: 400;
+  font-variant-ligatures: common-ligatures;
+}
+
+/* 强制移除所有代码块的边框和线条 */
+.modern-markdown.markdown-body pre,
+.modern-markdown pre,
+.modern-markdown.markdown-body pre *,
+.modern-markdown pre *,
+.modern-markdown.markdown-body .hljs,
+.modern-markdown .hljs,
+.modern-markdown.markdown-body pre code,
+.modern-markdown pre code {
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 禁用PrismJS主题的伪元素 */
+pre[class*="language-"]::before,
+pre[class*="language-"]::after {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Mac 窗口标题栏 */
+.modern-markdown pre::before,
+.modern-markdown.markdown-body pre::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 40px !important;
+  background: #1e1e1e !important;
+  border-radius: 12px 12px 0 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+  z-index: 10 !important;
+}
+
+/* Mac 红绿灯按钮 */
+.modern-markdown pre::after,
+.modern-markdown.markdown-body pre::after {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  top: 12px !important;
+  left: 16px !important;
+  width: 12px !important;
+  height: 12px !important;
+  background: #ff5f56 !important;
+  border-radius: 50% !important;
+  box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27ca3f !important;
+  border: none !important;
+  transform: none !important;
+  z-index: 11 !important;
+}
+
+/* 代码块内容样式 */
+.modern-markdown.markdown-body pre code,
+.modern-markdown pre code {
+  color: #e6edf3 !important;
+  background: transparent !important;
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* 语法高亮样式 */
+.modern-markdown.markdown-body pre .hljs-comment,
+.modern-markdown pre .hljs-comment,
+.modern-markdown.markdown-body pre .hljs-quote,
+.modern-markdown pre .hljs-quote {
+  color: #7d8590;
+}
+
+.modern-markdown.markdown-body pre .hljs-keyword,
+.modern-markdown pre .hljs-keyword,
+.modern-markdown.markdown-body pre .hljs-selector-tag,
+.modern-markdown pre .hljs-selector-tag,
+.modern-markdown.markdown-body pre .hljs-literal,
+.modern-markdown pre .hljs-literal,
+.modern-markdown.markdown-body pre .hljs-type,
+.modern-markdown pre .hljs-type {
+  color: #ff7b72;
+  font-weight: 600;
+}
+
+.modern-markdown.markdown-body pre .hljs-string,
+.modern-markdown pre .hljs-string,
+.modern-markdown.markdown-body pre .hljs-regexp,
+.modern-markdown pre .hljs-regexp {
+  color: #a5d6ff;
+}
+
+.modern-markdown.markdown-body pre .hljs-number,
+.modern-markdown pre .hljs-number {
+  color: #79c0ff;
+}
+
+.modern-markdown.markdown-body pre .hljs-variable,
+.modern-markdown pre .hljs-variable,
+.modern-markdown.markdown-body pre .hljs-function,
+.modern-markdown pre .hljs-function,
+.modern-markdown.markdown-body pre .hljs-title,
+.modern-markdown pre .hljs-title {
+  color: #d2a8ff;
+}
+
+.modern-markdown.markdown-body pre .hljs-params,
+.modern-markdown pre .hljs-params {
+  color: #ffa657;
+}
+
+.modern-markdown.markdown-body pre .hljs-built_in,
+.modern-markdown pre .hljs-built_in,
+.modern-markdown.markdown-body pre .hljs-symbol,
+.modern-markdown pre .hljs-symbol {
+  color: #ffa657;
+}
+
+.modern-markdown.markdown-body pre .hljs-tag,
+.modern-markdown pre .hljs-tag,
+.modern-markdown.markdown-body pre .hljs-name,
+.modern-markdown pre .hljs-name,
+.modern-markdown.markdown-body pre .hljs-attribute,
+.modern-markdown pre .hljs-attribute {
+  color: #7ee787;
+}
+
+.modern-markdown.markdown-body pre .hljs-attr,
+.modern-markdown pre .hljs-attr {
+  color: #79c0ff;
+}
+
+.modern-markdown.markdown-body pre .hljs-meta,
+.modern-markdown pre .hljs-meta {
+  color: #a5d6ff;
+}
+
+.modern-markdown.markdown-body pre .hljs-deletion,
+.modern-markdown pre .hljs-deletion {
+  background-color: #490202;
+  color: #ffdcd7;
+}
+
+.modern-markdown.markdown-body pre .hljs-addition,
+.modern-markdown pre .hljs-addition {
+  background-color: #0f5132;
+  color: #aff5b4;
+}
+
+/* 时尚高级引用块样式 */
+.modern-markdown blockquote {
+  border-left: 4px solid rgba(0, 168, 107, 0.9);
+  background: linear-gradient(135deg,
+    rgba(240, 253, 244, 0.8) 0%,
+    rgba(247, 254, 249, 0.6) 50%,
+    rgba(240, 253, 244, 0.8) 100%
+  );
+  margin: 24px 0;
+  padding: 18px 24px;
+  border-radius: 6px;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0, 168, 107, 0.1);
+  backdrop-filter: blur(1px);
+}
+
+/* 强制覆盖GitHub Markdown CSS的列表样式 */
+.modern-markdown.markdown-body ul,
+.modern-markdown.markdown-body ol,
+.modern-markdown ul,
+.modern-markdown ol {
+  margin: 16px 0 !important;
+  padding-left: 2em !important;
+}
+
+.modern-markdown.markdown-body li,
+.modern-markdown li {
+  margin: 6px 0 !important;
+  line-height: 1.7 !important;
+}
+
+/* 列表样式 - 禁用默认标记，使用内联样式 */
+.modern-markdown.markdown-body ul,
+.modern-markdown ul,
+.modern-markdown.markdown-body ol,
+.modern-markdown ol {
+  list-style: none !important;
+  margin: 16px 0 !important;
+  padding-left: 20px !important;
+}
+
+.modern-markdown.markdown-body ul ul,
+.modern-markdown ul ul,
+.modern-markdown.markdown-body ol ol,
+.modern-markdown ol ol {
+  margin: 4px 0 !important;
+}
+
+.modern-markdown.markdown-body li,
+.modern-markdown li {
+  margin: 8px 0 !important;
+  line-height: 1.8 !important;
+}
+
+/* 时尚高级链接 */
+.modern-markdown a {
+  color: #00A86B;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.modern-markdown a:hover {
+  color: #008B5A;
+  text-decoration: none;
+}
+
+.modern-markdown a::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #00A86B, #008B5A);
+  transition: width 0.3s ease;
+  border-radius: 1px;
+}
+
+.modern-markdown a:hover::after {
+  width: 100%;
+}
+
+/* 自定义滚动条样式 */
+.modern-markdown pre::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.modern-markdown pre::-webkit-scrollbar-track {
+  background: #f1f3f4;
+  border-radius: 4px;
+}
+
+.modern-markdown pre::-webkit-scrollbar-thumb {
+  background: #c1c8cd;
+  border-radius: 4px;
+}
+
+.modern-markdown pre::-webkit-scrollbar-thumb:hover {
+  background: #a8b3ba;
+}
+
+/* 分隔线样式 */
+.modern-markdown hr {
+  height: 2px;
+  background: linear-gradient(to right, transparent, #00A86B, transparent);
+  border: none;
+  margin: 32px 0;
+}
+
+/* 增强的任务列表样式 */
+.modern-markdown .task-list-item {
+  list-style: none;
+  margin-left: -1.5em;
+  padding-left: 1.5em;
+}
+
+.modern-markdown .task-list-item input[type="checkbox"] {
+  margin: 0 0.5em 0 0;
+  vertical-align: middle;
+}
+
+/* 键盘按键样式 */
+.modern-markdown kbd {
+  background-color: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-bottom-color: #afb8c1;
+  border-radius: 6px;
+  box-shadow: inset 0 -1px 0 #afb8c1;
+  color: #24292f;
+  display: inline-block;
+  font-size: 11px;
+  line-height: 10px;
+  padding: 3px 5px;
+  vertical-align: middle;
+}
+
+/* 高亮标记样式 */
+.modern-markdown mark {
+  background-color: #fff8c5;
+  color: #24292f;
+  padding: 0.1em 0.2em;
+  border-radius: 3px;
+}
+
+/* 删除线样式 */
+.modern-markdown del {
+  text-decoration: line-through;
+  color: #656d76;
+}
+
+/* 响应式设计优化 */
+@media (max-width: 768px) {
+  .modern-markdown {
+    padding: 20px 16px;
+    font-size: 15px;
+  }
+
+  .modern-markdown table {
+    font-size: 14px;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .modern-markdown pre {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .modern-markdown blockquote {
+    padding: 12px 16px;
+    margin: 16px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .modern-markdown {
+    padding: 16px 12px;
+    font-size: 14px;
+  }
+
+  .modern-markdown h1 {
+    font-size: 1.6em;
+  }
+
+  .modern-markdown h2 {
+    font-size: 1.4em;
+  }
+
+  .modern-markdown h3 {
+    font-size: 1.2em;
+  }
+}
+
+/* 打印样式优化 */
+@media print {
+  .modern-markdown {
+    background-color: white !important;
+    color: black !important;
+    padding: 0;
+  }
+
+  .modern-markdown a {
+    color: black !important;
+    text-decoration: underline !important;
+  }
+
+  .modern-markdown pre {
+    background-color: #f6f8fa !important;
+    color: black !important;
+    border: 1px solid #d0d7de;
+  }
+
+  .modern-markdown blockquote {
+    background-color: #f6f8fa !important;
+    color: black !important;
+  }
+}
