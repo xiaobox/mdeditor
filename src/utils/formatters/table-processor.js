@@ -292,11 +292,11 @@ export class TableProcessor {
         cells.forEach((cell, index) => {
           const align = alignments[index] || 'left';
 
-          // 检查是否应该保持原始格式
+          // 检查是否应该保持原始格式（语法列）
           const shouldKeepRaw = this.rawColumns && this.rawColumns[index];
           const formattedCell = shouldKeepRaw
-            ? `<code style="background-color: #f6f8fa; color: #24292e; padding: 2px 4px; border-radius: 3px; font-family: Consolas, monospace; font-size: 13px;">${this.escapeHtml(cell)}</code>`
-            : formatInlineText(cell, theme);
+            ? this.escapeHtml(cell)  // 语法列：只转义HTML，不格式化，不用code标签
+            : formatInlineText(cell, theme);  // 其他列：正常格式化
 
           html += `<td style="border: 1px solid #d0d7de; padding: 8px 12px; text-align: ${align}; color: #24292e;">${formattedCell}</td>`;
         });
