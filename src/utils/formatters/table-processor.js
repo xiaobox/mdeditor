@@ -44,7 +44,6 @@ export class TableProcessor {
     this.state = TABLE_STATES.NONE;
     this.rows = [];
     this.currentRowIndex = 0;
-    this.rawColumns = null;
   }
 
   /**
@@ -215,22 +214,6 @@ export class TableProcessor {
   }
 
   /**
-   * 检测哪些列应该保持原始格式（不进行Markdown格式化）
-   * @param {Array} headerCells - 表头单元格数组
-   * @returns {Array} 布尔数组，true表示该列应保持原始格式
-   */
-  detectRawColumns(headerCells) {
-    return headerCells.map(cell => {
-      const cellText = cell.toLowerCase().trim();
-      // 检测包含"语法"、"syntax"、"code"等关键词的列
-      return cellText.includes('语法') ||
-             cellText.includes('syntax') ||
-             cellText.includes('markdown') ||
-             cellText === 'code';
-    });
-  }
-
-  /**
    * 格式化表头
    * @param {string} headerRow - 表头行
    * @param {Array} alignments - 对齐方式
@@ -246,9 +229,6 @@ export class TableProcessor {
       return '';
     }
 
-    // 检测哪些列应该保持原始格式
-    this.rawColumns = this.detectRawColumns(headerCells);
-
     let html = '<thead><tr style="background-color: #f6f8fa;">';
     headerCells.forEach((cell, index) => {
       const align = alignments[index] || 'left';
@@ -257,20 +237,6 @@ export class TableProcessor {
     });
     html += '</tr></thead>';
     return html;
-  }
-
-  /**
-   * 转义HTML特殊字符
-   * @param {string} text - 要转义的文本
-   * @returns {string} 转义后的文本
-   */
-  escapeHtml(text) {
-    return text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
   }
 
   /**
@@ -291,13 +257,7 @@ export class TableProcessor {
         html += '<tr>';
         cells.forEach((cell, index) => {
           const align = alignments[index] || 'left';
-
-          // 检查是否应该保持原始格式（语法列）
-          const shouldKeepRaw = this.rawColumns && this.rawColumns[index];
-          const formattedCell = shouldKeepRaw
-            ? this.escapeHtml(cell)  // 语法列：只转义HTML，不格式化，不用code标签
-            : formatInlineText(cell, theme);  // 其他列：正常格式化
-
+          const formattedCell = formatInlineText(cell, theme);
           html += `<td style="border: 1px solid #d0d7de; padding: 8px 12px; text-align: ${align}; color: #24292e;">${formattedCell}</td>`;
         });
         html += '</tr>';

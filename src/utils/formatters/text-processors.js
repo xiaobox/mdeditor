@@ -105,6 +105,9 @@ export function postprocessEscapes(text) {
   return result;
 }
 
+// 用于保护代码内容的占位符
+const CODE_PLACEHOLDERS = [];
+
 /**
  * 处理内联代码
  * @param {string} text - 包含内联代码的文本
@@ -112,11 +115,34 @@ export function postprocessEscapes(text) {
  * @returns {string} - 处理后的文本
  */
 export function processInlineCode(text, theme) {
+  // 清空占位符数组
+  CODE_PLACEHOLDERS.length = 0;
+
   return text.replace(REGEX_PATTERNS.CODE, (_, code) => {
     const escapedCode = escapeHtml(code);
     // 使用主题色的微信兼容样式
-    return `<code style="background-color: ${theme.inlineCodeBg}; color: ${theme.inlineCodeText}; padding: 2px 4px; border-radius: 3px; font-family: Consolas, monospace; font-size: 14px; border: 1px solid ${theme.inlineCodeBorder};">${escapedCode}</code>`;
+    const codeHtml = `<code style="background-color: ${theme.inlineCodeBg}; color: ${theme.inlineCodeText}; padding: 2px 4px; border-radius: 3px; font-family: Consolas, monospace; font-size: 14px; border: 1px solid ${theme.inlineCodeBorder};">${escapedCode}</code>`;
+
+    // 创建安全的占位符（使用不会被格式化的字符）
+    const placeholder = `〖CODE${CODE_PLACEHOLDERS.length}〗`;
+    CODE_PLACEHOLDERS.push(codeHtml);
+
+    return placeholder;
   });
+}
+
+/**
+ * 恢复代码占位符
+ * @param {string} text - 包含占位符的文本
+ * @returns {string} - 恢复后的文本
+ */
+export function restoreCodePlaceholders(text) {
+  let result = text;
+  CODE_PLACEHOLDERS.forEach((codeHtml, index) => {
+    const placeholder = `〖CODE${index}〗`;
+    result = result.replace(placeholder, codeHtml);
+  });
+  return result;
 }
 
 /**
@@ -285,6 +311,7 @@ export function processAllInlineFormats(text, theme, handleEscapes = true) {
   }
 
   // 然后处理代码，因为代码内部不应该被其他格式化影响
+  // 代码会被替换为占位符，保护其内容不被后续格式化
   result = processInlineCode(result, theme);
 
   // 处理其他格式
@@ -299,6 +326,9 @@ export function processAllInlineFormats(text, theme, handleEscapes = true) {
   result = processSubscript(result, theme);
   result = processLinks(result, theme);
   result = processImages(result, theme);
+
+  // 恢复代码占位符
+  result = restoreCodePlaceholders(result);
 
   // 最后后处理占位符，将其替换回实际字符（只在顶层处理）
   if (handleEscapes) {
