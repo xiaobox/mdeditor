@@ -1,193 +1,127 @@
 /**
- * 主题系统配置
- * 包含所有可用的主题系统定义
+ * @file src/config/themes/theme-systems.js
+ * @description 排版主题系统的定义文件
+ *
+ * 本文件定义了更高层次的“排版主题系统”（Theme System）。
+ * 一个排版主题系统规定了文章的整体布局、字体、间距、以及基础元素
+ * （如代码块、引用块）的宏观样式规范。它与“颜色主题”和“代码样式”相分离，
+ * 允许用户独立地控制这三个维度。
+ *
+ * 主要内容:
+ * 1.  **系统定义 (`themeSystems`)**: 一个包含了所有排版主题系统对象的集合。
+ *     目前定义了两种系统：
+ *     - `wechat`: 专为微信公众号优化的经典主题，注重简洁和阅读性。
+ *     - `wechatPro`: 同样为微信优化，但风格更现代，参考了 Typora 的设计，
+ *       可能包含更多的设计细节和更精致的间距、阴影等。
+ *     每个系统都通过 `createThemeSystem` 工厂函数创建，确保结构一致。
+ *
+ * 2.  **默认导出 (`defaultThemeSystem`)**: 指定默认的排版系统。
+ *
+ * 3.  **工具函数 (`getThemeSystem`, `getThemeSystemList`)**: 
+ *     - `getThemeSystem(id)`: 根据 ID 安全地获取一个排版系统对象。
+ *     - `getThemeSystemList()`: 返回一个简化的列表，用于在 UI 中展示所有可用的系统。
+ *
+ * 4.  **预设 (`themeSystemPresets`)**: 定义了排版系统的分组，虽然目前数量不多，
+ *     但为未来的扩展（如增加“掘金风格”、“知乎风格”等）预留了结构。
+ *
+ * 设计思想:
+ * - **关注点分离 (Separation of Concerns)**: 这是整个主题系统设计的核心原则。
+ *   将“色彩”（Color Theme）、“代码块微观样式”（Code Style）和“整体排版宏观样式”
+ *   （Theme System）三者分离，提供了极高的灵活性和可组合性。用户可以自由组合，
+ *   例如使用“微信Pro”的排版，搭配“深海蓝”的颜色和“VS Code”的代码样式。
+ * - **宏观控制**: Theme System 负责定义整体的视觉基调和规范，而 Color Theme 和
+ *   Code Style 则在此基础上进行具体的“着色”和“微调”。
  */
 
-import { createThemeSystem } from './base.js'
+import { createThemeSystem } from './base.js';
 
-// 主题系统定义
+/**
+ * 包含所有预定义排版主题系统的对象。
+ */
 export const themeSystems = {
-  // 微信主题（当前默认主题）
+  // 微信主题: 经典、简洁、易读
   wechat: createThemeSystem({
     id: 'wechat',
     name: '微信主题',
     description: '专为微信公众号优化的经典主题，简洁易读',
-
+    supportedColors: ['green', 'blue', 'red', 'purple', 'orange', 'pink'],
     layout: {
-      maxWidth: '100%',
       padding: '16px',
       lineHeight: '1.75',
-      paragraphSpacing: '16px'
     },
-
     typography: {
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-      codeFontFamily: 'Monaco, Menlo, "Ubuntu Mono", Consolas, monospace',
       fontSize: {
         base: '16px',
         h1: '28px',
         h2: '24px',
         h3: '20px',
-        h4: '18px',
-        h5: '16px',
-        h6: '14px',
-        code: '14px'
-      }
-    },
-
-    spacing: {
-      xs: '4px',
-      sm: '8px',
-      md: '16px',
-      lg: '24px',
-      xl: '32px',
-      xxl: '48px'
-    },
-
-    borderRadius: {
-      sm: '4px',
-      md: '6px',
-      lg: '8px',
-      xl: '12px'
-    },
-
-    supportedColors: ['green', 'blue', 'red', 'purple', 'orange', 'pink'],
-    defaultColor: 'green',
-
-    styles: {
-      codeBlock: {
-        background: '#f6f8fa',
-        border: '1px solid #d0d7de',
-        borderRadius: '6px',
-        padding: '16px'
       },
-
-      blockquote: {
-        borderLeft: '4px solid',
-        paddingLeft: '16px',
-        margin: '16px 0',
-        fontStyle: 'normal'
-      }
-    }
+    },
   }),
 
-  // 微信公众号专业版主题
+  // 微信公众号专业版: 更现代、精致，参考 Typora
   wechatPro: createThemeSystem({
     id: 'wechatPro',
     name: '微信公众号专业版',
-    description: '专为微信公众号优化的专业主题，参考Typora设计理念，注重内容可读性和美观性',
-
+    description: '更现代、精致的微信主题，参考 Typora 设计',
+    supportedColors: ['green', 'blue', 'red', 'purple', 'orange', 'pink'],
     layout: {
-      maxWidth: '100%',
       padding: '20px',
       lineHeight: '1.75',
-      paragraphSpacing: '16px'
     },
-
     typography: {
-      fontFamily: '-apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
-      codeFontFamily: '"SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif',
+      codeFontFamily: '"SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, monospace',
       fontSize: {
         base: '16px',
         h1: '28px',
         h2: '24px',
         h3: '20px',
-        h4: '18px',
-        h5: '16px',
-        h6: '14px',
-        code: '14px'
       },
       fontWeight: {
-        normal: '400',
-        medium: '500',
-        bold: '600'
-      }
+        bold: '600',
+      },
     },
-
-    spacing: {
-      xs: '4px',
-      sm: '8px',
-      md: '16px',
-      lg: '24px',
-      xl: '32px',
-      xxl: '48px'
-    },
-
-    borderRadius: {
-      sm: '4px',
-      md: '6px',
-      lg: '8px',
-      xl: '12px'
-    },
-
-    shadows: {
-      sm: '0 1px 3px rgba(0,0,0,0.08)',
-      md: '0 2px 8px rgba(0,0,0,0.1)',
-      lg: '0 4px 16px rgba(0,0,0,0.12)'
-    },
-
-    supportedColors: ['green', 'blue', 'red', 'purple', 'orange', 'pink'],
-    defaultColor: 'green',
-
     styles: {
-      codeBlock: {
-        background: '#F6F8FA',
-        border: '1px solid #E1E4E8',
-        borderRadius: '6px',
-        padding: '16px'
-      },
-
       blockquote: {
-        borderLeft: '4px solid',
-        paddingLeft: '16px',
-        margin: '16px 0',
-        fontStyle: 'normal'
+        // Pro 版引用块可以有更精致的样式
+        paddingLeft: '20px',
+        margin: '20px 0',
       },
+    },
+  }),
+};
 
-      table: {
-        borderCollapse: 'collapse',
-        borderSpacing: '0',
-        width: '100%'
-      }
-    }
-  })
-}
+/** 默认的排版主题系统 */
+export const defaultThemeSystem = themeSystems.wechat;
 
-// 默认主题系统
-export const defaultThemeSystem = themeSystems.wechat
-
-// 获取主题系统
+/**
+ * 根据 ID 获取排版主题系统对象。
+ * @param {string} systemId - 排版系统的 ID。
+ * @returns {object} - 对应的排版系统对象，如果找不到则返回默认系统。
+ */
 export const getThemeSystem = (systemId) => {
-  return themeSystems[systemId] || defaultThemeSystem
-}
+  return themeSystems[systemId] || defaultThemeSystem;
+};
 
-// 获取主题系统列表
+/**
+ * 获取所有可用排版主题系统的列表（用于 UI 展示）。
+ * @returns {Array<{id: string, name: string, description: string}>}
+ */
 export const getThemeSystemList = () => {
   return Object.values(themeSystems).map(system => ({
     id: system.id,
     name: system.name,
     description: system.description,
-    supportedColors: system.supportedColors,
-    defaultColor: system.defaultColor
-  }))
-}
+    supportedColors: system.supportedColors || [],
+  }));
+};
 
-// 主题系统工具函数
-export const themeSystemUtils = {
-  // 检查是否为移动端优化主题
-  isMobileOptimized: (systemId) => {
-    return ['wechat', 'wechatPro'].includes(systemId)
-  },
-
-  // 检查是否为桌面端优化主题
-  isDesktopOptimized: (systemId) => {
-    return ['wechat', 'wechatPro'].includes(systemId)
-  }
-}
-
-// 主题系统预设
+/**
+ * 用于 UI 筛选的排版主题系统预设分组。
+ */
 export const themeSystemPresets = {
   all: ['wechat', 'wechatPro'],
-  mobile: ['wechat', 'wechatPro'],
-  desktop: ['wechat', 'wechatPro']
-}
+  wechat: ['wechat', 'wechatPro'], // 专为微信优化的
+};

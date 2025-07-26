@@ -1,37 +1,18 @@
 /**
- * Composables 统一入口
- * 项目已全面迁移到统一主题管理器
+ * @file src/composables/index.js
+ * @description Composables 的统一出口文件。
+ *
+ * 该文件作为 `composables` 目录的公共 API 入口，
+ * 使得其他模块可以从一个集中的位置导入所有可用的 Composable 函数。
+ * 这种模式简化了导入语句，并使得 `composables` 目录的结构更清晰、更易于维护。
+ *
+ * @example
+ * // 在其他文件中，可以这样导入：
+ * import { useThemeManager, useMarkdownEditor } from '@/composables';
  */
 
-// 🎯 主要：统一主题管理器（项目当前使用）
+// 统一导出主题管理器相关 hooks
 export { useThemeManager, useGlobalThemeManager } from './useThemeManager.js'
 
-// 📝 编辑器相关
+// 统一导出 Markdown 编辑器相关 hooks
 export { useMarkdownEditor } from './useMarkdownEditor.js'
-
-// 🔄 向后兼容：主题包装器（已弃用，保留以防需要）
-export { useColorTheme } from './useTheme.js'
-export { useCodeStyle } from './useCodeStyle.js'
-export { useLayout } from './useLayout.js'
-
-/**
- * ✅ 当前使用方式：
- *
- * // 统一主题管理器 - 项目标准
- * import { useGlobalThemeManager } from '@/composables'
- * const themeManager = useGlobalThemeManager()
- *
- * // 解构所需功能
- * const {
- *   currentColorTheme,
- *   currentCodeStyle,
- *   currentThemeSystemId,
- *   setColorTheme,
- *   setCodeStyle,
- *   setThemeSystem
- * } = themeManager
- *
- * // 编辑器（已集成主题系统）
- * import { useMarkdownEditor } from '@/composables'
- * const editor = useMarkdownEditor({ theme: 'auto' })
- */

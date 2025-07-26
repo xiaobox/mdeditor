@@ -1,13 +1,36 @@
 /**
- * 颜色主题配置
- * 包含所有可用的颜色主题定义
+ * @file src/config/themes/color-themes.js
+ * @description 颜色主题的定义文件
+ *
+ * 本文件集中定义了所有可用的颜色主题（Color Theme）。
+ * 每个颜色主题都是一个通过 `createTheme` 工厂函数创建的对象，
+ * 这确保了它们都具有一致的结构和默认值。
+ *
+ * 主要内容:
+ * 1.  **主题定义 (`colorThemes`)**: 一个包含了所有颜色主题对象的集合。
+ *     每个主题都围绕一个主色调（`primary` color）构建，例如“翡翠绿”、“深海蓝”等。
+ *     除了主色调，还定义了相关的悬浮色、浅色、深色版本，以及文本、背景、边框等
+ *     一系列配套颜色，形成一个完整、和谐的色彩系统。
+ *
+ * 2.  **默认导出 (`defaultColorTheme`)**: 指定一个默认的颜色主题，当无法加载用户设置时使用。
+ *
+ * 3.  **工具函数 (`getColorTheme`, `getColorThemeList`, `colorThemeUtils`)**: 
+ *     - `getColorTheme(id)`: 根据 ID 安全地获取一个颜色主题对象，如果 ID 无效则返回默认主题。
+ *     - `getColorThemeList()`: 返回一个简化的列表，包含 `id`, `name`, `description`, `primary`，
+ *       主要用于在 UI（如设置面板的颜色选择器）中展示所有可用的主题。
+ *     - `colorThemeUtils`: 提供一些辅助逻辑，例如判断主题是深色还是浅色（当前版本已移除深色主题）。
+ *
+ * 4.  **预设 (`colorThemePresets`)**: 定义了一些颜色主题的分组，例如 `business` 分组包含了
+ *     看起来比较专业的颜色。这可以用于在 UI 中提供分类筛选功能。
  */
 
-import { createTheme } from './base.js'
+import { createTheme } from './base.js';
 
-// 颜色主题定义
+/**
+ * 包含所有预定义颜色主题的对象。
+ */
 export const colorThemes = {
-  // 翡翠绿（默认）
+  // 翡翠绿 (默认)
   green: createTheme({
     id: 'green',
     name: '翡翠绿',
@@ -19,10 +42,6 @@ export const colorThemes = {
     inlineCodeBg: 'rgba(0, 168, 107, 0.08)',
     inlineCodeText: '#006B47',
     inlineCodeBorder: 'rgba(0, 168, 107, 0.15)',
-    blockquoteBorder: '#00A86B',
-    blockquoteBackground: 'rgba(0, 168, 107, 0.05)',
-    hrColor: '#00A86B',
-    listColors: ['#00A86B', '#10A0FF', '#FA5151', '#666']
   }),
 
   // 深海蓝
@@ -37,10 +56,6 @@ export const colorThemes = {
     inlineCodeBg: 'rgba(0, 102, 204, 0.08)',
     inlineCodeText: '#003D7A',
     inlineCodeBorder: 'rgba(0, 102, 204, 0.15)',
-    blockquoteBorder: '#0066CC',
-    blockquoteBackground: 'rgba(0, 102, 204, 0.05)',
-    hrColor: '#0066CC',
-    listColors: ['#0066CC', '#00A3FF', '#66B3FF', '#666']
   }),
 
   // 朱砂红
@@ -55,10 +70,6 @@ export const colorThemes = {
     inlineCodeBg: 'rgba(229, 62, 62, 0.08)',
     inlineCodeText: '#9B2C2C',
     inlineCodeBorder: 'rgba(229, 62, 62, 0.15)',
-    blockquoteBorder: '#E53E3E',
-    blockquoteBackground: 'rgba(229, 62, 62, 0.05)',
-    hrColor: '#E53E3E',
-    listColors: ['#E53E3E', '#FF6B6B', '#FFA8A8', '#666']
   }),
 
   // 薰衣草紫
@@ -73,10 +84,6 @@ export const colorThemes = {
     inlineCodeBg: 'rgba(128, 90, 213, 0.08)',
     inlineCodeText: '#553C9A',
     inlineCodeBorder: 'rgba(128, 90, 213, 0.15)',
-    blockquoteBorder: '#805AD5',
-    blockquoteBackground: 'rgba(128, 90, 213, 0.05)',
-    hrColor: '#805AD5',
-    listColors: ['#805AD5', '#9F7AEA', '#C4B5FD', '#666']
   }),
 
   // 琥珀橙
@@ -91,10 +98,6 @@ export const colorThemes = {
     inlineCodeBg: 'rgba(255, 140, 0, 0.08)',
     inlineCodeText: '#CC7000',
     inlineCodeBorder: 'rgba(255, 140, 0, 0.15)',
-    blockquoteBorder: '#FF8C00',
-    blockquoteBackground: 'rgba(255, 140, 0, 0.05)',
-    hrColor: '#FF8C00',
-    listColors: ['#FF8C00', '#FFA500', '#FFD700', '#666']
   }),
 
   // 樱花粉
@@ -109,72 +112,54 @@ export const colorThemes = {
     inlineCodeBg: 'rgba(255, 105, 180, 0.08)',
     inlineCodeText: '#DC143C',
     inlineCodeBorder: 'rgba(255, 105, 180, 0.15)',
-    textPrimary: '#1f2328',
-    textSecondary: '#656d76',
-    textTertiary: '#8c959f',
-    bgPrimary: '#ffffff',
-    bgSecondary: '#f6f8fa',
-    bgTertiary: '#f1f3f4',
-    borderLight: '#d0d7de',
-    borderMedium: '#8c959f',
-    tableHeaderBg: '#f6f8fa',
-    tableBorder: '#d0d7de',
-    blockquoteBorder: '#FF69B4',
-    blockquoteBackground: 'rgba(255, 105, 180, 0.05)',
-    hrColor: '#FF69B4',
-    listColors: ['#FF69B4', '#FFB6C1', '#FFC0CB', '#8c959f']
-  })
-}
+  }),
+};
 
-// 默认颜色主题
-export const defaultColorTheme = colorThemes.green
+/** 默认的颜色主题 */
+export const defaultColorTheme = colorThemes.green;
 
-// 获取颜色主题
+/**
+ * 根据 ID 获取颜色主题对象。
+ * @param {string} themeId - 颜色主题的 ID。
+ * @returns {object} - 对应的颜色主题对象，如果找不到则返回默认主题。
+ */
 export const getColorTheme = (themeId) => {
-  return colorThemes[themeId] || defaultColorTheme
-}
+  return colorThemes[themeId] || defaultColorTheme;
+};
 
-// 获取颜色主题列表
+/**
+ * 获取所有可用颜色主题的列表（用于 UI 展示）。
+ * @returns {Array<{id: string, name: string, description: string, primary: string}>}
+ */
 export const getColorThemeList = () => {
   return Object.values(colorThemes).map(theme => ({
     id: theme.id,
     name: theme.name,
     description: theme.description,
-    primary: theme.primary
-  }))
-}
+    primary: theme.primary,
+  }));
+};
 
-// 颜色主题工具函数
+/**
+ * 颜色主题相关的工具函数。
+ */
 export const colorThemeUtils = {
-  // 检查是否为深色主题
-  isDarkTheme: () => {
-    return false // 移除深色主题后，所有主题都是浅色
+  /**
+   * 检查一个主题是否为深色主题。
+   * @param {string} themeId - 主题的 ID。
+   * @returns {boolean}
+   */
+  isDark: (themeId) => {
+    return colorThemes[themeId]?.isDark || false;
   },
+};
 
-  // 获取对比主题
-  getContrastTheme: (themeId) => {
-    return themeId === 'pink' ? 'green' : 'pink'
-  },
-
-  // 获取相似主题
-  getSimilarThemes: (themeId) => {
-    const similarMap = {
-      green: ['blue', 'purple'],
-      blue: ['green', 'purple'],
-      red: ['orange', 'purple'],
-      purple: ['blue', 'red', 'pink'],
-      orange: ['red', 'green'],
-      pink: ['purple', 'red']
-    }
-    return similarMap[themeId] || ['green', 'blue']
-  }
-}
-
-// 主题预设
+/**
+ * 用于 UI 筛选的颜色主题预设分组。
+ */
 export const colorThemePresets = {
-  light: ['green', 'blue', 'red', 'purple', 'orange'],
   all: ['green', 'blue', 'red', 'purple', 'orange', 'pink'],
   business: ['blue', 'green', 'purple'],
   creative: ['purple', 'orange', 'red', 'pink'],
-  minimal: ['green', 'blue', 'pink']
-}
+  minimal: ['green', 'blue', 'pink'],
+};

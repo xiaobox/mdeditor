@@ -1,13 +1,39 @@
 /**
- * 代码样式配置
- * 包含所有可用的代码样式定义
+ * @file src/config/themes/code-styles.js
+ * @description 代码高亮样式的定义文件
+ *
+ * 本文件集中定义了所有可用的代码高亮样式（Code Style）。
+ * 每个代码样式都是一个通过 `createCodeStyle` 工厂函数创建的对象，
+ * 这确保了它们都具有一致的结构和默认值。
+ *
+ * 主要内容:
+ * 1.  **样式定义 (`codeStyles`)**: 一个包含了所有代码样式对象的集合。
+ *     目前定义了四种风格：
+ *     - `mac`: 模仿 macOS 终端的深色样式，带有标志性的“红绿灯”按钮。
+ *     - `github`: 模仿 GitHub 网站的浅色代码块样式，简洁清晰。
+ *     - `vscode`: 模仿 VS Code 编辑器的深色样式，具有现代感。
+ *     - `terminal`: 模仿老式终端的风格，黑底绿字，复古感十足。
+ *     每个对象都详细定义了背景、颜色、边框、字体、语法高亮颜色等属性。
+ *
+ * 2.  **默认导出 (`defaultCodeStyle`)**: 指定一个默认的代码样式，当无法加载用户设置时使用。
+ *
+ * 3.  **工具函数 (`getCodeStyle`, `getCodeStyleList`, `codeStyleUtils`)**: 
+ *     - `getCodeStyle(id)`: 根据 ID 安全地获取一个代码样式对象，如果 ID 无效则返回默认样式。
+ *     - `getCodeStyleList()`: 返回一个简化的列表，只包含 `id`, `name`, `description`，
+ *       主要用于在 UI（如设置面板的下拉菜单）中展示所有可用的代码样式。
+ *     - `codeStyleUtils`: 提供一些辅助逻辑，如判断一个样式是深色还是浅色。
+ *
+ * 4.  **预设 (`codeStylePresets`)**: 定义了一些代码样式的分组，例如 `dark` 分组包含了所有深色样式。
+ *     这可以用于在 UI 中提供分类筛选功能。
  */
 
-import { createCodeStyle } from './base.js'
+import { createCodeStyle } from './base.js';
 
-// 代码样式定义
+/**
+ * 包含所有预定义代码高亮样式的对象。
+ */
 export const codeStyles = {
-  // Mac 风格
+  // Mac 风格: 经典的 macOS 终端深色风格
   mac: createCodeStyle({
     id: 'mac',
     name: 'Mac 风格',
@@ -15,26 +41,17 @@ export const codeStyles = {
     background: '#1e1e1e',
     color: '#e6edf3',
     hasTrafficLights: true,
-    trafficLightsStyle: `
-      position: absolute;
-      top: 13px;
-      left: 16px;
-      font-size: 22px;
-      line-height: 1;
-      z-index: 2;
-      letter-spacing: 4px;
-    `,
-    boxShadow: 'none',
+    trafficLightsStyle: `position: absolute; top: 13px; left: 16px; font-size: 22px; line-height: 1; z-index: 2; letter-spacing: 4px;`,
     syntaxHighlight: {
-      keyword: '#ff7b72',
-      string: '#a5d6ff',
-      comment: '#8b949e',
-      number: '#79c0ff',
-      function: '#d2a8ff'
+      keyword: '#ff7b72', // 红色
+      string: '#a5d6ff',  // 浅蓝
+      comment: '#8b949e', // 灰色
+      number: '#79c0ff',  // 蓝色
+      function: '#d2a8ff',// 紫色
     }
   }),
 
-  // GitHub 风格
+  // GitHub 风格: 清爽的 GitHub 浅色风格
   github: createCodeStyle({
     id: 'github',
     name: 'GitHub 风格',
@@ -44,34 +61,19 @@ export const codeStyles = {
     border: '1px solid #d0d7de',
     borderRadius: '8px',
     padding: '16px',
-    boxShadow: 'none',
     hasHeader: true,
-    headerStyle: `
-      background: #f1f3f4;
-      border-bottom: 1px solid #d0d7de;
-      padding: 8px 16px;
-      border-radius: 7px 7px 0 0;
-      font-size: 12px;
-      color: #656d76;
-      font-weight: 500;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1;
-      box-sizing: border-box;
-    `,
+    headerStyle: `background: #f1f3f4; border-bottom: 1px solid #d0d7de; padding: 8px 16px; border-radius: 7px 7px 0 0; font-size: 12px; color: #656d76; position: absolute; top: 0; left: 0; right: 0; z-index: 1;`,
     headerContent: '📄 代码',
     syntaxHighlight: {
       keyword: '#cf222e',
       string: '#0a3069',
       comment: '#6e7781',
       number: '#0550ae',
-      function: '#8250df'
+      function: '#8250df',
     }
   }),
 
-  // VS Code 风格
+  // VS Code 风格: 现代的 VS Code 编辑器深色风格
   vscode: createCodeStyle({
     id: 'vscode',
     name: 'VS Code 风格',
@@ -81,38 +83,19 @@ export const codeStyles = {
     borderRadius: '10px',
     padding: '20px',
     border: '1px solid #3c3c3c',
-    boxShadow: 'none',
     hasHeader: true,
-    headerStyle: `
-      background: linear-gradient(135deg, #2d2d30 0%, #3c3c3c 100%);
-      border-bottom: 1px solid #3c3c3c;
-      padding: 10px 20px;
-      border-radius: 9px 9px 0 0;
-      font-size: 13px;
-      color: #cccccc;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1;
-      box-sizing: border-box;
-    `,
+    headerStyle: `background: linear-gradient(135deg, #2d2d30 0%, #3c3c3c 100%); border-bottom: 1px solid #3c3c3c; padding: 10px 20px; border-radius: 9px 9px 0 0; font-size: 13px; color: #cccccc; position: absolute; top: 0; left: 0; right: 0; z-index: 1;`,
     headerContent: '⚡ 代码片段',
-    hasGlow: false,
     syntaxHighlight: {
       keyword: '#569cd6',
       string: '#ce9178',
       comment: '#6a9955',
       number: '#b5cea8',
-      function: '#dcdcaa'
+      function: '#dcdcaa',
     }
   }),
 
-  // 终端风格
+  // 终端风格: 复古的终端黑底绿字风格
   terminal: createCodeStyle({
     id: 'terminal',
     name: '终端风格',
@@ -122,83 +105,65 @@ export const codeStyles = {
     borderRadius: '6px',
     padding: '20px',
     border: '2px solid #333333',
-    boxShadow: 'none',
-    fontFamily: "'Courier New', 'Monaco', monospace",
+    fontFamily: `'Courier New', 'Monaco', monospace`,
     hasHeader: true,
-    headerStyle: `
-      background: #1a1a1a;
-      border-bottom: 1px solid #333333;
-      padding: 8px 20px;
-      border-radius: 4px 4px 0 0;
-      font-size: 12px;
-      color: #00ff00;
-      font-weight: bold;
-      font-family: 'Courier New', monospace;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1;
-      box-sizing: border-box;
-    `,
+    headerStyle: `background: #1a1a1a; border-bottom: 1px solid #333333; padding: 8px 20px; border-radius: 4px 4px 0 0; font-size: 12px; color: #00ff00; font-family: 'Courier New', monospace; position: absolute; top: 0; left: 0; right: 0; z-index: 1;`,
     headerContent: '$ terminal',
-    hasGlow: false,
     syntaxHighlight: {
       keyword: '#00ffff',
       string: '#ffff00',
       comment: '#808080',
       number: '#ff00ff',
-      function: '#00ff00'
+      function: '#00ff00',
     }
-  })
-}
+  }),
+};
 
-// 默认代码样式
-export const defaultCodeStyle = codeStyles.mac
+/** 默认的代码样式 */
+export const defaultCodeStyle = codeStyles.mac;
 
-// 获取代码样式
+/**
+ * 根据 ID 获取代码样式对象。
+ * @param {string} styleId - 代码样式的 ID。
+ * @returns {object} - 对应的代码样式对象，如果找不到则返回默认样式。
+ */
 export const getCodeStyle = (styleId) => {
-  return codeStyles[styleId] || defaultCodeStyle
-}
+  return codeStyles[styleId] || defaultCodeStyle;
+};
 
-// 获取代码样式列表
+/**
+ * 获取所有可用代码样式的列表（用于 UI 展示）。
+ * @returns {Array<{id: string, name: string, description: string}>}
+ */
 export const getCodeStyleList = () => {
   return Object.values(codeStyles).map(style => ({
     id: style.id,
     name: style.name,
-    description: style.description
-  }))
-}
+    description: style.description,
+  }));
+};
 
-// 代码样式工具函数
+/**
+ * 代码样式相关的工具函数。
+ */
 export const codeStyleUtils = {
-  // 检查是否为深色代码样式
-  isDarkCodeStyle: (styleId) => {
-    return ['mac', 'vscode', 'terminal'].includes(styleId)
+  /**
+   * 检查一个代码样式是否为深色主题。
+   * @param {string} styleId - 代码样式的 ID。
+   * @returns {boolean}
+   */
+  isDark: (styleId) => {
+    return ['mac', 'vscode', 'terminal'].includes(styleId);
   },
+};
 
-  // 获取对比代码样式
-  getContrastCodeStyle: (styleId) => {
-    return codeStyleUtils.isDarkCodeStyle(styleId) ? 'github' : 'mac'
-  },
-
-  // 获取相似代码样式
-  getSimilarCodeStyles: (styleId) => {
-    const similarMap = {
-      mac: ['vscode', 'terminal'],
-      github: ['vscode'],
-      vscode: ['mac', 'github'],
-      terminal: ['mac']
-    }
-    return similarMap[styleId] || ['mac', 'github']
-  }
-}
-
-// 代码样式预设
+/**
+ * 用于 UI 筛选的代码样式预设分组。
+ */
 export const codeStylePresets = {
   all: ['mac', 'github', 'vscode', 'terminal'],
   dark: ['mac', 'vscode', 'terminal'],
   light: ['github'],
   modern: ['vscode', 'github'],
-  retro: ['terminal', 'mac']
-}
+  retro: ['terminal', 'mac'],
+};

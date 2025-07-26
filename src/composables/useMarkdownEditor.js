@@ -1,7 +1,26 @@
 /**
- * Markdown 编辑器 Composable
- * 提供编辑器初始化、配置和操作的统一接口
- * 已整合主题系统支持
+ * @file src/composables/useMarkdownEditor.js
+ * @description Markdown 编辑器 Composable
+ *
+ * 本文件封装了与 CodeMirror 6 编辑器相关的所有逻辑，为 Vue 组件提供一个简洁、
+ * 响应式的接口来管理 Markdown 编辑器。
+ *
+ * 主要功能:
+ * 1.  **编辑器实例化**: 动态创建和销毁 CodeMirror 实例。
+ * 2.  **响应式内容**: `content` ref 双向绑定编辑器内容。
+ * 3.  **主题集成**: 通过 `useGlobalThemeManager` 与全局主题系统联动，
+ *     自动根据当前颜色主题（亮/暗）切换 CodeMirror 的基础主题。
+ * 4.  **工具栏操作**: 封装了 `editor-operations.js` 中的原子操作，
+ *     提供如加粗、插入链接等易于调用的方法。
+ * 5.  **滚动同步**: 监听编辑器的滚动事件，并以百分比形式通知父组件，
+ *     用于实现编辑器与预览窗格的同步滚动。
+ * 6.  **生命周期管理**: 在组件挂载时初始化编辑器，在卸载时销毁，防止内存泄漏。
+ *
+ * 设计思想:
+ * - **关注点分离**: 将复杂的 CodeMirror 配置和 API 操作封装在此 Composable 中，
+ *   让 Vue 组件只关注业务逻辑。
+ * - **可组合性**: 返回一个包含状态和方法的对象，方便在不同组件中复用。
+ * - **响应式**: 利用 Vue 的 `ref` 和 `computed` 属性，使编辑器状态能自然地融入 Vue 的响应式系统。
  */
 
 import { ref, watch, onMounted, onUnmounted, computed } from 'vue'
@@ -13,9 +32,16 @@ import { toolbarOperations } from '../utils/editor-operations.js'
 import { useGlobalThemeManager } from './useThemeManager.js'
 
 /**
- * 使用 Markdown 编辑器
- * @param {Object} options - 配置选项
- * @returns {Object} 编辑器相关的响应式数据和方法
+ * 创建并管理一个 Markdown 编辑器实例。
+ * @param {Object} [options={}] - 配置选项。
+ * @param {string} [options.initialValue=''] - 编辑器的初始内容。
+ * @param {'auto'|'light'|'dark'} [options.theme='auto'] - 编辑器主题模式。
+ *   - 'auto': 根据全局颜色主题自动切换亮/暗模式。
+ *   - 'light': 强制使用亮色主题。
+ *   - 'dark': 强制使用暗色主题。
+ * @param {Function} [options.onContentChange=() => {}] - 内容变化时的回调函数。
+ * @param {Function} [options.onScroll=() => {}] - 滚动事件的回调函数。
+ * @returns {Object} 包含编辑器状态和方法的对象。
  */
 export function useMarkdownEditor(options = {}) {
   const {
@@ -25,25 +51,37 @@ export function useMarkdownEditor(options = {}) {
     onScroll = () => {}
   } = options
 
-  // 主题管理器
+  // 获取全局主题管理器实例
   const themeManager = useGlobalThemeManager()
 
-  // 响应式数据
+  // --- 响应式状态 (Reactive State) ---
+
+  /** @type {import('vue').Ref<HTMLElement|null>} 编辑器的 DOM 挂载点 */
   const editorElement = ref(null)
+  /** @type {import('vue').Ref<string>} 编辑器的当前内容 */
   const content = ref(initialValue)
+  /** @type {EditorView|null} CodeMirror 编辑器实例 */
   let editorView = null
 
-  // 计算当前主题
+  // --- 计算属性 (Computed Properties) ---
+
+  /**
+   * 根据配置和全局主题计算出当前应使用的编辑器主题（'light' 或 'dark'）。
+   */
   const currentTheme = computed(() => {
     if (theme === 'auto') {
-      // 根据颜色主题自动判断
       const colorTheme = themeManager.currentColorTheme.value
       return colorTheme?.isDark ? 'dark' : 'light'
     }
     return theme
   })
 
-  // 编辑器主题配置
+  // --- 私有方法 (Private Methods) ---
+
+  /**
+   * 创建 CodeMirror 的基础主题扩展。
+   * @returns {import('@codemirror/state').Extension}
+   */
   const getEditorTheme = () => {
     return EditorView.theme({
       '&': {
@@ -67,24 +105,29 @@ export function useMarkdownEditor(options = {}) {
     })
   }
 
-  // 滚动同步处理
+  /**
+   * 处理编辑器滚动事件，计算滚动百分比并触发回调。
+   * @param {Event} e - 滚动事件对象。
+   */
   const handleScroll = (e) => {
     const element = e.target
     const scrollTop = element.scrollTop
     const scrollHeight = element.scrollHeight
     const clientHeight = element.clientHeight
 
-    // 计算滚动百分比
     const maxScrollTop = Math.max(0, scrollHeight - clientHeight)
     const scrollPercentage = maxScrollTop > 0 ? scrollTop / maxScrollTop : 0
 
-    // 调用外部滚动处理函数
     onScroll(scrollPercentage)
   }
 
-  // 初始化编辑器
+  // --- 公开方法 (Public Methods) ---
+
+  /**
+   * 初始化 CodeMirror 编辑器。
+   */
   const initEditor = () => {
-    if (!editorElement.value) return
+    if (!editorElement.value || editorView) return
 
     const extensions = [
       basicSetup,
@@ -99,13 +142,13 @@ export function useMarkdownEditor(options = {}) {
       getEditorTheme()
     ]
 
-    // 添加暗色主题
+    // 如果是暗色主题，添加 oneDark 扩展
     if (currentTheme.value === 'dark') {
       extensions.push(oneDark)
     }
 
     const state = EditorState.create({
-      doc: initialValue,
+      doc: content.value, // 使用响应式 ref 的当前值
       extensions
     })
 
@@ -119,10 +162,11 @@ export function useMarkdownEditor(options = {}) {
     scrollElement.addEventListener('scroll', handleScroll, { passive: true })
   }
 
-  // 销毁编辑器
+  /**
+   * 销毁 CodeMirror 编辑器实例，清理资源。
+   */
   const destroyEditor = () => {
     if (editorView) {
-      // 清理滚动事件监听器
       const scrollElement = editorView.scrollDOM
       if (scrollElement) {
         scrollElement.removeEventListener('scroll', handleScroll)
@@ -132,13 +176,18 @@ export function useMarkdownEditor(options = {}) {
     }
   }
 
-  // 重新初始化编辑器（主题变化时）
+  /**
+   * 重新初始化编辑器。通常在主题等需要完全重建编辑器的配置变化时调用。
+   */
   const reinitEditor = () => {
     destroyEditor()
     initEditor()
   }
 
-  // 更新编辑器内容
+  /**
+   * 以编程方式更新编辑器的内容。
+   * @param {string} newValue - 新的 Markdown 内容。
+   */
   const updateContent = (newValue) => {
     if (newValue !== content.value && editorView) {
       const transaction = editorView.state.update({
@@ -149,11 +198,15 @@ export function useMarkdownEditor(options = {}) {
         }
       })
       editorView.dispatch(transaction)
-      content.value = newValue
+      // content.value 会在 updateListener 中被更新，这里无需重复设置
     }
   }
 
-  // 创建工具栏操作函数
+  /**
+   * 创建一个包含所有工具栏操作的对象。
+   * 每个方法都会自动将当前的 editorView 实例作为第一个参数传入。
+   * @returns {Object} 工具栏操作方法的集合。
+   */
   const createToolbarOperations = () => {
     const operations = {}
     
@@ -168,24 +221,26 @@ export function useMarkdownEditor(options = {}) {
     return operations
   }
 
-  // 获取工具栏操作
   const toolbar = createToolbarOperations()
 
-  // 监听主题变化
+  // --- 侦听器 (Watchers) ---
+
+  // 监听 `currentTheme` 的变化，自动重新初始化编辑器以应用新主题。
   watch(currentTheme, () => {
     reinitEditor()
   })
 
-  // 监听全局主题变化（当使用 auto 主题时）
+  // 如果使用 'auto' 主题，还需监听全局颜色主题的变化。
   if (theme === 'auto') {
     watch(() => themeManager.currentColorTheme.value, () => {
-      reinitEditor()
+      // reinitEditor() 会由上面的 `currentTheme` watcher 触发
     }, { deep: true })
   }
 
-  // 生命周期
+  // --- 生命周期钩子 (Lifecycle Hooks) ---
+
   onMounted(() => {
-    // 使用 setTimeout 确保 DOM 已渲染
+    // 使用 setTimeout 确保父组件的 DOM 已经完全渲染。
     setTimeout(initEditor, 0)
   })
 
@@ -193,13 +248,15 @@ export function useMarkdownEditor(options = {}) {
     destroyEditor()
   })
 
+  // --- 返回 API ---
+
   return {
-    // 响应式数据
+    // 响应式状态
     editorElement,
     content,
     currentTheme,
 
-    // 方法
+    // 控制方法
     initEditor,
     destroyEditor,
     reinitEditor,
@@ -208,61 +265,10 @@ export function useMarkdownEditor(options = {}) {
     // 工具栏操作
     ...toolbar,
 
-    // 编辑器实例访问（谨慎使用）
+    // 实例访问 (用于高级操作)
     getEditorView: () => editorView,
 
     // 主题管理器访问
     themeManager
   }
 }
-
-/**
- * 编辑器工具栏配置
- */
-export const defaultToolbarConfig = [
-  {
-    group: 'headings',
-    items: [
-      { type: 'heading', level: 1, title: '一级标题', icon: 'H1' },
-      { type: 'heading', level: 2, title: '二级标题', icon: 'H2' },
-      { type: 'heading', level: 3, title: '三级标题', icon: 'H3' }
-    ]
-  },
-  {
-    group: 'formatting',
-    items: [
-      { type: 'bold', title: '粗体 (Ctrl+B)', icon: 'Bold' },
-      { type: 'italic', title: '斜体 (Ctrl+I)', icon: 'Italic' },
-      { type: 'strikethrough', title: '删除线', icon: 'Strikethrough' }
-    ]
-  },
-  {
-    group: 'links',
-    items: [
-      { type: 'link', title: '插入链接 (Ctrl+K)', icon: 'Link' },
-      { type: 'image', title: '插入图片', icon: 'Image' }
-    ]
-  },
-  {
-    group: 'code',
-    items: [
-      { type: 'code', title: '行内代码', icon: 'Code' },
-      { type: 'codeBlock', title: '代码块', icon: 'CodeBlock' }
-    ]
-  },
-  {
-    group: 'lists',
-    items: [
-      { type: 'quote', title: '引用', icon: 'Quote' },
-      { type: 'list', title: '无序列表', icon: 'List' },
-      { type: 'orderedList', title: '有序列表', icon: 'OrderedList' },
-      { type: 'table', title: '插入表格', icon: 'Table' }
-    ]
-  },
-  {
-    group: 'misc',
-    items: [
-      { type: 'horizontalRule', title: '分割线', icon: 'HorizontalRule' }
-    ]
-  }
-]
