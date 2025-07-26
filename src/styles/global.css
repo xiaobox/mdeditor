@@ -1,6 +1,5 @@
 /* 导入主题样式 */
 @import './themes/wechat-light.css';
-@import './themes/wechat-pro.css';
 
 /* 全局样式 - 现代高级设计风格 */
 :root {
