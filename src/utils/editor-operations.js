@@ -25,6 +25,12 @@
  *   确保了操作的正确性和高效性。
  */
 
+import {
+  EDITOR_OPERATIONS,
+  PLACEHOLDER_TEXT,
+  MARKDOWN_SYNTAX,
+} from '../config/constants/index.js';
+
 /**
  * 通用的文本插入与包裹函数，是大多数操作的基础。
  * @param {import('@codemirror/view').EditorView} editorView - CodeMirror 编辑器实例。
@@ -63,79 +69,164 @@ export const insertText = (editorView, before, after = '', placeholder = '') => 
 
 // --- 具体操作函数 ---
 
-/** 插入标题 */
-export const insertHeading = (editorView, level = 2) => {
-  const prefix = '#'.repeat(Math.max(1, Math.min(6, level))) + ' ';
-  insertText(editorView, prefix, '', '标题');
+/**
+ * 插入 Markdown 标题
+ *
+ * 在编辑器当前光标位置插入指定级别的 Markdown 标题。
+ * 如果有选中文本，会将选中文本转换为标题；否则插入带占位符的标题模板。
+ *
+ * @param {EditorView} editorView - CodeMirror 编辑器视图实例
+ * @param {number} [level=2] - 标题级别，范围 1-6，默认为 2
+ *
+ * @example
+ * // 插入二级标题（默认）
+ * insertHeading(editorView);
+ *
+ * @example
+ * // 插入一级标题
+ * insertHeading(editorView, 1);
+ *
+ * @example
+ * // 插入六级标题
+ * insertHeading(editorView, 6);
+ *
+ * @see {@link EDITOR_OPERATIONS.HEADING_LEVELS} 标题级别配置
+ * @see {@link MARKDOWN_SYNTAX.HEADING_PREFIX} Markdown 标题语法
+ */
+export const insertHeading = (editorView, level = EDITOR_OPERATIONS.HEADING_LEVELS.DEFAULT) => {
+  const { MIN, MAX } = EDITOR_OPERATIONS.HEADING_LEVELS;
+  const headingLevel = Math.max(MIN, Math.min(MAX, level));
+  const prefix = MARKDOWN_SYNTAX.HEADING_PREFIX.repeat(headingLevel) + ' ';
+  insertText(editorView, prefix, '', PLACEHOLDER_TEXT.HEADING);
 };
 
-/** 插入粗体 */
+/**
+ * 插入粗体文本格式
+ *
+ * 在编辑器中插入 Markdown 粗体语法。如果有选中文本，会将其包装为粗体；
+ * 否则插入带占位符的粗体模板。
+ *
+ * @param {EditorView} editorView - CodeMirror 编辑器视图实例
+ *
+ * @example
+ * // 插入粗体模板
+ * insertBold(editorView); // 结果: **粗体文本**
+ */
 export const insertBold = (editorView) => {
-  insertText(editorView, '**', '**', '粗体文本');
+  insertText(editorView, MARKDOWN_SYNTAX.BOLD, MARKDOWN_SYNTAX.BOLD, PLACEHOLDER_TEXT.BOLD);
 };
 
-/** 插入斜体 */
+/**
+ * 插入斜体文本格式
+ *
+ * 在编辑器中插入 Markdown 斜体语法。如果有选中文本，会将其包装为斜体；
+ * 否则插入带占位符的斜体模板。
+ *
+ * @param {EditorView} editorView - CodeMirror 编辑器视图实例
+ *
+ * @example
+ * // 插入斜体模板
+ * insertItalic(editorView); // 结果: *斜体文本*
+ */
 export const insertItalic = (editorView) => {
-  insertText(editorView, '*', '*', '斜体文本');
+  insertText(editorView, MARKDOWN_SYNTAX.ITALIC, MARKDOWN_SYNTAX.ITALIC, PLACEHOLDER_TEXT.ITALIC);
 };
 
-/** 插入删除线 */
+/**
+ * 插入删除线文本格式
+ *
+ * 在编辑器中插入 Markdown 删除线语法。如果有选中文本，会将其包装为删除线；
+ * 否则插入带占位符的删除线模板。
+ *
+ * @param {EditorView} editorView - CodeMirror 编辑器视图实例
+ *
+ * @example
+ * // 插入删除线模板
+ * insertStrikethrough(editorView); // 结果: ~~删除线文本~~
+ */
 export const insertStrikethrough = (editorView) => {
-  insertText(editorView, '~~', '~~', '删除线文本');
+  insertText(editorView, MARKDOWN_SYNTAX.STRIKETHROUGH, MARKDOWN_SYNTAX.STRIKETHROUGH, PLACEHOLDER_TEXT.STRIKETHROUGH);
 };
 
-/** 插入行内代码 */
+/**
+ * 插入行内代码格式
+ *
+ * 在编辑器中插入 Markdown 行内代码语法。如果有选中文本，会将其包装为行内代码；
+ * 否则插入带占位符的行内代码模板。
+ *
+ * @param {EditorView} editorView - CodeMirror 编辑器视图实例
+ *
+ * @example
+ * // 插入行内代码模板
+ * insertCode(editorView); // 结果: `代码`
+ */
 export const insertCode = (editorView) => {
-  insertText(editorView, '`', '`', '代码');
+  insertText(editorView, MARKDOWN_SYNTAX.CODE, MARKDOWN_SYNTAX.CODE, PLACEHOLDER_TEXT.CODE);
 };
 
 /** 插入代码块 */
 export const insertCodeBlock = (editorView, language = 'javascript') => {
-  const placeholder = '\n  // 在这里输入代码\n';
-  insertText(editorView, `${language}
+  insertText(editorView, `${MARKDOWN_SYNTAX.CODE_BLOCK}${language}
 `, `
-`, placeholder);
+${MARKDOWN_SYNTAX.CODE_BLOCK}`, PLACEHOLDER_TEXT.CODE_BLOCK);
 };
 
 /** 插入引用 */
 export const insertQuote = (editorView) => {
-  insertText(editorView, '> ', '', '引用内容');
+  insertText(editorView, MARKDOWN_SYNTAX.BLOCKQUOTE, '', PLACEHOLDER_TEXT.QUOTE);
 };
 
 /** 插入无序列表 */
 export const insertList = (editorView) => {
-  insertText(editorView, '- ', '', '列表项');
+  insertText(editorView, MARKDOWN_SYNTAX.UNORDERED_LIST, '', PLACEHOLDER_TEXT.LIST_ITEM);
 };
 
 /** 插入有序列表 */
 export const insertOrderedList = (editorView) => {
-  insertText(editorView, '1. ', '', '列表项');
+  insertText(editorView, MARKDOWN_SYNTAX.ORDERED_LIST, '', PLACEHOLDER_TEXT.LIST_ITEM);
 };
 
 /** 插入链接 */
 export const insertLink = (editorView) => {
-  insertText(editorView, '[', '](https://)', '链接文本');
+  insertText(
+    editorView,
+    MARKDOWN_SYNTAX.LINK_START,
+    `${MARKDOWN_SYNTAX.LINK_MIDDLE}${PLACEHOLDER_TEXT.LINK_URL}${MARKDOWN_SYNTAX.LINK_END}`,
+    PLACEHOLDER_TEXT.LINK_TEXT
+  );
 };
 
 /** 插入图片 */
 export const insertImage = (editorView) => {
-  insertText(editorView, '![', '](https://)', '图片描述');
+  insertText(
+    editorView,
+    `${MARKDOWN_SYNTAX.IMAGE_PREFIX}${MARKDOWN_SYNTAX.LINK_START}`,
+    `${MARKDOWN_SYNTAX.LINK_MIDDLE}${PLACEHOLDER_TEXT.IMAGE_URL}${MARKDOWN_SYNTAX.LINK_END}`,
+    PLACEHOLDER_TEXT.IMAGE_ALT
+  );
 };
 
 /** 插入表格 */
-export const insertTable = (editorView, rows = 2, cols = 3) => {
-  const header = Array(cols).fill('表头').join(' | ');
-  const separator = Array(cols).fill('---').join(' | ');
-  const body = Array(rows - 1).fill(Array(cols).fill('单元格').join(' | ')).join('\n');
-  
-  const table = `| ${header} |\n| ${separator} |\n| ${body} |\n`;
-  insertText(editorView, table, '', '');
+export const insertTable = (
+  editorView,
+  numberOfRows = EDITOR_OPERATIONS.TABLE_DEFAULTS.ROWS,
+  numberOfColumns = EDITOR_OPERATIONS.TABLE_DEFAULTS.COLS
+) => {
+  const { TABLE_SEPARATOR } = MARKDOWN_SYNTAX;
+  const headerRow = Array(numberOfColumns).fill(PLACEHOLDER_TEXT.TABLE_HEADER).join(` ${TABLE_SEPARATOR} `);
+  const separatorRow = Array(numberOfColumns).fill(PLACEHOLDER_TEXT.TABLE_SEPARATOR).join(` ${TABLE_SEPARATOR} `);
+  const bodyRows = Array(numberOfRows - 1)
+    .fill(Array(numberOfColumns).fill(PLACEHOLDER_TEXT.TABLE_CELL).join(` ${TABLE_SEPARATOR} `))
+    .join('\n');
+
+  const tableMarkdown = `${TABLE_SEPARATOR} ${headerRow} ${TABLE_SEPARATOR}\n${TABLE_SEPARATOR} ${separatorRow} ${TABLE_SEPARATOR}\n${TABLE_SEPARATOR} ${bodyRows} ${TABLE_SEPARATOR}\n`;
+  insertText(editorView, tableMarkdown, '', '');
 };
 
 /** 插入分割线 */
 export const insertHorizontalRule = (editorView) => {
   // 分割线前后需要换行以确保其独立成块
-  insertText(editorView, '\n---\n', '', '');
+  insertText(editorView, `\n${MARKDOWN_SYNTAX.HORIZONTAL_RULE}\n`, '', '');
 };
 
 /**

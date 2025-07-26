@@ -677,7 +677,7 @@ defineExpose({
 /* 当红绿灯是独立元素时的样式（保持向后兼容） */
 .code-preview-container > .code-preview-lights {
   position: absolute;
-  top: 8px;
+  top: 14px;
   left: 12px;
   z-index: 1;
 }

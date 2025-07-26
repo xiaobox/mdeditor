@@ -110,6 +110,7 @@ export const createCodeStyle = (config) => ({
   fontSize: config.fontSize || '14px',
   lineHeight: config.lineHeight || '1.7',
   fontFamily: config.fontFamily || '"SF Mono", Monaco, Inconsolata, "Fira Code", Consolas, monospace',
+  fontWeight: config.fontWeight || '400',
 
   // --- 装饰元素 ---
   hasTrafficLights: config.hasTrafficLights || false,

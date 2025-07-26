@@ -1,10 +1,7 @@
 /**
- * GitHub Markdown CSS 主题 - 简洁版
- * 基于 github-markdown-css 包，只保留必要的绿色主题样式
+ * 现代 Markdown 样式 - 完全兼容微信格式化器
+ * 移除外部CSS依赖，确保内联样式优先级
  */
-
-/* 导入 GitHub Markdown CSS */
-@import 'github-markdown-css/github-markdown.css';
 
 /* 基础重置和容器样式 */
 .modern-markdown {
@@ -53,56 +50,25 @@
   position: relative;
 }
 
-/* 行内代码样式 - 与微信格式化器完全一致 */
+/* 行内代码样式 - 完全让内联样式控制 */
 .modern-markdown code {
-  background: linear-gradient(145deg, rgba(251, 146, 60, 0.08) 0%, rgba(251, 146, 60, 0.12) 100%);
-  color: #ea580c;
-  padding: 3px 6px;
-  border-radius: 6px;
-  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
-  font-size: 14px;
-  border: 1px solid rgba(251, 146, 60, 0.15);
-  box-shadow:
-    0 1px 3px rgba(251, 146, 60, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  font-weight: 500;
+  /* 移除所有强制样式，让内联样式完全控制 */
 }
 
-/* 代码块基础样式 - 移除强制样式，让代码主题系统控制 */
+/* 代码块基础样式 - 完全让内联样式控制，不覆盖任何属性 */
 .modern-markdown.markdown-body pre,
 .modern-markdown pre {
-  /* 移除强制背景色，让代码主题控制 */
-  /* background: #1e1e1e !important; */
-  border-radius: 12px;
-  padding: 48px 24px 24px 24px;
-  overflow-x: auto;
-  font-size: 14px;
-  line-height: 1.7;
-  border: none;
-  position: relative;
-  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
-  margin: 32px 0;
-  font-weight: 400;
+  /* 只保留不会与内联样式冲突的属性 */
   font-variant-ligatures: common-ligatures;
+  /* 所有其他样式都由内联样式控制 */
 }
 
-/* 强制移除所有代码块的边框和线条 */
-.modern-markdown.markdown-body pre,
-.modern-markdown pre,
-.modern-markdown.markdown-body pre *,
-.modern-markdown pre *,
-.modern-markdown.markdown-body .hljs,
-.modern-markdown .hljs,
-.modern-markdown.markdown-body pre code,
-.modern-markdown pre code {
-  border: none !important;
-  border-top: none !important;
-  border-bottom: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  outline: none !important;
-  box-shadow: none !important;
+/* 修复红绿灯位置 - 补偿预览页面容器的padding影响 */
+.modern-markdown pre span[style*="position: absolute"][style*="top: 14px"][style*="left: 12px"] {
+  left: 20px !important;
 }
+
+/* 移除强制样式规则，让内联样式完全控制 */
 
 /* 禁用PrismJS主题的伪元素 */
 pre[class*="language-"]::before,
@@ -150,104 +116,14 @@ pre[class*="language-"]::after {
 }
 */
 
-/* 代码块内容样式 - 移除强制颜色，让代码主题控制 */
+/* 代码块内容样式 - 完全让内联样式控制 */
 .modern-markdown.markdown-body pre code,
 .modern-markdown pre code {
-  /* 移除强制文字颜色，让代码主题控制 */
-  /* color: #e6edf3 !important; */
-  background: transparent !important;
-  border: none !important;
-  border-top: none !important;
-  border-bottom: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  box-shadow: none !important;
-  outline: none !important;
+  /* 移除所有强制样式，让内联样式完全控制 */
 }
 
-/* 语法高亮样式 */
-.modern-markdown.markdown-body pre .hljs-comment,
-.modern-markdown pre .hljs-comment,
-.modern-markdown.markdown-body pre .hljs-quote,
-.modern-markdown pre .hljs-quote {
-  color: #7d8590;
-}
-
-.modern-markdown.markdown-body pre .hljs-keyword,
-.modern-markdown pre .hljs-keyword,
-.modern-markdown.markdown-body pre .hljs-selector-tag,
-.modern-markdown pre .hljs-selector-tag,
-.modern-markdown.markdown-body pre .hljs-literal,
-.modern-markdown pre .hljs-literal,
-.modern-markdown.markdown-body pre .hljs-type,
-.modern-markdown pre .hljs-type {
-  color: #ff7b72;
-  font-weight: 600;
-}
-
-.modern-markdown.markdown-body pre .hljs-string,
-.modern-markdown pre .hljs-string,
-.modern-markdown.markdown-body pre .hljs-regexp,
-.modern-markdown pre .hljs-regexp {
-  color: #a5d6ff;
-}
-
-.modern-markdown.markdown-body pre .hljs-number,
-.modern-markdown pre .hljs-number {
-  color: #79c0ff;
-}
-
-.modern-markdown.markdown-body pre .hljs-variable,
-.modern-markdown pre .hljs-variable,
-.modern-markdown.markdown-body pre .hljs-function,
-.modern-markdown pre .hljs-function,
-.modern-markdown.markdown-body pre .hljs-title,
-.modern-markdown pre .hljs-title {
-  color: #d2a8ff;
-}
-
-.modern-markdown.markdown-body pre .hljs-params,
-.modern-markdown pre .hljs-params {
-  color: #ffa657;
-}
-
-.modern-markdown.markdown-body pre .hljs-built_in,
-.modern-markdown pre .hljs-built_in,
-.modern-markdown.markdown-body pre .hljs-symbol,
-.modern-markdown pre .hljs-symbol {
-  color: #ffa657;
-}
-
-.modern-markdown.markdown-body pre .hljs-tag,
-.modern-markdown pre .hljs-tag,
-.modern-markdown.markdown-body pre .hljs-name,
-.modern-markdown pre .hljs-name,
-.modern-markdown.markdown-body pre .hljs-attribute,
-.modern-markdown pre .hljs-attribute {
-  color: #7ee787;
-}
-
-.modern-markdown.markdown-body pre .hljs-attr,
-.modern-markdown pre .hljs-attr {
-  color: #79c0ff;
-}
-
-.modern-markdown.markdown-body pre .hljs-meta,
-.modern-markdown pre .hljs-meta {
-  color: #a5d6ff;
-}
-
-.modern-markdown.markdown-body pre .hljs-deletion,
-.modern-markdown pre .hljs-deletion {
-  background-color: #490202;
-  color: #ffdcd7;
-}
-
-.modern-markdown.markdown-body pre .hljs-addition,
-.modern-markdown pre .hljs-addition {
-  background-color: #0f5132;
-  color: #aff5b4;
-}
+/* 语法高亮样式 - 移除固定样式，让代码主题系统控制 */
+/* 这些样式已被移除，以便代码主题系统能够完全控制语法高亮颜色 */
 
 /* 时尚高级引用块样式 */
 .modern-markdown blockquote {
@@ -539,7 +415,7 @@ pre[class*="language-"]::after {
   }
 
   .modern-markdown pre {
-    padding: 12px;
+    /* 移除强制padding，让内联样式控制 */
     font-size: 13px;
   }
 

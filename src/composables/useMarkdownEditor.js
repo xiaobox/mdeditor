@@ -208,17 +208,17 @@ export function useMarkdownEditor(options = {}) {
    * @returns {Object} 工具栏操作方法的集合。
    */
   const createToolbarOperations = () => {
-    const operations = {}
-    
-    Object.keys(toolbarOperations).forEach(key => {
-      operations[key] = (...args) => {
+    const wrappedOperations = {}
+
+    Object.keys(toolbarOperations).forEach(operationKey => {
+      wrappedOperations[operationKey] = (...operationArgs) => {
         if (editorView) {
-          toolbarOperations[key](editorView, ...args)
+          toolbarOperations[operationKey](editorView, ...operationArgs)
         }
       }
     })
 
-    return operations
+    return wrappedOperations
   }
 
   const toolbar = createToolbarOperations()

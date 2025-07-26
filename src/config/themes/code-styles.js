@@ -41,13 +41,13 @@ export const codeStyles = {
     background: '#1e1e1e',
     color: '#e6edf3',
     hasTrafficLights: true,
-    trafficLightsStyle: `position: absolute; top: 13px; left: 16px; font-size: 22px; line-height: 1; z-index: 2; letter-spacing: 4px;`,
+    trafficLightsStyle: `position: absolute; top: 14px; left: 12px; font-size: 16px; line-height: 1; z-index: 2; letter-spacing: 5px;`,
     syntaxHighlight: {
-      keyword: '#ff7b72', // 红色
-      string: '#a5d6ff',  // 浅蓝
-      comment: '#8b949e', // 灰色
-      number: '#79c0ff',  // 蓝色
-      function: '#d2a8ff',// 紫色
+      keyword: '#ff7b72',  // 关键字 - 珊瑚红
+      string: '#a5d6ff',   // 字符串 - 天空蓝
+      comment: '#8b949e',  // 注释 - 中性灰
+      number: '#79c0ff',   // 数字 - 亮蓝色
+      function: '#d2a8ff', // 函数 - 淡紫色
     }
   }),
 
@@ -65,11 +65,11 @@ export const codeStyles = {
     headerStyle: `background: #f1f3f4; border-bottom: 1px solid #d0d7de; padding: 8px 16px; border-radius: 7px 7px 0 0; font-size: 12px; color: #656d76; position: absolute; top: 0; left: 0; right: 0; z-index: 1;`,
     headerContent: '📄 代码',
     syntaxHighlight: {
-      keyword: '#cf222e',
-      string: '#0a3069',
-      comment: '#6e7781',
-      number: '#0550ae',
-      function: '#8250df',
+      keyword: '#d73a49',  // 关键字 - GitHub 红
+      string: '#032f62',   // 字符串 - 深蓝色
+      comment: '#6a737d',  // 注释 - 温和灰
+      number: '#005cc5',   // 数字 - 蓝色
+      function: '#6f42c1', // 函数 - 紫色
     }
   }),
 
@@ -87,11 +87,11 @@ export const codeStyles = {
     headerStyle: `background: linear-gradient(135deg, #2d2d30 0%, #3c3c3c 100%); border-bottom: 1px solid #3c3c3c; padding: 10px 20px; border-radius: 9px 9px 0 0; font-size: 13px; color: #cccccc; position: absolute; top: 0; left: 0; right: 0; z-index: 1;`,
     headerContent: '⚡ 代码片段',
     syntaxHighlight: {
-      keyword: '#569cd6',
-      string: '#ce9178',
-      comment: '#6a9955',
-      number: '#b5cea8',
-      function: '#dcdcaa',
+      keyword: '#569cd6',  // 关键字 - VS Code 蓝
+      string: '#ce9178',   // 字符串 - 温暖橙
+      comment: '#6a9955',  // 注释 - 森林绿
+      number: '#b5cea8',   // 数字 - 淡绿色
+      function: '#dcdcaa', // 函数 - 淡黄色
     }
   }),
 
@@ -110,11 +110,11 @@ export const codeStyles = {
     headerStyle: `background: #1a1a1a; border-bottom: 1px solid #333333; padding: 8px 20px; border-radius: 4px 4px 0 0; font-size: 12px; color: #00ff00; font-family: 'Courier New', monospace; position: absolute; top: 0; left: 0; right: 0; z-index: 1;`,
     headerContent: '$ terminal',
     syntaxHighlight: {
-      keyword: '#00ffff',
-      string: '#ffff00',
-      comment: '#808080',
-      number: '#ff00ff',
-      function: '#00ff00',
+      keyword: '#00ffff',  // 关键字 - 青色
+      string: '#ffff00',   // 字符串 - 黄色
+      comment: '#808080',  // 注释 - 灰色
+      number: '#ff00ff',   // 数字 - 洋红色
+      function: '#00ff00', // 函数 - 绿色
     }
   }),
 };

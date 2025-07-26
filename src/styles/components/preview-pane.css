@@ -151,9 +151,7 @@
 
 .viewport-mobile .preview-rendered :deep(.modern-markdown pre) {
   font-size: 12px;
-  padding: 32px 16px 16px 16px !important;
-  margin: 16px 0 !important;
-  border-radius: 8px !important;
+  /* 移除强制padding，让内联样式控制 */
 }
 
 .viewport-mobile .preview-rendered :deep(.modern-markdown table) {
@@ -172,7 +170,7 @@
 
 .viewport-tablet .preview-rendered :deep(.modern-markdown pre) {
   font-size: 13px;
-  padding: 40px 20px 20px 20px !important;
+  /* 移除强制padding，让内联样式控制 */
 }
 
 /* HTML 预览模式 */

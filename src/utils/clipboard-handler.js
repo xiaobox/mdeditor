@@ -11,12 +11,12 @@
  * 2.  **动态 DOM 操作**: 为了实现复制，它会动态创建一个临时的 `div` 元素，
  *     将 HTML 内容注入其中，然后使用 `document.createRange` 和 `window.getSelection`
  *     来选中这个 `div` 的内容。
- * 3.  **渐进式增强与优雅降级**: 
+ * 3.  **渐进式增强与优雅降级**:
  *     - 优先尝试使用现代的、异步的 `navigator.clipboard.write` API，
  *       因为它更强大、更安全，并且能同时写入多种 MIME 类型（如 `text/html` 和 `text/plain`）。
  *     - 如果 `clipboard.write` 失败（例如在不支持的浏览器或非 HTTPS 环境中），
  *       会自动降级到传统的 `document.execCommand('copy')` 方法。
- * 4.  **健壮性与错误处理**: 
+ * 4.  **健壮性与错误处理**:
  *     - 包含了超时机制，防止因内容过大或浏览器问题导致复制过程卡死。
  *     - 提供了详细的错误信息，帮助用户理解复制失败的原因（如权限问题、内容过大等）。
  * 5.  **微信特化容器**: `createRichTextContainer` 函数创建的容器带有一些特定的
@@ -31,6 +31,13 @@
  *   确保了在更广泛的浏览器环境中可用。
  */
 
+import {
+  TIMEOUTS,
+  CLIPBOARD_ERRORS,
+  EDITOR_CONFIG,
+} from '../config/constants/index.js';
+import { ErrorHandler, ERROR_TYPES } from './shared/error-handler.js';
+
 /**
  * 创建一个用于富文本复制的临时 DOM 容器。
  * @param {string} html - 要放入容器的 HTML 内容。
@@ -42,9 +49,9 @@ function createRichTextContainer(html) {
   // 这些样式旨在模拟一个干净的、标准的富文本环境，
   // 以提高在不同粘贴目标（特别是微信）中的兼容性。
   container.style.cssText = `
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
+    font-family: ${EDITOR_CONFIG.FONT_FAMILY};
+    font-size: ${EDITOR_CONFIG.FONT_SIZE};
+    line-height: ${EDITOR_CONFIG.LINE_HEIGHT};
     color: #333;
     background-color: #ffffff;
     padding: 0;
@@ -69,7 +76,11 @@ function createRichTextContainer(html) {
  */
 export async function copyToWechatClean(html) {
   if (!html) {
-    throw new Error('没有内容可复制');
+    throw ErrorHandler.wrap(
+      new Error(CLIPBOARD_ERRORS.NO_CONTENT),
+      ERROR_TYPES.CLIPBOARD,
+      '剪贴板复制'
+    );
   }
 
   const sizeKB = (html.length / 1024).toFixed(1);
@@ -81,7 +92,7 @@ export async function copyToWechatClean(html) {
   try {
     // 使用 Promise.race 实现超时控制
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('复制操作超时')), 10000); // 10秒超时
+      setTimeout(() => reject(new Error('复制操作超时')), TIMEOUTS.CLIPBOARD_OPERATION);
     });
 
     const copyPromise = (async () => {
@@ -138,14 +149,8 @@ export async function copyToWechatClean(html) {
 
   } catch (error) {
     console.error('复制失败:', error);
-    // 抛出对用户更友好的错误信息
-    if (error.message.includes('超时')) {
-      throw new Error(`复制超时：内容可能过大(${sizeKB}KB)，请尝试分段复制`);
-    } else if (error.name === 'NotAllowedError') {
-      throw new Error('浏览器拒绝了剪贴板访问请求，请检查页面权限设置');
-    } else {
-      throw new Error(`复制失败: ${error.message}`);
-    }
+    // 使用统一的错误处理器
+    throw ErrorHandler.handleClipboardError(error, parseFloat(sizeKB));
   } finally {
     // 无论成功与否，都清理 DOM
     if (document.body.contains(container)) {

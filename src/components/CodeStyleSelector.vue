@@ -224,8 +224,8 @@ onMounted(() => {
 
 .code-preview-lights {
   position: absolute;
-  top: 8px;
-  left: 8px;
+  top: 14px;
+  left: 12px;
   display: flex;
   gap: 4px;
 }
