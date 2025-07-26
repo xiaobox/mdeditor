@@ -9,10 +9,8 @@
  *
  * 主要内容:
  * 1.  **系统定义 (`themeSystems`)**: 一个包含了所有排版主题系统对象的集合。
- *     目前定义了两种系统：
+ *     目前定义了一种系统：
  *     - `wechat`: 专为微信公众号优化的经典主题，注重简洁和阅读性。
- *     - `wechatPro`: 同样为微信优化，但风格更现代，参考了 Typora 的设计，
- *       可能包含更多的设计细节和更精致的间距、阴影等。
  *     每个系统都通过 `createThemeSystem` 工厂函数创建，确保结构一致。
  *
  * 2.  **默认导出 (`defaultThemeSystem`)**: 指定默认的排版系统。
@@ -21,8 +19,8 @@
  *     - `getThemeSystem(id)`: 根据 ID 安全地获取一个排版系统对象。
  *     - `getThemeSystemList()`: 返回一个简化的列表，用于在 UI 中展示所有可用的系统。
  *
- * 4.  **预设 (`themeSystemPresets`)**: 定义了排版系统的分组，虽然目前数量不多，
- *     但为未来的扩展（如增加“掘金风格”、“知乎风格”等）预留了结构。
+ * 4.  **预设 (`themeSystemPresets`)**: 定义了排版系统的分组，
+ *     为未来的扩展（如增加“掘金风格”、“知乎风格”等）预留了结构。
  *
  * 设计思想:
  * - **关注点分离 (Separation of Concerns)**: 这是整个主题系统设计的核心原则。
@@ -59,38 +57,6 @@ export const themeSystems = {
       },
     },
   }),
-
-  // 微信公众号专业版: 更现代、精致，参考 Typora
-  wechatPro: createThemeSystem({
-    id: 'wechatPro',
-    name: '微信公众号专业版',
-    description: '更现代、精致的微信主题，参考 Typora 设计',
-    supportedColors: ['green', 'blue', 'red', 'purple', 'orange', 'pink'],
-    layout: {
-      padding: '20px',
-      lineHeight: '1.75',
-    },
-    typography: {
-      fontFamily: '-apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif',
-      codeFontFamily: '"SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, monospace',
-      fontSize: {
-        base: '16px',
-        h1: '28px',
-        h2: '24px',
-        h3: '20px',
-      },
-      fontWeight: {
-        bold: '600',
-      },
-    },
-    styles: {
-      blockquote: {
-        // Pro 版引用块可以有更精致的样式
-        paddingLeft: '20px',
-        margin: '20px 0',
-      },
-    },
-  }),
 };
 
 /** 默认的排版主题系统 */
@@ -122,6 +88,6 @@ export const getThemeSystemList = () => {
  * 用于 UI 筛选的排版主题系统预设分组。
  */
 export const themeSystemPresets = {
-  all: ['wechat', 'wechatPro'],
-  wechat: ['wechat', 'wechatPro'], // 专为微信优化的
+  all: ['wechat'],
+  wechat: ['wechat'], // 专为微信优化的
 };

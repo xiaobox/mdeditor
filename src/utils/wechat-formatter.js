@@ -35,7 +35,7 @@ import { getThemesSafe } from './shared/theme-utils.js'
  *
  * @example
  * // 使用自定义主题
- * const html = formatForWechat(markdown, 'github', codeTheme, 'jetbrains');
+ * const html = formatForWechat(markdown, 'github', codeTheme, 'wechat');
  *
  * @example
  * // 使用主题对象

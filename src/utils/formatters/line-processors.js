@@ -104,7 +104,7 @@ export class HeadingProcessor extends LineProcessor {
   }
 
   process(line, trimmedLine, context) {
-    const { currentTheme, themeSystem } = context;
+    const { currentTheme } = context;
     const level = trimmedLine.match(/^#+/)[0].length;
     const text = trimmedLine.replace(/^#+\s*/, '');
     const formattedText = formatInlineText(text, currentTheme);
@@ -112,9 +112,9 @@ export class HeadingProcessor extends LineProcessor {
     let result = '';
     
     if (level === 1) {
-      result = this.formatH1(formattedText, currentTheme, themeSystem);
+      result = this.formatH1(formattedText, currentTheme);
     } else if (level === 2) {
-      result = this.formatH2(formattedText, currentTheme, themeSystem);
+      result = this.formatH2(formattedText, currentTheme);
     } else {
       result = this.formatOtherHeading(level, formattedText, currentTheme);
     }
@@ -126,73 +126,37 @@ export class HeadingProcessor extends LineProcessor {
     };
   }
 
-  formatH1(formattedText, currentTheme, themeSystem) {
-    if (themeSystem === 'jetbrains') {
-      const h1Style = `
-        font-size: 32px;
-        font-weight: 700;
-        color: #9876AA;
-        background: #2B2B2B;
-        margin: 32px 0 24px 0;
-        padding: 16px 20px 12px 20px;
-        position: relative;
-        line-height: 1.2;
-        text-align: left;
-        border-radius: 6px;
-        border-bottom: 2px solid #555555;
-      `.replace(/\s+/g, ' ').trim();
+  formatH1(formattedText, currentTheme) {
+    const h1Style = `
+      margin: 0.67em 0;
+      font-weight: 600;
+      padding-bottom: 16px;
+      font-size: 1.5em;
+      border-bottom: none;
+      position: relative;
+      color: ${currentTheme.textPrimary};
+      line-height: 1.25;
+      text-align: center;
+    `.replace(/\s+/g, ' ').trim();
 
-      const underlineStyle = `display: block; position: absolute; bottom: -2px; left: 20px; width: 60px; height: 2px; background: #9876AA; border-radius: 1px;`;
-      return `<h1 style="${h1Style}">${formattedText}<span style="${underlineStyle}"></span></h1>`;
-    } else {
-      const h1Style = `
-        margin: 0.67em 0;
-        font-weight: 600;
-        padding-bottom: 16px;
-        font-size: 1.5em;
-        border-bottom: none;
-        position: relative;
-        color: ${currentTheme.textPrimary};
-        line-height: 1.25;
-        text-align: center;
-      `.replace(/\s+/g, ' ').trim();
-
-      const underlineStyle = `display: block; position: absolute; bottom: 2px; left: 3%; right: 3%; height: 3px; background: linear-gradient(90deg, transparent 0%, ${currentTheme.primary}4D 10%, ${currentTheme.primary}CC 30%, ${currentTheme.primary} 50%, ${currentTheme.primary}CC 70%, ${currentTheme.primary}4D 90%, transparent 100%); border-radius: 2px; box-shadow: 0 0 6px ${currentTheme.primary}33;`;
-      return `<h1 style="${h1Style}">${formattedText}<span style="${underlineStyle}"></span></h1>`;
-    }
+    const underlineStyle = `display: block; position: absolute; bottom: 2px; left: 3%; right: 3%; height: 3px; background: linear-gradient(90deg, transparent 0%, ${currentTheme.primary}4D 10%, ${currentTheme.primary}CC 30%, ${currentTheme.primary} 50%, ${currentTheme.primary}CC 70%, ${currentTheme.primary}4D 90%, transparent 100%); border-radius: 2px; box-shadow: 0 0 6px ${currentTheme.primary}33;`;
+    return `<h1 style="${h1Style}">${formattedText}<span style="${underlineStyle}"></span></h1>`;
   }
 
-  formatH2(formattedText, currentTheme, themeSystem) {
-    if (themeSystem === 'jetbrains') {
-      const h2Style = `
-        font-size: 26px;
-        font-weight: 600;
-        color: #6897BB;
-        background: #2B2B2B;
-        margin: 28px 0 20px 0;
-        padding: 12px 20px 12px 36px;
-        line-height: 1.3;
-        position: relative;
-        border-radius: 6px;
-      `.replace(/\s+/g, ' ').trim();
+  formatH2(formattedText, currentTheme) {
+    const h2Style = `
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      padding-left: 1.2em;
+      font-size: 1.2em;
+      color: ${currentTheme.textPrimary};
+      line-height: 1.25;
+      position: relative;
+    `.replace(/\s+/g, ' ').trim();
 
-      const borderStyle = `position: absolute; left: 20px; top: 50%; transform: translateY(-50%); width: 4px; height: 24px; background: #6897BB; border-radius: 2px;`;
-      return `<h2 style="${h2Style}"><span style="${borderStyle}"></span>${formattedText}</h2>`;
-    } else {
-      const h2Style = `
-        margin-top: 1.5rem;
-        margin-bottom: 1rem;
-        font-weight: 600;
-        padding-left: 1.2em;
-        font-size: 1.2em;
-        color: ${currentTheme.textPrimary};
-        line-height: 1.25;
-        position: relative;
-      `.replace(/\s+/g, ' ').trim();
-
-      const borderStyle = `position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 4px; height: 1.4em; background: linear-gradient(180deg, ${currentTheme.primary}4D 0%, ${currentTheme.primary} 30%, ${currentTheme.primary} 70%, ${currentTheme.primary}4D 100%); border-radius: 2px; box-shadow: 0 0 4px ${currentTheme.primary}4D;`;
-      return `<h2 style="${h2Style}"><span style="${borderStyle}"></span>${formattedText}</h2>`;
-    }
+    const borderStyle = `position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 4px; height: 1.4em; background: linear-gradient(180deg, ${currentTheme.primary}4D 0%, ${currentTheme.primary} 30%, ${currentTheme.primary} 70%, ${currentTheme.primary}4D 100%); border-radius: 2px; box-shadow: 0 0 4px ${currentTheme.primary}4D;`;
+    return `<h2 style="${h2Style}"><span style="${borderStyle}"></span>${formattedText}</h2>`;
   }
 
   formatOtherHeading(level, formattedText, currentTheme) {

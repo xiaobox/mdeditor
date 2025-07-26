@@ -63,12 +63,6 @@
   /* 所有其他样式都由内联样式控制 */
 }
 
-/* 修复红绿灯位置 - 补偿预览页面容器的padding影响 */
-.modern-markdown pre span[style*="position: absolute"][style*="top: 14px"][style*="left: 12px"] {
-  left: 20px !important;
-}
-
-/* 移除强制样式规则，让内联样式完全控制 */
 
 /* 禁用PrismJS主题的伪元素 */
 pre[class*="language-"]::before,
@@ -79,51 +73,13 @@ pre[class*="language-"]::after {
   opacity: 0 !important;
 }
 
-/* Mac 窗口装饰 - 注释掉，让代码主题系统控制 */
-/*
-.modern-markdown pre::before,
-.modern-markdown.markdown-body pre::before {
-  content: '' !important;
-  display: block !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  height: 40px !important;
-  background: #1e1e1e !important;
-  border-radius: 12px 12px 0 0 !important;
-  border: none !important;
-  box-shadow: none !important;
-  transform: none !important;
-  z-index: 10 !important;
-}
 
-.modern-markdown pre::after,
-.modern-markdown.markdown-body pre::after {
-  content: '' !important;
-  display: block !important;
-  position: absolute !important;
-  top: 12px !important;
-  left: 16px !important;
-  width: 12px !important;
-  height: 12px !important;
-  background: #ff5f56 !important;
-  border-radius: 50% !important;
-  box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27ca3f !important;
-  border: none !important;
-  transform: none !important;
-  z-index: 11 !important;
-}
-*/
 
 /* 代码块内容样式 - 完全让内联样式控制 */
 .modern-markdown.markdown-body pre code,
 .modern-markdown pre code {
   /* 移除所有强制样式，让内联样式完全控制 */
 }
-
-/* 语法高亮样式 - 移除固定样式，让代码主题系统控制 */
-/* 这些样式已被移除，以便代码主题系统能够完全控制语法高亮颜色 */
 
 /* 时尚高级引用块样式 */
 .modern-markdown blockquote {

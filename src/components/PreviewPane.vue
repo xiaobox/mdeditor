@@ -224,8 +224,9 @@ export default {
         const wechatFormatted = formatForWechat(props.markdown, currentColorTheme.value, currentCodeStyle.value, currentLayoutId.value)
         wechatHtml.value = wechatFormatted
 
-        // 2. 预览版本也使用相同的格式化器，确保样式一致
-        renderedHtml.value = wechatFormatted
+        // 2. 预览版本使用相同的格式化器，但标记为预览环境以调整样式
+        const previewFormatted = formatForWechat(props.markdown, currentColorTheme.value, currentCodeStyle.value, currentLayoutId.value, { isPreview: true })
+        renderedHtml.value = previewFormatted
 
         // 3. 发送给父组件
         emit('html-generated', wechatFormatted)
