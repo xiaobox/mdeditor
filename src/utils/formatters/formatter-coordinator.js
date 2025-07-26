@@ -36,8 +36,17 @@ export class FormatterCoordinator {
       codeTheme: null,
       themeSystem: 'wechat'
     };
+    this.options = {};
     this.tableProcessor.reset();
     this.listProcessor.reset();
+  }
+
+  /**
+   * 设置附加选项
+   * @param {Object} options - 选项对象
+   */
+  setOptions(options) {
+    this.options = { ...this.options, ...options };
   }
 
   /**
@@ -126,10 +135,11 @@ export class FormatterCoordinator {
     if (trimmedLine.startsWith('```')) {
       // 结束代码块
       const result = formatCodeBlock(
-        this.context.codeBlockContent, 
-        this.context.codeBlockLanguage, 
-        this.context.currentTheme, 
-        this.context.codeTheme
+        this.context.codeBlockContent,
+        this.context.codeBlockLanguage,
+        this.context.currentTheme,
+        this.context.codeTheme,
+        this.options.isPreview || false
       );
       
       return {

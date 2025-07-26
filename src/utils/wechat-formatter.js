@@ -26,6 +26,7 @@ import { getThemesSafe } from './shared/theme-utils.js'
  * @param {string|Object} [theme=defaultColorTheme] - 颜色主题ID（如 'wechat', 'github'）或主题对象
  * @param {Object|null} [codeTheme=null] - 代码高亮主题对象，为 null 时使用默认主题
  * @param {string} [themeSystem='wechat'] - 主题系统ID，决定整体布局和样式风格
+ * @param {Object} [options={}] - 附加选项，包含环境设置等
  * @returns {string} 格式化后的 HTML 字符串，可直接粘贴到微信公众号编辑器
  *
  * @example
@@ -41,11 +42,15 @@ import { getThemesSafe } from './shared/theme-utils.js'
  * const customTheme = { background: '#fff', textPrimary: '#333' };
  * const html = formatForWechat(markdown, customTheme);
  *
+ * @example
+ * // 指定预览环境
+ * const html = formatForWechat(markdown, theme, codeTheme, themeSystem, { isPreview: true });
+ *
  * @see {@link getColorTheme} 获取可用的颜色主题
  * @see {@link getCodeStyle} 获取可用的代码样式
  * @see {@link getThemeSystem} 获取可用的主题系统
  */
-export function formatForWechat(markdownText, theme = defaultColorTheme, codeTheme = null, themeSystem = 'wechat') {
+export function formatForWechat(markdownText, theme = defaultColorTheme, codeTheme = null, themeSystem = 'wechat', options = {}) {
   if (!markdownText || typeof markdownText !== 'string') {
     return ''
   }
@@ -64,6 +69,11 @@ export function formatForWechat(markdownText, theme = defaultColorTheme, codeThe
   // 使用新的格式化协调器
   const coordinator = new FormatterCoordinator()
   coordinator.setThemes(currentTheme, safeCodeTheme, themeSystem)
+  
+  // 传递options给协调器
+  if (options.isPreview) {
+    coordinator.setOptions({ isPreview: true })
+  }
 
   const lines = cleanedText.split('\n')
   let result = ''
@@ -131,9 +141,10 @@ function formatInlineTextInternal(text, theme = defaultColorTheme) {
  * @param {string} language - 编程语言
  * @param {Object} theme - 主题对象
  * @param {Object} codeTheme - 代码主题对象
+ * @param {boolean} isPreview - 是否为预览环境
  * @returns {string} - 格式化后的HTML
  */
-export function formatCodeBlock(content, language, theme = defaultColorTheme, codeTheme = null) {
+export function formatCodeBlock(content, language, theme = defaultColorTheme, codeTheme = null, isPreview = false) {
   const trimmedContent = content.trim();
 
   // 使用安全的主题获取方法
@@ -179,10 +190,14 @@ export function formatCodeBlock(content, language, theme = defaultColorTheme, co
   // 生成装饰元素
   let decorations = '';
 
-  // Mac 红绿灯 - 恢复正确位置（微信中显示正常）
+  // Mac 红绿灯 - 根据环境调整位置以保持视觉一致性
   if (safeCodeTheme.hasTrafficLights) {
+    // 预览环境：容器可能有额外的CSS影响，使用较小的left值
+    // 微信环境：需要考虑24px的padding，使用较大的left值来保持视觉位置一致
+    const leftPosition = isPreview ? '12px' : '24px';
+
     decorations += `
-      <span style="position: absolute; top: 14px; left: 12px; font-size: 16px; line-height: 1; z-index: 2; letter-spacing: 5px;">
+      <span class="mac-traffic-lights" style="position: absolute; top: 14px; left: ${leftPosition}; font-size: 16px; line-height: 1; z-index: 2; letter-spacing: 5px;">
         <span style="color: #ff5f56;">●</span><span style="color: #ffbd2e;">●</span><span style="color: #27ca3f;">●</span>
       </span>
     `.replace(/\s+/g, ' ').trim();
