@@ -119,9 +119,10 @@ export class TableProcessor {
    * @param {string} trimmedLine - 去除空白的当前行
    * @param {Array} lines - 所有行
    * @param {number} currentIndex - 当前行索引
+   * @param {Object} theme - 主题对象
    * @returns {Object} 处理结果
    */
-  processTableRow(line, trimmedLine, lines, currentIndex) {
+  processTableRow(line, trimmedLine, lines, currentIndex, theme = {}) {
     const rowType = this.getRowType(line, trimmedLine, this.rows.length);
 
     switch (this.state) {
@@ -150,7 +151,7 @@ export class TableProcessor {
           return { shouldContinue: true, result: '', tableComplete: false };
         } else {
           // 表格结束
-          const result = this.formatTable();
+          const result = this.formatTable(theme);
           this.reset();
           return { shouldContinue: false, result, tableComplete: true, reprocessLine: true };
         }

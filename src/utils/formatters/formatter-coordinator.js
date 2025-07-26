@@ -82,7 +82,7 @@ export class FormatterCoordinator {
     }
 
     // 尝试表格处理
-    const tableResult = this.tableProcessor.processTableRow(line, trimmedLine, lines, index);
+    const tableResult = this.tableProcessor.processTableRow(line, trimmedLine, lines, index, this.context.currentTheme);
     if (tableResult.shouldContinue || tableResult.tableComplete) {
       if (tableResult.reprocessLine) {
         // 表格结束，需要重新处理当前行
