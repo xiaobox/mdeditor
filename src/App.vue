@@ -7,12 +7,20 @@
         <span class="header-subtitle">现代化 Markdown 编辑器</span>
       </div>
       <div class="header-right">
+        <button class="btn btn-settings" @click="showSettingsPanel = !showSettingsPanel" :class="{ 'active': showSettingsPanel }">
+          <svg viewBox="0 0 24 24" width="18" height="18">
+            <path fill="currentColor" d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
+          </svg>
+          设置
+        </button>
+
         <button class="btn btn-secondary" @click="showMarkdownGuide = true">
           <svg viewBox="0 0 24 24" width="18" height="18">
             <path fill="currentColor" d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/>
           </svg>
           语法指南
         </button>
+
         <button class="btn btn-primary" @click="copyToClipboard" :disabled="!htmlContent">
           <svg viewBox="0 0 24 24" width="18" height="18">
             <path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/>
@@ -92,176 +100,252 @@
     </footer>
 
     <!-- 通知组件 -->
-    <div v-if="notification" :class="['notification', notification.type]">
-      {{ notification.message }}
+    <div v-if="notifications.length > 0" class="notification-container">
+      <div
+        v-for="notification in notifications"
+        :key="notification.id"
+        :class="['notification', notification.type]"
+      >
+        {{ notification.message }}
+      </div>
     </div>
     
+    <!-- 设置面板 -->
+    <SettingsPanel
+      :visible="showSettingsPanel"
+      @close="showSettingsPanel = false"
+      @theme-system-changed="handleThemeSystemChanged"
+      @theme-changed="handleThemeChanged"
+      @code-style-changed="handleCodeStyleChanged"
+    />
+
     <!-- Markdown 语法指南 -->
-    <MarkdownGuide 
-      :show="showMarkdownGuide" 
+    <MarkdownGuide
+      :show="showMarkdownGuide"
       @close="showMarkdownGuide = false"
     />
   </div>
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import MarkdownEditor from './components/MarkdownEditor.vue'
 import PreviewPane from './components/PreviewPane.vue'
 import MarkdownGuide from './components/MarkdownGuide.vue'
-import { copyToWechatClean, rebuildHtmlForWechat } from './utils/clipboard-handler.js'
+import SettingsPanel from './components/SettingsPanel.vue'
+import { copyToWechatClean } from './utils/clipboard-handler.js'
+import { useGlobalThemeManager } from './composables/index.js'
 
 export default {
   name: 'App',
   components: {
     MarkdownEditor,
     PreviewPane,
-    MarkdownGuide
+    MarkdownGuide,
+    SettingsPanel
   },
   setup() {
+    // 使用统一主题管理器
+    const themeManager = useGlobalThemeManager()
+
+    // 解构所需的功能
+    const {
+      currentColorThemeId,
+      currentCodeStyleId,
+      currentThemeSystemId: currentLayoutId,
+      setColorTheme,
+      setCodeStyle,
+      setThemeSystem: setLayout,
+      initialize
+    } = themeManager
     // 响应式数据
-    const markdownContent = ref(`# GitHub 风格绿色主题测试
+    const markdownContent = ref(`# Markdown 格式完整测试
 
-## 🎯 设计目标
+## 📋 所有格式枚举测试
 
-保持 **GitHub Markdown CSS** 的优秀设计，只将主题色调整为绿色，并优化微信公众号兼容性。
+这是一个包含所有 Markdown 格式的完整测试文档，用于检查微信公众号兼容性。
 
-### ✨ 主要特性
+---
 
-- **GitHub 风格**：保持经典的 GitHub Markdown 样式结构
-- **绿色主题**：统一使用 #52C41A 绿色系
-- **微调优化**：竖线等元素更加圆润
-- **微信兼容**：完美支持微信公众号粘贴
+## 1️⃣ 标题层级测试
 
-## 📝 样式测试
+# 一级标题 H1
+## 二级标题 H2
+### 三级标题 H3
+#### 四级标题 H4
+##### 五级标题 H5
+###### 六级标题 H6
 
-### 标题层级测试
-# 一级标题 - GitHub 风格
-## 二级标题 - 带圆润竖线
-### 三级标题 - 绿色主题
-#### 四级标题
-##### 五级标题
-###### 六级标题
+---
 
-### 文本格式测试
-这是普通段落文本，包含各种格式：
+## 2️⃣ 文本格式测试
 
-- **粗体文本** 和 __另一种粗体__
-- *斜体文本* 和 _另一种斜体_
-- ***粗斜体文本***
+### 基础文本格式
+- **粗体文本** 和 __另一种粗体语法__
+- *斜体文本* 和 _另一种斜体语法_
+- ***粗斜体文本*** 和 ___另一种粗斜体___
 - ~~删除线文本~~
 - \`行内代码\` 示例
+- 普通文本和 **混合** *格式* ~~测试~~
 
-### 链接测试
-- [GitHub 官网](https://github.com) - 绿色主题链接
-- [Markdown 指南](https://www.markdownguide.org) - 外部链接
-- [相对链接](./README.md) - 内部链接
+### 特殊字符和转义
+- 反引号: \\\`code\\\`
+- 星号: \\*text\\*
+- 下划线: \\_text\\_
+- 波浪号: \\~\\~text\\~\\~
 
-### 引用块测试
-> 这是一个 GitHub 风格的引用块。
->
-> 保持了经典的设计，只是将边框颜色调整为绿色主题。
->
-> > 嵌套引用块也支持绿色主题。
+---
 
-### 列表测试
+## 3️⃣ 列表测试
 
-#### 无序列表
-- 第一项 (绿色标记)
+### 无序列表
+- 第一项
 - 第二项
   - 嵌套项 1
   - 嵌套项 2
-    - 深层嵌套
+    - 深层嵌套项
+    - 另一个深层项
+  - 嵌套项 3
 - 第三项
+- 包含 **粗体** 和 *斜体* 的项
+- 包含 \`代码\` 的项
 
-#### 有序列表
-1. 第一项 (绿色数字)
+### 有序列表
+1. 第一项
 2. 第二项
-   1. 嵌套有序项
-   2. 另一个嵌套项
+   1. 嵌套有序项 1
+   2. 嵌套有序项 2
+      1. 深层嵌套
+      2. 另一个深层嵌套
+   3. 嵌套有序项 3
 3. 第三项
+4. 包含 **格式** 的项
+5. 包含 \`代码\` 的项
 
-#### 任务列表
-- [x] 恢复 GitHub 原始样式
-- [x] 应用绿色主题色
-- [x] 优化竖线圆润度
-- [x] 修复微信公众号兼容性
-- [ ] 继续完善功能
+### 任务列表
+- [x] 已完成任务
+- [x] 另一个已完成任务
+- [ ] 未完成任务
+- [ ] 包含 **粗体** 的任务
+- [x] 包含 \`代码\` 的已完成任务
+- [ ] 包含 [链接](https://github.com) 的任务
 
-### 代码测试
+---
 
-#### 行内代码
-在 JavaScript 中使用 \`const\` 和 \`let\` 声明变量。
+## 4️⃣ 引用块测试
 
-#### 代码块
+### 简单引用
+> 这是一个简单的引用块。
+
+### 多行引用
+> 这是多行引用的第一行。
+>
+> 这是第二行，中间有空行。
+>
+> 这是第三行。
+
+### 嵌套引用
+> 这是外层引用。
+>
+> > 这是嵌套引用。
+> >
+> > > 这是更深层的嵌套引用。
+>
+> 回到外层引用。
+
+### 引用中的格式
+> 引用中可以包含 **粗体**、*斜体* 和 \`代码\`。
+>
+> 也可以包含 [链接](https://github.com)。
+
+---
+
+## 5️⃣ 代码测试
+
+### 行内代码
+这是 \`行内代码\` 示例，包含 \`console.log('Hello')\` 这样的代码片段。
+
+### 代码块（无语言标识）
+\`\`\`
+这是没有语言标识的代码块
+可以包含任意文本
+保持原有格式和缩进
+\`\`\`
+
+### JavaScript 代码块
 \`\`\`javascript
-// GitHub 风格代码块
-const githubGreenTheme = {
-  primary: '#52C41A',
-  hover: '#389E0D',
-  active: '#237804',
-  style: 'github'
-};
-
-function applyTheme() {
-  console.log('GitHub 绿色主题已应用');
-  return githubGreenTheme;
+// JavaScript 代码示例
+function greet(name) {
+  console.log(\`Hello, \${name}!\`);
+  return \`Welcome, \${name}\`;
 }
+
+const user = 'World';
+greet(user);
 \`\`\`
-
-\`\`\`css
-/* CSS 样式示例 */
-.github-markdown {
-  color: #52C41A;
-  border-left: 4px solid #52C41A;
-  background-color: #f6ffed;
-}
-\`\`\`
-
-### 表格测试
-
-| 特性 | GitHub 原版 | 绿色主题版 | 微信兼容 |
-|------|-------------|------------|----------|
-| 排版结构 | ✅ 优秀 | ✅ 保持 | ✅ 完美 |
-| 视觉效果 | ✅ 专业 | ✅ 清新 | ✅ 美观 |
-| 兼容性 | ✅ 标准 | ✅ 一致 | ✅ 优化 |
-| 可读性 | ✅ 出色 | ✅ 舒适 | ✅ 友好 |
-
-### 分割线测试
----
-
-### 特殊元素测试
-
-#### 键盘按键
-使用 <kbd>Ctrl</kbd> + <kbd>C</kbd> 复制，<kbd>Ctrl</kbd> + <kbd>V</kbd> 粘贴。
-
-#### 图片测试
-![示例图片](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250626155159516.png)
-
-## 🚀 微信公众号测试
-
-### 复制粘贴测试
-1. 点击右上角 **"复制 HTML 格式"** 按钮
-2. 打开微信公众号编辑器
-3. 直接粘贴 (Ctrl+V)
-4. 检查样式是否完整保留
-
-### 预期效果
-- ✅ 标题层级清晰
-- ✅ 绿色主题一致
-- ✅ 代码块格式正确
-- ✅ 表格布局完整
-- ✅ 引用块样式保持
-- ✅ 链接颜色正确
 
 ---
 
-*GitHub 风格绿色主题 - 经典设计与现代色彩的完美结合！*`)
+## 6️⃣ 表格测试
+
+### 简单表格
+| 列1 | 列2 | 列3 |
+|-----|-----|-----|
+| 数据1 | 数据2 | 数据3 |
+| 数据4 | 数据5 | 数据6 |
+
+### 对齐表格
+| 左对齐 | 居中对齐 | 右对齐 |
+|:-------|:-------:|-------:|
+| 左 | 中 | 右 |
+| 数据较长的内容 | 居中内容 | 右侧内容 |
+
+### 包含格式的表格
+| 功能 | 语法 | 示例 |
+|------|------|------|
+| **粗体** | \`**text**\` | **示例文本** |
+| *斜体* | \`*text*\` | *示例文本* |
+| \`代码\` | \`\\\`code\\\`\` | \`console.log()\` |
+| [链接](https://github.com) | \`[text](url)\` | [GitHub](https://github.com) |
+
+---
+
+## 7️⃣ 分割线测试
+
+使用三个或更多连字符：
+
+---
+
+使用三个或更多星号：
+
+***
+
+使用三个或更多下划线：
+
+___
+
+---
+
+## 📝 测试总结
+
+以上包含了所有常用的 Markdown 格式：
+
+✅ **已测试格式**：
+- 标题（H1-H6）
+- 文本格式（粗体、斜体、删除线、行内代码）
+- 列表（有序、无序、任务列表、嵌套）
+- 引用块（简单、多行、嵌套）
+- 代码块（多种语言）
+- 表格（简单、对齐、包含格式）
+- 分割线
+
+🎯 **测试目标**：检查所有格式在微信公众号中的显示效果和兼容性。`)
 
     const htmlContent = ref('')
-    const notification = ref(null)
+    const notifications = ref([])
     const previewMode = ref('rendered')
     const showMarkdownGuide = ref(false)
+    const showSettingsPanel = ref(false)
 
     // 计算属性
     const estimatedReadTime = computed(() => {
@@ -290,56 +374,75 @@ function applyTheme() {
 
     const loadSample = () => {
       if (confirm('确定要加载示例内容吗？这将覆盖当前内容。')) {
-        markdownContent.value = `# GitHub 风格绿色主题测试
+        markdownContent.value = `# Markdown 格式完整测试
 
-## 🎯 设计目标
+## 📋 所有格式枚举测试
 
-保持 **GitHub Markdown CSS** 的优秀设计，只将主题色调整为绿色，并优化微信公众号兼容性。
+这是一个包含所有 Markdown 格式的完整测试文档，用于检查微信公众号兼容性。
 
-### ✨ 主要特性
-
-- **GitHub 风格**：保持经典的 GitHub Markdown 样式结构
-- **绿色主题**：统一使用 #52C41A 绿色系
-- **微调优化**：竖线等元素更加圆润
-- **微信兼容**：完美支持微信公众号粘贴
-
-## 📝 样式测试
-
-### 标题层级测试
-# 一级标题 - GitHub 风格
-## 二级标题 - 带圆润竖线
-### 三级标题 - 绿色主题
-#### 四级标题
-##### 五级标题
-###### 六级标题
-
-### 文本格式测试
-这是普通段落文本，包含各种格式：
-
-- **粗体文本** 和 __另一种粗体__
-- *斜体文本* 和 _另一种斜体_
-- ***粗斜体文本***
+### 基础格式测试
+- **粗体文本** 和 __另一种粗体语法__
+- *斜体文本* 和 _另一种斜体语法_
+- ***粗斜体文本*** 和 ___另一种粗斜体___
 - ~~删除线文本~~
 - \`行内代码\` 示例
 
-### 链接测试
-- [GitHub 官网](https://github.com) - 绿色主题链接
-- [Markdown 指南](https://www.markdownguide.org) - 外部链接
-- [相对链接](./README.md) - 内部链接
 
----
 
-*GitHub 风格绿色主题 - 经典设计与现代色彩的完美结合！*`
+### 列表测试
+1. 有序列表项
+2. 包含 **格式** 的项
+3. 包含 \`代码\` 的项
+
+- 无序列表项
+- 包含 **粗体** 和 *斜体* 的项
+- 包含 \`代码\` 的项
+
+### 任务列表
+- [x] 已完成任务
+- [ ] 未完成任务
+- [x] 包含 \`代码\` 的已完成任务
+
+### 引用块测试
+> 这是引用块，可以包含 **粗体**、*斜体* 和 \`代码\`。
+
+### 代码块测试
+\`\`\`javascript
+// JavaScript 代码示例
+function greet(name) {
+  console.log(\`Hello, \${name}!\`);
+}
+\`\`\`
+
+### 表格测试
+| 功能 | 语法 | 示例 |
+|------|------|------|
+| **粗体** | \`**text**\` | **示例文本** |
+| *斜体* | \`*text*\` | *示例文本* |
+| \`代码\` | \`\\\`code\\\`\` | \`console.log()\` |
+
+🎯 **测试目标**：检查所有格式在微信公众号中的显示效果和兼容性。`
       }
     }
 
     // 显示通知
     const showNotification = (message, type = 'info') => {
-      notification.value = { message, type }
+      const id = Date.now() + Math.random() // 生成唯一ID
+      const newNotification = { id, message, type }
+
+      // 添加到通知数组
+      notifications.value.push(newNotification)
+
+      // 3秒后自动移除该通知
       setTimeout(() => {
-        notification.value = null
-      }, 5000)
+        const index = notifications.value.findIndex(n => n.id === id)
+        if (index > -1) {
+          notifications.value.splice(index, 1)
+        }
+      }, 3000)
     }
+
+
 
 
 
@@ -350,36 +453,14 @@ function applyTheme() {
       }
 
       try {
-        // 方法1：直接复制预览元素
-        const previewElement = document.querySelector('.preview-rendered')
-        if (previewElement) {
-          // 创建一个选择范围
-          const range = document.createRange()
-          range.selectNodeContents(previewElement)
-          
-          const selection = window.getSelection()
-          selection.removeAllRanges()
-          selection.addRange(range)
-          
-          // 执行复制
-          const success = document.execCommand('copy')
-          
-          // 清理选择
-          selection.removeAllRanges()
-          
-          if (success) {
-            showNotification('🎉 内容已复制！可以粘贴到任何支持HTML的编辑器', 'success')
-            console.log('从预览窗口复制成功')
-            return
-          }
-        }
-        
-        // 使用处理后的HTML
-        const rebuiltHtml = rebuildHtmlForWechat(htmlContent.value)
-        const success = await copyToWechatClean(rebuiltHtml)
+        // 直接使用微信兼容的HTML，不再复制预览元素
+        // 因为预览元素包含的是复杂的HTML结构，不适合微信
+        console.log('复制微信兼容HTML，长度:', htmlContent.value.length)
+
+        const success = await copyToWechatClean(htmlContent.value)
 
         if (success) {
-          showNotification('🎉 内容已复制！可以粘贴到任何支持HTML的编辑器', 'success')
+          showNotification('🎉 内容已复制！可以粘贴到微信公众号编辑器', 'success')
         } else {
           showNotification('❌ 复制失败，请重试', 'error')
         }
@@ -389,21 +470,112 @@ function applyTheme() {
       }
     }
 
+    // 布局主题系统处理方法
+    const handleThemeSystemChanged = (systemId) => {
+      setLayout(systemId)
+      // 重新应用当前颜色主题，确保颜色变量也被更新
+      setColorTheme(currentColorThemeId.value)
+      const systemName = currentLayoutId.value === 'wechat' ? '微信主题' : '主题系统'
+      showNotification(`主题风格已更新为${systemName}`, 'success')
+    }
+
+    // 颜色主题处理方法
+    const handleThemeChanged = (themeId) => {
+      setColorTheme(themeId)
+      showNotification('主题色已更新', 'success')
+    }
+
+    // 代码样式处理方法
+    const handleCodeStyleChanged = (styleId) => {
+      setCodeStyle(styleId)
+      const styleName = currentCodeStyleId.value === 'mac' ? 'Mac 风格' :
+                       currentCodeStyleId.value === 'github' ? 'GitHub 风格' :
+                       currentCodeStyleId.value === 'vscode' ? 'VS Code 风格' :
+                       currentCodeStyleId.value === 'terminal' ? '终端风格' : '代码样式'
+      showNotification(`代码样式已更新为${styleName}`, 'success')
+    }
+
+    // 初始化主题
+    onMounted(() => {
+      initialize()
+    })
+
     return {
       markdownContent,
       htmlContent,
-      notification,
+      notifications,
       previewMode,
       estimatedReadTime,
+      currentThemeSystemId: currentLayoutId,
+      currentThemeId: currentColorThemeId,
+      currentCodeStyleId,
+      showSettingsPanel,
       handleMarkdownChange,
       handleHtmlGenerated,
       clearContent,
       loadSample,
       copyToClipboard,
-      showMarkdownGuide
+      showMarkdownGuide,
+      handleThemeSystemChanged,
+      handleThemeChanged,
+      handleCodeStyleChanged
     }
   }
 }
 </script>
 
+<style scoped>
 
+
+/* 设置按钮样式 */
+.btn-settings {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  color: #495057;
+  border: 1px solid #dee2e6;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.btn-settings::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg,
+    var(--theme-primary, #00A86B)08 0%,
+    var(--theme-primary, #00A86B)04 50%,
+    var(--theme-primary, #00A86B)08 100%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.btn-settings:hover::before {
+  opacity: 1;
+}
+
+.btn-settings:hover {
+  border-color: var(--theme-primary, #00A86B);
+  color: var(--theme-primary, #00A86B);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-settings.active {
+  background: var(--theme-primary, #00A86B);
+  color: white;
+  border-color: var(--theme-primary, #00A86B);
+  box-shadow: 0 2px 8px var(--theme-primary, #00A86B)40;
+}
+
+.btn-settings.active::before {
+  opacity: 0;
+}
+
+
+
+
+</style>

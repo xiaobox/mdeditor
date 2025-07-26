@@ -1,3 +1,7 @@
+/* 导入主题样式 */
+@import './themes/wechat-light.css';
+@import './themes/wechat-pro.css';
+
 /* 全局样式 - 现代高级设计风格 */
 :root {
   /* 主色调 - 时尚高级绿色系 */
@@ -322,49 +326,9 @@ body {
   to { transform: rotate(360deg); }
 }
 
-/* 通知样式 */
-.notification {
-  position: fixed;
-  top: 24px;
-  right: 24px;
-  min-width: 320px;
-  padding: 16px 20px;
-  background-color: var(--bg-primary);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xl);
-  color: var(--text-primary);
-  font-weight: 500;
-  z-index: 9999;
-  animation: notificationSlideIn var(--transition-slow) cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  border-left: 4px solid;
-}
+/* 通知样式 - 已移至 notifications.css */
 
-.notification.success {
-  border-left-color: var(--success-color);
-}
 
-.notification.error {
-  border-left-color: var(--error-color);
-}
-
-.notification.warning {
-  border-left-color: var(--warning-color);
-}
-
-.notification.info {
-  border-left-color: var(--info-color);
-}
-
-@keyframes notificationSlideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
 
 /* 滚动条样式 */
 ::-webkit-scrollbar {

@@ -1,0 +1,739 @@
+/**
+ * 微信公众号专业版主题 - 参考 Typora 设计理念
+ * 专门为微信公众号平台优化的浅色主题
+ * 注重内容的可读性和美观性，采用现代化设计
+ */
+
+/* 微信公众号专业版主题基础样式 */
+[data-theme-system="wechatPro"] {
+  /* 字体设置 - 微信公众号优化字体栈 */
+  --theme-font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", "Segoe UI", Arial, sans-serif;
+  --theme-code-font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", "JetBrains Mono", Consolas, "Courier New", monospace;
+
+  /* 浅色温馨基础颜色 - 参考 Typora Github 主题 */
+  --theme-bg-primary: #FFFFFF;        /* 纯白主背景 */
+  --theme-bg-secondary: #F8F9FA;      /* 浅灰次要背景 */
+  --theme-bg-tertiary: #F1F3F4;       /* 更深的浅灰背景 */
+  --theme-text-primary: #24292F;      /* 主要文字 - GitHub 深色 */
+  --theme-text-secondary: #57606A;    /* 次要文字 - 中灰 */
+  --theme-text-tertiary: #8C959F;     /* 弱化文字 - 浅灰 */
+  --theme-border-light: #D0D7DE;      /* 浅边框色 */
+  --theme-border-medium: #8C959F;     /* 中等边框色 */
+
+  /* 标题颜色层级 - 参考 Typora 设计，更加柔和 */
+  --theme-heading-h1: #0969DA;        /* H1 - 深蓝色，醒目但不刺眼 */
+  --theme-heading-h2: #1A7F37;        /* H2 - 深绿色 */
+  --theme-heading-h3: #BC4C00;        /* H3 - 橙色 */
+  --theme-heading-h4: #8250DF;        /* H4 - 紫色 */
+  --theme-heading-h5: #CF222E;        /* H5 - 红色 */
+  --theme-heading-h6: #656D76;        /* H6 - 蓝灰色 */
+
+  /* 代码块配色 - 参考 Typora GitHub 主题，更加清晰 */
+  --theme-code-bg: #F6F8FA;           /* 代码块背景 - 浅灰蓝 */
+  --theme-code-border: #D0D7DE;       /* 代码块边框 */
+  --theme-code-text: #24292F;         /* 代码主文字 */
+  --theme-code-keyword: #CF222E;      /* 关键字 - 红色 */
+  --theme-code-string: #0A3069;       /* 字符串 - 深蓝 */
+  --theme-code-comment: #6E7781;      /* 注释 - 灰色 */
+  --theme-code-number: #0550AE;       /* 数字 - 蓝色 */
+  --theme-code-function: #8250DF;     /* 函数 - 紫色 */
+  --theme-code-variable: #E36209;     /* 变量 - 橙色 */
+  --theme-code-operator: #CF222E;     /* 操作符 - 红色 */
+  --theme-code-type: #953800;         /* 类型 - 棕色 */
+
+  /* 特殊颜色 - 微信风格优化 */
+  --theme-accent-primary: #07C160;    /* 微信绿 */
+  --theme-accent-secondary: #576B95;  /* 微信蓝 */
+  --theme-accent-link: #0969DA;       /* 链接颜色 - GitHub 蓝 */
+  --theme-accent-link-hover: #0550AE; /* 链接悬停 */
+
+  /* 引用块配色 - 更加柔和 */
+  --theme-quote-bg: #F6F8FA;          /* 引用背景 */
+  --theme-quote-border: #D0D7DE;      /* 引用左边框 */
+  --theme-quote-text: #656D76;        /* 引用文字 */
+
+  /* 表格配色 - 简洁现代 */
+  --theme-table-header-bg: #F6F8FA;   /* 表头背景 */
+  --theme-table-border: #D0D7DE;      /* 表格边框 */
+  --theme-table-stripe: #F6F8FA;      /* 表格斑马纹 */
+
+  /* 内联代码配色 */
+  --theme-inline-code-bg: rgba(175, 184, 193, 0.2);
+  --theme-inline-code-text: #CF222E;
+  --theme-inline-code-border: rgba(175, 184, 193, 0.4);
+
+  /* 间距 - 更加舒适的阅读体验 */
+  --theme-spacing-xs: 4px;
+  --theme-spacing-sm: 8px;
+  --theme-spacing-md: 16px;
+  --theme-spacing-lg: 24px;
+  --theme-spacing-xl: 32px;
+  --theme-spacing-xxl: 48px;
+
+  /* 圆角 - 现代化设计 */
+  --theme-border-radius-sm: 4px;
+  --theme-border-radius-md: 6px;
+  --theme-border-radius-lg: 8px;
+  --theme-border-radius-xl: 12px;
+
+  /* 浅色主题阴影 - 更加精致 */
+  --theme-shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --theme-shadow-md: 0 2px 8px rgba(0,0,0,0.1);
+  --theme-shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+
+  /* 设置整体背景色 */
+  background-color: var(--theme-bg-primary);
+  color: var(--theme-text-primary);
+  font-family: var(--theme-font-family);
+}
+
+/* 标题样式 - 参考 Typora 层级设计，更加精致 */
+[data-theme-system="wechatPro"] h1 {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: var(--theme-spacing-xxl) 0 var(--theme-spacing-lg) 0;
+  color: var(--theme-heading-h1);
+  position: relative;
+  padding-bottom: var(--theme-spacing-sm);
+  border-bottom: 2px solid var(--theme-border-light);
+}
+
+[data-theme-system="wechatPro"] h1::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: var(--theme-heading-h1);
+  border-radius: 1px;
+}
+
+[data-theme-system="wechatPro"] h2 {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: var(--theme-spacing-xl) 0 var(--theme-spacing-lg) 0;
+  color: var(--theme-heading-h2);
+  position: relative;
+  padding-left: var(--theme-spacing-md);
+  border-left: 4px solid var(--theme-heading-h2);
+}
+
+[data-theme-system="wechatPro"] h3 {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: var(--theme-spacing-lg) 0 var(--theme-spacing-md) 0;
+  color: var(--theme-heading-h3);
+  position: relative;
+}
+
+[data-theme-system="wechatPro"] h3::before {
+  content: '▶';
+  color: var(--theme-heading-h3);
+  margin-right: var(--theme-spacing-sm);
+  font-size: 0.8em;
+}
+
+[data-theme-system="wechatPro"] h4 {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: var(--theme-spacing-lg) 0 var(--theme-spacing-sm) 0;
+  color: var(--theme-heading-h4);
+}
+
+[data-theme-system="wechatPro"] h5 {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: var(--theme-spacing-md) 0 var(--theme-spacing-sm) 0;
+  color: var(--theme-heading-h5);
+}
+
+[data-theme-system="wechatPro"] h6 {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: var(--theme-spacing-md) 0 var(--theme-spacing-sm) 0;
+  color: var(--theme-heading-h6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* 段落和文本样式 - 优化阅读体验 */
+[data-theme-system="wechatPro"] p {
+  font-size: 16px;
+  line-height: 1.75;
+  margin: var(--theme-spacing-md) 0;
+  color: var(--theme-text-primary);
+  text-align: justify;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* 强调文本 - 更加突出 */
+[data-theme-system="wechatPro"] strong {
+  font-weight: 600;
+  color: var(--theme-text-primary);
+  background: linear-gradient(120deg, transparent 0%, transparent 50%, rgba(255, 235, 59, 0.3) 50%, rgba(255, 235, 59, 0.3) 100%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  transition: background-position 0.3s ease;
+}
+
+[data-theme-system="wechatPro"] em {
+  font-style: italic;
+  color: var(--theme-text-secondary);
+  position: relative;
+}
+
+/* 链接样式 - 更加现代 */
+[data-theme-system="wechatPro"] a {
+  color: var(--theme-accent-link);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+[data-theme-system="wechatPro"] a::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--theme-accent-link);
+  transition: width 0.3s ease;
+}
+
+[data-theme-system="wechatPro"] a:hover {
+  color: var(--theme-accent-link-hover);
+}
+
+[data-theme-system="wechatPro"] a:hover::after {
+  width: 100%;
+}
+
+/* 内联代码样式 - 更加精致 */
+[data-theme-system="wechatPro"] code {
+  background-color: var(--theme-inline-code-bg);
+  color: var(--theme-inline-code-text);
+  padding: 2px 6px;
+  border-radius: var(--theme-border-radius-sm);
+  font-family: var(--theme-code-font-family);
+  font-size: 14px;
+  border: 1px solid var(--theme-inline-code-border);
+  font-weight: 500;
+}
+
+/* 代码块样式 - 参考 Typora GitHub 主题 */
+[data-theme-system="wechatPro"] pre {
+  background-color: var(--theme-code-bg);
+  border: 1px solid var(--theme-code-border);
+  border-radius: var(--theme-border-radius-md);
+  padding: var(--theme-spacing-md);
+  margin: var(--theme-spacing-lg) 0;
+  overflow-x: auto;
+  font-family: var(--theme-code-font-family);
+  font-size: 14px;
+  line-height: 1.5;
+  position: relative;
+}
+
+[data-theme-system="wechatPro"] pre::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--theme-accent-primary), var(--theme-accent-secondary));
+  border-radius: var(--theme-border-radius-md) var(--theme-border-radius-md) 0 0;
+}
+
+[data-theme-system="wechatPro"] pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--theme-code-text);
+  font-weight: normal;
+}
+
+/* 引用块样式 - 参考 Typora 设计，更加优雅 */
+[data-theme-system="wechatPro"] blockquote {
+  background-color: var(--theme-quote-bg);
+  border-left: 4px solid var(--theme-quote-border);
+  margin: var(--theme-spacing-lg) 0;
+  padding: var(--theme-spacing-md) var(--theme-spacing-lg);
+  color: var(--theme-quote-text);
+  border-radius: 0 var(--theme-border-radius-sm) var(--theme-border-radius-sm) 0;
+  position: relative;
+  font-style: normal;
+}
+
+[data-theme-system="wechatPro"] blockquote::before {
+  content: '"';
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  font-size: 48px;
+  color: var(--theme-quote-border);
+  font-family: Georgia, serif;
+  line-height: 1;
+  opacity: 0.3;
+}
+
+[data-theme-system="wechatPro"] blockquote p {
+  margin: 0;
+  color: inherit;
+  font-style: italic;
+}
+
+/* 列表样式 - 更加现代化 */
+[data-theme-system="wechatPro"] ul,
+[data-theme-system="wechatPro"] ol {
+  margin: var(--theme-spacing-md) 0;
+  padding-left: var(--theme-spacing-lg);
+}
+
+[data-theme-system="wechatPro"] li {
+  margin: var(--theme-spacing-xs) 0;
+  line-height: 1.7;
+  position: relative;
+}
+
+[data-theme-system="wechatPro"] ul li {
+  list-style: none;
+}
+
+[data-theme-system="wechatPro"] ul li::before {
+  content: '●';
+  color: var(--theme-accent-primary);
+  position: absolute;
+  left: -20px;
+  top: 0;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+[data-theme-system="wechatPro"] ul ul li::before {
+  content: '○';
+  color: var(--theme-accent-secondary);
+}
+
+[data-theme-system="wechatPro"] ul ul ul li::before {
+  content: '▪';
+  color: var(--theme-text-tertiary);
+}
+
+[data-theme-system="wechatPro"] ol li {
+  list-style: none;
+  counter-increment: list-counter;
+}
+
+[data-theme-system="wechatPro"] ol {
+  counter-reset: list-counter;
+}
+
+[data-theme-system="wechatPro"] ol li::before {
+  content: counter(list-counter) '.';
+  color: var(--theme-accent-primary);
+  font-weight: 600;
+  position: absolute;
+  left: -24px;
+  top: 0;
+  line-height: 1.7;
+}
+
+/* 表格样式 - 参考 Typora 简洁设计 */
+[data-theme-system="wechatPro"] table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--theme-spacing-lg) 0;
+  font-size: 14px;
+  border-radius: var(--theme-border-radius-md);
+  overflow: hidden;
+  box-shadow: var(--theme-shadow-sm);
+}
+
+[data-theme-system="wechatPro"] th,
+[data-theme-system="wechatPro"] td {
+  border: 1px solid var(--theme-table-border);
+  padding: var(--theme-spacing-sm) var(--theme-spacing-md);
+  text-align: left;
+}
+
+[data-theme-system="wechatPro"] th {
+  background-color: var(--theme-table-header-bg);
+  font-weight: 600;
+  color: var(--theme-text-primary);
+  position: relative;
+}
+
+[data-theme-system="wechatPro"] th::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--theme-accent-primary), var(--theme-accent-secondary));
+}
+
+[data-theme-system="wechatPro"] tr:nth-child(even) {
+  background-color: var(--theme-table-stripe);
+}
+
+[data-theme-system="wechatPro"] tr:hover {
+  background-color: rgba(7, 193, 96, 0.05);
+  transition: background-color 0.2s ease;
+}
+
+/* 分割线样式 - 更加精致 */
+[data-theme-system="wechatPro"] hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--theme-border-light), transparent);
+  margin: var(--theme-spacing-xl) 0;
+  position: relative;
+}
+
+[data-theme-system="wechatPro"] hr::after {
+  content: '❋';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--theme-bg-primary);
+  color: var(--theme-border-medium);
+  padding: 0 var(--theme-spacing-sm);
+  font-size: 16px;
+}
+
+/* 代码高亮样式 - 参考 Typora GitHub 主题，更加清晰 */
+[data-theme-system="wechatPro"] .hljs {
+  background: var(--theme-code-bg);
+  color: var(--theme-code-text);
+  display: block;
+  overflow-x: auto;
+  padding: 0;
+}
+
+/* 关键字 */
+[data-theme-system="wechatPro"] .hljs-keyword,
+[data-theme-system="wechatPro"] .hljs-selector-tag,
+[data-theme-system="wechatPro"] .hljs-subst {
+  color: var(--theme-code-keyword);
+  font-weight: 600;
+}
+
+/* 字符串 */
+[data-theme-system="wechatPro"] .hljs-string,
+[data-theme-system="wechatPro"] .hljs-attr,
+[data-theme-system="wechatPro"] .hljs-symbol,
+[data-theme-system="wechatPro"] .hljs-bullet,
+[data-theme-system="wechatPro"] .hljs-addition {
+  color: var(--theme-code-string);
+}
+
+/* 数字和字面量 */
+[data-theme-system="wechatPro"] .hljs-number,
+[data-theme-system="wechatPro"] .hljs-literal {
+  color: var(--theme-code-number);
+  font-weight: 500;
+}
+
+/* 函数名 */
+[data-theme-system="wechatPro"] .hljs-title,
+[data-theme-system="wechatPro"] .hljs-class .hljs-title,
+[data-theme-system="wechatPro"] .hljs-function .hljs-title {
+  color: var(--theme-code-function);
+  font-weight: 600;
+}
+
+/* 变量 */
+[data-theme-system="wechatPro"] .hljs-variable,
+[data-theme-system="wechatPro"] .hljs-template-variable {
+  color: var(--theme-code-variable);
+}
+
+/* 注释 */
+[data-theme-system="wechatPro"] .hljs-comment,
+[data-theme-system="wechatPro"] .hljs-quote {
+  color: var(--theme-code-comment);
+  font-style: italic;
+}
+
+/* 操作符 */
+[data-theme-system="wechatPro"] .hljs-operator,
+[data-theme-system="wechatPro"] .hljs-regexp {
+  color: var(--theme-code-operator);
+}
+
+/* 类型 */
+[data-theme-system="wechatPro"] .hljs-type,
+[data-theme-system="wechatPro"] .hljs-built_in {
+  color: var(--theme-code-type);
+  font-weight: 500;
+}
+
+/* 标签和属性 */
+[data-theme-system="wechatPro"] .hljs-tag,
+[data-theme-system="wechatPro"] .hljs-name {
+  color: var(--theme-code-keyword);
+}
+
+[data-theme-system="wechatPro"] .hljs-attribute {
+  color: var(--theme-code-variable);
+}
+
+/* 特殊样式增强 */
+[data-theme-system="wechatPro"] .hljs-emphasis {
+  font-style: italic;
+}
+
+[data-theme-system="wechatPro"] .hljs-strong {
+  font-weight: 700;
+}
+
+/* 删除和添加 */
+[data-theme-system="wechatPro"] .hljs-deletion {
+  background-color: rgba(255, 129, 130, 0.4);
+}
+
+[data-theme-system="wechatPro"] .hljs-addition {
+  background-color: rgba(46, 160, 67, 0.4);
+}
+
+/* 微信公众号特殊优化 */
+[data-theme-system="wechatPro"] .wechat-optimized {
+  /* 确保在微信中的良好显示 */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+/* 图片样式 - 更加现代 */
+[data-theme-system="wechatPro"] img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--theme-border-radius-md);
+  box-shadow: var(--theme-shadow-md);
+  margin: var(--theme-spacing-lg) 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+[data-theme-system="wechatPro"] img:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--theme-shadow-lg);
+}
+
+/* 选中文本样式 */
+[data-theme-system="wechatPro"] ::selection {
+  background-color: rgba(7, 193, 96, 0.2);
+  color: var(--theme-text-primary);
+}
+
+/* 滚动条样式 - 更加精致 */
+[data-theme-system="wechatPro"] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+[data-theme-system="wechatPro"] ::-webkit-scrollbar-track {
+  background: var(--theme-bg-secondary);
+  border-radius: var(--theme-border-radius-sm);
+}
+
+[data-theme-system="wechatPro"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, var(--theme-accent-primary), var(--theme-accent-secondary));
+  border-radius: var(--theme-border-radius-sm);
+}
+
+[data-theme-system="wechatPro"] ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, var(--theme-accent-secondary), var(--theme-accent-primary));
+}
+
+/* 任务列表样式 - 更加现代 */
+[data-theme-system="wechatPro"] .task-list-item {
+  list-style: none;
+  position: relative;
+  padding-left: 28px;
+}
+
+[data-theme-system="wechatPro"] .task-list-item-checkbox {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 16px;
+  height: 16px;
+  appearance: none;
+  border: 2px solid var(--theme-border-medium);
+  border-radius: var(--theme-border-radius-sm);
+  background: var(--theme-bg-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+[data-theme-system="wechatPro"] .task-list-item-checkbox:checked {
+  background: var(--theme-accent-primary);
+  border-color: var(--theme-accent-primary);
+}
+
+[data-theme-system="wechatPro"] .task-list-item-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* 键盘快捷键样式 */
+[data-theme-system="wechatPro"] kbd {
+  background: var(--theme-bg-secondary);
+  border: 1px solid var(--theme-border-medium);
+  border-radius: var(--theme-border-radius-sm);
+  box-shadow: 0 1px 0 var(--theme-border-medium);
+  color: var(--theme-text-primary);
+  display: inline-block;
+  font-family: var(--theme-code-font-family);
+  font-size: 12px;
+  line-height: 1;
+  padding: 4px 6px;
+  white-space: nowrap;
+}
+
+/* 标记文本样式 */
+[data-theme-system="wechatPro"] mark {
+  background: linear-gradient(120deg, transparent 0%, transparent 50%, rgba(255, 235, 59, 0.4) 50%, rgba(255, 235, 59, 0.4) 100%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  color: var(--theme-text-primary);
+  padding: 2px 4px;
+  border-radius: var(--theme-border-radius-sm);
+}
+
+/* 脚注样式 */
+[data-theme-system="wechatPro"] .footnote {
+  font-size: 14px;
+  color: var(--theme-text-secondary);
+  border-top: 1px solid var(--theme-border-light);
+  margin-top: var(--theme-spacing-xl);
+  padding-top: var(--theme-spacing-md);
+}
+
+[data-theme-system="wechatPro"] .footnote-ref {
+  color: var(--theme-accent-link);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 12px;
+  vertical-align: super;
+}
+
+/* 响应式设计 - 移动端优化 */
+@media (max-width: 768px) {
+  [data-theme-system="wechatPro"] {
+    --theme-spacing-md: 12px;
+    --theme-spacing-lg: 18px;
+    --theme-spacing-xl: 24px;
+    --theme-spacing-xxl: 36px;
+  }
+
+  [data-theme-system="wechatPro"] h1 {
+    font-size: 24px;
+    margin: var(--theme-spacing-xl) 0 var(--theme-spacing-md) 0;
+  }
+
+  [data-theme-system="wechatPro"] h2 {
+    font-size: 20px;
+    margin: var(--theme-spacing-lg) 0 var(--theme-spacing-sm) 0;
+  }
+
+  [data-theme-system="wechatPro"] h3 {
+    font-size: 18px;
+  }
+
+  [data-theme-system="wechatPro"] p {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  [data-theme-system="wechatPro"] pre {
+    font-size: 13px;
+    padding: var(--theme-spacing-sm);
+    margin: var(--theme-spacing-md) 0;
+  }
+
+  [data-theme-system="wechatPro"] table {
+    font-size: 13px;
+  }
+
+  [data-theme-system="wechatPro"] th,
+  [data-theme-system="wechatPro"] td {
+    padding: var(--theme-spacing-xs) var(--theme-spacing-sm);
+  }
+}
+
+/* 打印样式优化 */
+@media print {
+  [data-theme-system="wechatPro"] {
+    --theme-bg-primary: #ffffff;
+    --theme-text-primary: #000000;
+    --theme-text-secondary: #333333;
+  }
+
+  [data-theme-system="wechatPro"] * {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  [data-theme-system="wechatPro"] a,
+  [data-theme-system="wechatPro"] a:visited {
+    text-decoration: underline;
+  }
+
+  [data-theme-system="wechatPro"] pre,
+  [data-theme-system="wechatPro"] blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+  }
+
+  [data-theme-system="wechatPro"] img {
+    page-break-inside: avoid;
+    max-width: 100% !important;
+  }
+
+  [data-theme-system="wechatPro"] h1,
+  [data-theme-system="wechatPro"] h2,
+  [data-theme-system="wechatPro"] h3 {
+    page-break-after: avoid;
+  }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  [data-theme-system="wechatPro"] {
+    --theme-text-primary: #000000;
+    --theme-text-secondary: #333333;
+    --theme-border-light: #666666;
+    --theme-border-medium: #333333;
+  }
+}
+
+/* 减少动画模式支持 */
+@media (prefers-reduced-motion: reduce) {
+  [data-theme-system="wechatPro"] * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

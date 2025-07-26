@@ -193,22 +193,83 @@
   font-size: 13px;
   line-height: 1.6;
   padding: 20px;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+  /* 暗色主题 - 类似VS Code */
+  background-color: #1e1e1e;
+  color: #e6edf3;
   border-radius: var(--radius-lg);
   white-space: pre-wrap;
   word-wrap: break-word;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border: 1px solid #30363d;
 }
 
 [data-theme="dark"] .html-textarea {
-  color: var(--gray-900);
-  background-color: var(--gray-100);
+  background-color: #1e1e1e;
+  color: #e6edf3;
+  border-color: #30363d;
 }
 
 .html-textarea::placeholder {
-  color: var(--gray-500);
+  color: #7d8590;
   font-style: italic;
+}
+
+/* HTML代码查看器样式 */
+.html-code-viewer {
+  flex: 1;
+  width: 100%;
+  padding: 20px;
+  /* 暗色主题 - 类似VS Code */
+  background-color: #1e1e1e;
+  color: #e6edf3;
+  border-radius: var(--radius-lg);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border: 1px solid #30363d;
+  font-family: 'SF Mono', Monaco, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+[data-theme="dark"] .html-code-viewer {
+  background-color: #1e1e1e;
+  color: #e6edf3;
+  border-color: #30363d;
+}
+
+.html-placeholder {
+  color: #7d8590;
+  font-style: italic;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+/* HTML代码查看器滚动条样式 */
+.html-code-viewer::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.html-code-viewer::-webkit-scrollbar-track {
+  background: #2d3748;
+  border-radius: 6px;
+}
+
+.html-code-viewer::-webkit-scrollbar-thumb {
+  background: #4a5568;
+  border-radius: 6px;
+  border: 2px solid #2d3748;
+}
+
+.html-code-viewer::-webkit-scrollbar-thumb:hover {
+  background: #5a6578;
+}
+
+.html-code-viewer::-webkit-scrollbar-corner {
+  background: #2d3748;
 }
 
 /* 错误消息样式 */

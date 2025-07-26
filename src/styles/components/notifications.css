@@ -1,18 +1,22 @@
 /* 通知组件样式 */
 
 .notification {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 14px;
+  position: relative;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 12px;
   font-weight: 500;
-  z-index: 1000;
-  max-width: 400px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  animation: slideIn 0.3s ease;
+  max-width: 180px;
+  min-width: 100px;
+  max-height: 40px;
+  line-height: 1.3;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.3s ease;
   backdrop-filter: blur(10px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .notification.success {
@@ -65,30 +69,30 @@
 }
 
 /* 通知动画 */
-@keyframes slideIn {
+@keyframes slideDown {
   from {
-    transform: translateX(100%);
+    transform: translateY(-20px);
     opacity: 0;
   }
   to {
-    transform: translateX(0);
+    transform: translateY(0);
     opacity: 1;
   }
 }
 
-@keyframes slideOut {
+@keyframes slideUp {
   from {
-    transform: translateX(0);
+    transform: translateY(0);
     opacity: 1;
   }
   to {
-    transform: translateX(100%);
+    transform: translateY(-20px);
     opacity: 0;
   }
 }
 
 .notification.slide-out {
-  animation: slideOut 0.3s ease forwards;
+  animation: slideUp 0.3s ease forwards;
 }
 
 /* 通知图标 */
@@ -121,7 +125,8 @@
 .notification-container {
   position: fixed;
   top: 20px;
-  right: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -131,16 +136,24 @@
 
 /* 响应式通知 */
 @media (max-width: 768px) {
-  .notification,
-  .notification-container {
-    top: 10px;
-    right: 10px;
-    left: 10px;
-    max-width: none;
-  }
-  
   .notification {
-    padding: 16px 20px;
-    font-size: 16px;
+    top: 20px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    max-width: 200px;
+    min-width: 120px;
+    max-height: 36px;
+    padding: 8px 12px;
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .notification-container {
+    top: 20px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    max-width: 200px;
   }
 }

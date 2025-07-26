@@ -37,15 +37,15 @@
   height: 3px;
   background: linear-gradient(90deg,
     transparent 0%,
-    rgba(0, 168, 107, 0.3) 10%,
-    rgba(0, 168, 107, 0.8) 30%,
-    rgba(0, 168, 107, 1) 50%,
-    rgba(0, 168, 107, 0.8) 70%,
-    rgba(0, 168, 107, 0.3) 90%,
+    var(--theme-primary, #00A86B)4D 10%,
+    var(--theme-primary, #00A86B)CC 30%,
+    var(--theme-primary, #00A86B) 50%,
+    var(--theme-primary, #00A86B)CC 70%,
+    var(--theme-primary, #00A86B)4D 90%,
     transparent 100%
   );
   border-radius: 2px;
-  box-shadow: 0 0 6px rgba(0, 168, 107, 0.2);
+  box-shadow: 0 0 6px var(--theme-primary, #00A86B)33;
 }
 
 .modern-markdown h2 {
@@ -53,34 +53,35 @@
   position: relative;
 }
 
-/* 行内代码样式 */
+/* 行内代码样式 - 与微信格式化器完全一致 */
 .modern-markdown code {
-  background: linear-gradient(145deg, rgba(0, 168, 107, 0.08) 0%, rgba(0, 168, 107, 0.12) 100%);
-  color: #00A86B;
+  background: linear-gradient(145deg, rgba(251, 146, 60, 0.08) 0%, rgba(251, 146, 60, 0.12) 100%);
+  color: #ea580c;
   padding: 3px 6px;
   border-radius: 6px;
   font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
-  font-size: 13px;
-  border: 1px solid rgba(0, 168, 107, 0.15);
+  font-size: 14px;
+  border: 1px solid rgba(251, 146, 60, 0.15);
   box-shadow:
-    0 1px 3px rgba(0, 168, 107, 0.1),
+    0 1px 3px rgba(251, 146, 60, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
   font-weight: 500;
 }
 
-/* 现代化 Mac 终端风格代码块 */
+/* 代码块基础样式 - 移除强制样式，让代码主题系统控制 */
 .modern-markdown.markdown-body pre,
 .modern-markdown pre {
-  background: #1e1e1e !important;
-  border-radius: 12px !important;
-  padding: 48px 24px 24px 24px !important;
+  /* 移除强制背景色，让代码主题控制 */
+  /* background: #1e1e1e !important; */
+  border-radius: 12px;
+  padding: 48px 24px 24px 24px;
   overflow-x: auto;
-  font-size: 14px !important;
-  line-height: 1.7 !important;
-  border: none !important;
+  font-size: 14px;
+  line-height: 1.7;
+  border: none;
   position: relative;
-  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', 'Liberation Mono', 'Courier New', monospace !important;
-  margin: 32px 0 !important;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+  margin: 32px 0;
   font-weight: 400;
   font-variant-ligatures: common-ligatures;
 }
@@ -112,7 +113,8 @@ pre[class*="language-"]::after {
   opacity: 0 !important;
 }
 
-/* Mac 窗口标题栏 */
+/* Mac 窗口装饰 - 注释掉，让代码主题系统控制 */
+/*
 .modern-markdown pre::before,
 .modern-markdown.markdown-body pre::before {
   content: '' !important;
@@ -130,7 +132,6 @@ pre[class*="language-"]::after {
   z-index: 10 !important;
 }
 
-/* Mac 红绿灯按钮 */
 .modern-markdown pre::after,
 .modern-markdown.markdown-body pre::after {
   content: '' !important;
@@ -147,11 +148,13 @@ pre[class*="language-"]::after {
   transform: none !important;
   z-index: 11 !important;
 }
+*/
 
-/* 代码块内容样式 */
+/* 代码块内容样式 - 移除强制颜色，让代码主题控制 */
 .modern-markdown.markdown-body pre code,
 .modern-markdown pre code {
-  color: #e6edf3 !important;
+  /* 移除强制文字颜色，让代码主题控制 */
+  /* color: #e6edf3 !important; */
   background: transparent !important;
   border: none !important;
   border-top: none !important;
@@ -260,6 +263,45 @@ pre[class*="language-"]::after {
   position: relative;
   box-shadow: 0 4px 16px rgba(0, 168, 107, 0.1);
   backdrop-filter: blur(1px);
+  color: #1f2328;
+  font-style: italic;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+/* 嵌套引用样式 - 与外层样式一致但稍小 */
+.modern-markdown blockquote blockquote {
+  border-left: 4px solid rgba(0, 168, 107, 0.9);
+  background: linear-gradient(135deg,
+    rgba(240, 253, 244, 0.8) 0%,
+    rgba(247, 254, 249, 0.6) 50%,
+    rgba(240, 253, 244, 0.8) 100%
+  );
+  margin: 12px 0 12px 20px;
+  padding: 12px 18px;
+  border-radius: 6px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 168, 107, 0.08);
+  color: #1f2328;
+  font-style: italic;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* 第三层嵌套引用 */
+.modern-markdown blockquote blockquote blockquote {
+  margin: 8px 0 8px 20px;
+  padding: 8px 12px;
+  font-size: 14px;
+  box-shadow: 0 1px 4px rgba(0, 168, 107, 0.06);
+}
+
+/* 第四层及以上嵌套引用 */
+.modern-markdown blockquote blockquote blockquote blockquote {
+  margin: 6px 0 6px 20px;
+  padding: 6px 10px;
+  font-size: 13px;
+  box-shadow: 0 1px 2px rgba(0, 168, 107, 0.04);
 }
 
 /* 强制覆盖GitHub Markdown CSS的列表样式 */
@@ -300,12 +342,14 @@ pre[class*="language-"]::after {
   line-height: 1.8 !important;
 }
 
-/* 时尚高级链接 */
+/* 时尚高级链接 - 与微信格式化器完全一致 */
 .modern-markdown a {
   color: #00A86B;
   text-decoration: none;
-  transition: all 0.2s ease;
   position: relative;
+  transition: all 0.2s ease;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 1px;
 }
 
 .modern-markdown a:hover {
@@ -357,16 +401,64 @@ pre[class*="language-"]::after {
   margin: 32px 0;
 }
 
-/* 增强的任务列表样式 */
+/* 增强的任务列表样式 - 与微信格式化器完全一致 */
 .modern-markdown .task-list-item {
-  list-style: none;
-  margin-left: -1.5em;
-  padding-left: 1.5em;
+  list-style: none !important;
+  margin: 8px 0 !important;
+  padding-left: 0 !important;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .modern-markdown .task-list-item input[type="checkbox"] {
-  margin: 0 0.5em 0 0;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  margin-right: 8px;
   vertical-align: middle;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* 未选中状态 */
+.modern-markdown .task-list-item input[type="checkbox"]:not(:checked) {
+  background-color: #ffffff;
+  border: 2px solid #d0d7de;
+}
+
+/* 选中状态 */
+.modern-markdown .task-list-item input[type="checkbox"]:checked {
+  background-color: #07C160;
+  border: none;
+}
+
+/* 选中状态的勾号 */
+.modern-markdown .task-list-item input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.modern-markdown .task-list-item-label {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* 已完成任务的样式 - 与微信格式化器完全一致 */
+.modern-markdown .task-list-item input[type="checkbox"]:checked + .task-list-item-label {
+  text-decoration: line-through;
+  color: #656d76;
+  opacity: 0.8;
 }
 
 /* 键盘按键样式 */
@@ -398,6 +490,41 @@ pre[class*="language-"]::after {
   color: #656d76;
 }
 
+/* 确保表格样式正确显示 - 使用主题变量 */
+.modern-markdown table {
+  display: table !important;
+  border-collapse: collapse !important;
+  width: 100% !important;
+  margin: var(--theme-table-margin, 16px 0) !important;
+  font-size: var(--theme-font-size, 16px) !important;
+}
+
+.modern-markdown table th,
+.modern-markdown table td {
+  display: table-cell !important;
+  border: 1px solid var(--theme-table-border, #d0d7de) !important;
+  padding: 8px 12px !important;
+  vertical-align: top !important;
+}
+
+.modern-markdown table th {
+  background-color: var(--theme-table-header-bg, #f6f8fa) !important;
+  font-weight: 600 !important;
+  color: var(--theme-text-primary, #24292e) !important;
+}
+
+.modern-markdown table td {
+  color: var(--theme-text-primary, #24292e) !important;
+}
+
+.modern-markdown table thead {
+  background-color: var(--theme-table-header-bg, #f6f8fa) !important;
+}
+
+.modern-markdown table tbody tr {
+  background-color: var(--theme-bg-primary, #ffffff) !important;
+}
+
 /* 响应式设计优化 */
 @media (max-width: 768px) {
   .modern-markdown {
@@ -406,10 +533,9 @@ pre[class*="language-"]::after {
   }
 
   .modern-markdown table {
-    font-size: 14px;
-    display: block;
+    font-size: 14px !important;
+    display: table !important; /* 确保在移动端也显示为表格 */
     overflow-x: auto;
-    white-space: nowrap;
   }
 
   .modern-markdown pre {

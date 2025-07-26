@@ -36,21 +36,20 @@
 
       <!-- HTML源码模式 -->
       <div v-else class="preview-html">
-        <textarea
-          readonly
-          :value="wechatHtml"
-          class="html-textarea"
-          placeholder="生成的HTML代码将在这里显示..."
-        ></textarea>
+        <div
+          class="html-code-viewer"
+          v-html="highlightedHtml"
+        ></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, watch, onMounted, onUnmounted } from 'vue'
-import { parseMarkdown } from '../utils/markdown-parser.js'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { formatForWechat } from '../utils/wechat-formatter.js'
+import { highlightHtml } from '../utils/html-highlighter.js'
+import { useGlobalThemeManager } from '../composables/index.js'
 
 import '../styles/modern-markdown.css'
 
@@ -87,6 +86,17 @@ export default {
   },
   emits: ['html-generated'],
   setup(props, { emit }) {
+    // 使用统一主题管理器
+    const themeManager = useGlobalThemeManager()
+
+    // 解构所需功能
+    const {
+      currentThemeSystemId: currentLayoutId,
+      currentColorTheme,
+      currentCodeStyle,
+      initialize
+    } = themeManager
+
     const renderedHtml = ref('')
     const wechatHtml = ref('')
     const previewContent = ref(null)
@@ -210,17 +220,14 @@ export default {
       }
 
       try {
-        // 1. 解析Markdown为HTML
-        const parsed = parseMarkdown(props.markdown)
-
-        // 2. 生成预览版本（用于渲染预览）
-        renderedHtml.value = parsed
-
-        // 3. 生成微信公众号格式
-        const wechatFormatted = formatForWechat(parsed)
+        // 1. 生成微信公众号格式 - 使用格式化器、当前主题、代码样式和主题系统
+        const wechatFormatted = formatForWechat(props.markdown, currentColorTheme.value, currentCodeStyle.value, currentLayoutId.value)
         wechatHtml.value = wechatFormatted
 
-        // 4. 发送给父组件
+        // 2. 预览版本也使用相同的格式化器，确保样式一致
+        renderedHtml.value = wechatFormatted
+
+        // 3. 发送给父组件
         emit('html-generated', wechatFormatted)
       } catch (error) {
         console.error('处理Markdown时出错:', error)
@@ -236,13 +243,40 @@ export default {
       }
     }
 
+    // HTML语法高亮
+    const highlightedHtml = computed(() => {
+      if (!wechatHtml.value) {
+        return '<div class="html-placeholder">生成的HTML代码将在这里显示...</div>'
+      }
+      return highlightHtml(wechatHtml.value)
+    })
+
+
+
     // 监听markdown内容变化
     watch(() => props.markdown, () => {
       processMarkdown()
     }, { immediate: true })
 
+    // 监听颜色主题变化
+    watch(currentColorTheme, () => {
+      processMarkdown()
+    }, { deep: true })
+
+    // 监听代码样式变化
+    watch(currentCodeStyle, () => {
+      processMarkdown()
+    }, { deep: true })
+
+    // 监听布局主题系统变化
+    watch(currentLayoutId, () => {
+      processMarkdown()
+    })
+
     // 组件生命周期
     onMounted(() => {
+      // 初始化主题系统
+      initialize()
       // 组件挂载完成
     })
 
@@ -253,6 +287,7 @@ export default {
     return {
       renderedHtml,
       wechatHtml,
+      highlightedHtml,
       previewContent,
       currentViewportMode,
       viewportModes,
