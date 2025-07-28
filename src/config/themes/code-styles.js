@@ -132,8 +132,8 @@ export const getCodeStyle = (styleId) => {
 };
 
 /**
- * 获取所有可用代码样式的列表（用于 UI 展示）。
- * @returns {Array<{id: string, name: string, description: string}>}
+ * 获取简化的代码样式列表，用于 UI 显示
+ * @returns {Array} 样式列表，包含 id、name、description 字段
  */
 export const getCodeStyleList = () => {
   return Object.values(codeStyles).map(style => ({
@@ -144,26 +144,19 @@ export const getCodeStyleList = () => {
 };
 
 /**
- * 代码样式相关的工具函数。
- */
-export const codeStyleUtils = {
-  /**
-   * 检查一个代码样式是否为深色主题。
-   * @param {string} styleId - 代码样式的 ID。
-   * @returns {boolean}
-   */
-  isDark: (styleId) => {
-    return ['mac', 'vscode', 'terminal'].includes(styleId);
-  },
-};
-
-/**
- * 用于 UI 筛选的代码样式预设分组。
+ * 代码样式预设分组
+ * 这个对象定义了样式的分组，用于在 UI 中展示和快速切换。
  */
 export const codeStylePresets = {
-  all: ['mac', 'github', 'vscode', 'terminal'],
+  // 所有样式 ID
+  all: Object.keys(codeStyles),
+  
+  // 深色样式
   dark: ['mac', 'vscode', 'terminal'],
+  
+  // 浅色样式
   light: ['github'],
-  modern: ['vscode', 'github'],
-  retro: ['terminal', 'mac'],
+  
+  // 经典样式
+  classic: ['mac', 'github'],
 };

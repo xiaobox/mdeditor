@@ -146,7 +146,8 @@ export function restoreCodePlaceholders(text) {
 }
 
 /**
- * 处理粗体和斜体文本（智能处理避免冲突）
+ * 处理粗体和斜体文本的组合格式（支持星号和下划线语法）
+ * 使用改进的算法处理嵌套格式
  * @param {string} text - 包含格式标记的文本
  * @param {Object} theme - 主题对象
  * @returns {string} - 处理后的文本
@@ -163,21 +164,36 @@ export function processBoldAndItalic(text, theme) {
     return `<strong><em style="color: ${theme.textSecondary}; font-style: italic; font-weight: 600;">${content}</em></strong>`;
   });
 
-  // 然后处理粗体 **text** 和 __text__
-  result = result.replace(REGEX_PATTERNS.BOLD, (_, content) => {
+  // 处理嵌套的粗体包含斜体的情况: **text*italic*text**
+  // 使用更精确的正则表达式，确保正确匹配完整的粗体块
+  result = result.replace(/\*\*([^*]*(?:\*[^*]+\*[^*]*)*)\*\*/g, (match, content) => {
+    // 处理内部的斜体
+    const processedContent = content.replace(/\*([^*]+)\*/g, '<em style="color: ' + theme.textSecondary + '; font-style: italic;">$1</em>');
+    return `<strong style="color: ${theme.textPrimary}; font-weight: 600;">${processedContent}</strong>`;
+  });
+
+  // 处理下划线粗体包含斜体: __text_italic_text__
+  result = result.replace(/__([^_]*(?:_[^_]+_[^_]*)*)__/g, (match, content) => {
+    // 处理内部的斜体
+    const processedContent = content.replace(/_([^_]+)_/g, '<em style="color: ' + theme.textSecondary + '; font-style: italic;">$1</em>');
+    return `<strong style="color: ${theme.textPrimary}; font-weight: 600;">${processedContent}</strong>`;
+  });
+
+  // 处理剩余的独立粗体 **text**（不包含嵌套格式）
+  result = result.replace(/\*\*([^*]+)\*\*/g, (_, content) => {
     return `<strong style="color: ${theme.textPrimary}; font-weight: 600;">${content}</strong>`;
   });
 
-  result = result.replace(REGEX_PATTERNS.BOLD_UNDERSCORE, (_, content) => {
+  result = result.replace(/__([^_]+)__/g, (_, content) => {
     return `<strong style="color: ${theme.textPrimary}; font-weight: 600;">${content}</strong>`;
   });
 
-  // 最后处理斜体 *text* 和 _text_（只处理未被粗体包围的）
-  result = result.replace(REGEX_PATTERNS.ITALIC, (_, content) => {
+  // 最后处理独立的斜体 *text*（不在粗体内的）
+  result = result.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, (_, content) => {
     return `<em style="color: ${theme.textSecondary}; font-style: italic;">${content}</em>`;
   });
 
-  result = result.replace(REGEX_PATTERNS.ITALIC_UNDERSCORE, (_, content) => {
+  result = result.replace(/(?<!_)_([^_]+)_(?!_)/g, (_, content) => {
     return `<em style="color: ${theme.textSecondary}; font-style: italic;">${content}</em>`;
   });
 
@@ -295,6 +311,91 @@ export function processKeyboard(text, theme) {
 }
 
 /**
+ * 内联格式处理器配置
+ */
+const INLINE_FORMAT_PROCESSORS = [
+  {
+    name: 'escapes',
+    process: (text, theme, handleEscapes) => handleEscapes ? preprocessEscapes(text) : text,
+    condition: (handleEscapes) => handleEscapes
+  },
+  {
+    name: 'inlineCode',
+    process: (text, theme) => processInlineCode(text, theme),
+    condition: () => true
+  },
+  {
+    name: 'keyboard',
+    process: (text, theme) => processKeyboard(text, theme),
+    condition: () => true
+  },
+  {
+    name: 'highlight',
+    process: (text, theme) => processHighlight(text, theme),
+    condition: () => true
+  },
+  {
+    name: 'boldAndItalic',
+    process: (text, theme) => processBoldAndItalic(text, theme),
+    condition: () => true
+  },
+  {
+    name: 'strikethrough',
+    process: (text, theme) => processStrikethrough(text, theme),
+    condition: () => true
+  },
+  {
+    name: 'superscript',
+    process: (text, theme) => processSuperscript(text, theme),
+    condition: () => true
+  },
+  {
+    name: 'subscript',
+    process: (text, theme) => processSubscript(text, theme),
+    condition: () => true
+  },
+  {
+    name: 'links',
+    process: (text, theme) => processLinks(text, theme),
+    condition: () => true
+  },
+  {
+    name: 'images',
+    process: (text, theme) => processImages(text, theme),
+    condition: () => true
+  },
+  {
+    name: 'restoreCode',
+    process: (text) => restoreCodePlaceholders(text),
+    condition: () => true
+  },
+  {
+    name: 'postprocessEscapes',
+    process: (text, theme, handleEscapes) => handleEscapes ? postprocessEscapes(text) : text,
+    condition: (handleEscapes) => handleEscapes
+  }
+];
+
+/**
+ * 格式化处理器管道 - 按顺序执行各个处理器
+ * @param {string} text - 原始文本
+ * @param {Object} theme - 主题对象
+ * @param {boolean} handleEscapes - 是否处理转义字符
+ * @returns {string} - 处理后的文本
+ */
+function executeFormattingPipeline(text, theme, handleEscapes) {
+  let result = text;
+
+  for (const processor of INLINE_FORMAT_PROCESSORS) {
+    if (processor.condition(handleEscapes)) {
+      result = processor.process(result, theme, handleEscapes);
+    }
+  }
+
+  return result;
+}
+
+/**
  * 处理所有内联文本格式
  * @param {string} text - 原始文本
  * @param {Object} theme - 主题对象
@@ -302,40 +403,7 @@ export function processKeyboard(text, theme) {
  * @returns {string} - 处理后的文本
  */
 export function processAllInlineFormats(text, theme, handleEscapes = true) {
-  // 按照优先级顺序处理，避免冲突
-  let result = text;
-
-  // 首先预处理转义字符，将其替换为占位符（只在顶层处理）
-  if (handleEscapes) {
-    result = preprocessEscapes(result);
-  }
-
-  // 然后处理代码，因为代码内部不应该被其他格式化影响
-  // 代码会被替换为占位符，保护其内容不被后续格式化
-  result = processInlineCode(result, theme);
-
-  // 处理其他格式
-  result = processKeyboard(result, theme);
-  result = processHighlight(result, theme);
-
-  // 使用智能的粗体斜体处理（一次性处理避免冲突）
-  result = processBoldAndItalic(result, theme);
-
-  result = processStrikethrough(result, theme);
-  result = processSuperscript(result, theme);
-  result = processSubscript(result, theme);
-  result = processLinks(result, theme);
-  result = processImages(result, theme);
-
-  // 恢复代码占位符
-  result = restoreCodePlaceholders(result);
-
-  // 最后后处理占位符，将其替换回实际字符（只在顶层处理）
-  if (handleEscapes) {
-    result = postprocessEscapes(result);
-  }
-
-  return result;
+  return executeFormattingPipeline(text, theme, handleEscapes);
 }
 
 /**

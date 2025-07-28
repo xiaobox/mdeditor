@@ -128,8 +128,8 @@ export const getColorTheme = (themeId) => {
 };
 
 /**
- * 获取所有可用颜色主题的列表（用于 UI 展示）。
- * @returns {Array<{id: string, name: string, description: string, primary: string}>}
+ * 获取简化的颜色主题列表，用于 UI 显示
+ * @returns {Array} 主题列表，包含 id、name、description、primary 字段
  */
 export const getColorThemeList = () => {
   return Object.values(colorThemes).map(theme => ({
@@ -141,25 +141,19 @@ export const getColorThemeList = () => {
 };
 
 /**
- * 颜色主题相关的工具函数。
- */
-export const colorThemeUtils = {
-  /**
-   * 检查一个主题是否为深色主题。
-   * @param {string} themeId - 主题的 ID。
-   * @returns {boolean}
-   */
-  isDark: (themeId) => {
-    return colorThemes[themeId]?.isDark || false;
-  },
-};
-
-/**
- * 用于 UI 筛选的颜色主题预设分组。
+ * 颜色主题预设分组
+ * 这个对象定义了主题的分组，用于在 UI 中展示和快速切换。
  */
 export const colorThemePresets = {
-  all: ['green', 'blue', 'red', 'purple', 'orange', 'pink'],
-  business: ['blue', 'green', 'purple'],
-  creative: ['purple', 'orange', 'red', 'pink'],
-  minimal: ['green', 'blue', 'pink'],
+  // 所有主题 ID
+  all: Object.keys(colorThemes),
+  
+  // 商务风格主题
+  business: ['blue', 'purple'],
+  
+  // 自然风格主题
+  nature: ['green', 'orange'],
+  
+  // 热情风格主题
+  warm: ['red', 'pink'],
 };

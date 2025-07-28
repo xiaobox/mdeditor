@@ -102,130 +102,157 @@ export function formatCodeBlock(content, language, theme = defaultColorTheme, co
 }
 
 /**
+ * 引用块样式配置
+ */
+const BLOCKQUOTE_STYLES = {
+  level1: {
+    margin: '24px 0',
+    padding: '18px 24px',
+    fontSize: '16px',
+    boxShadow: '0 4px 16px'
+  },
+  level2: {
+    margin: '12px 0 12px 0px',
+    padding: '12px 18px',
+    fontSize: '15px',
+    boxShadow: '0 2px 8px'
+  },
+  level3: {
+    margin: '8px 0 8px 0px',
+    padding: '8px 12px',
+    fontSize: '14px',
+    boxShadow: '0 1px 4px'
+  },
+  default: {
+    margin: '6px 0 6px 0px',
+    padding: '6px 10px',
+    fontSize: '13px',
+    boxShadow: '0 1px 2px'
+  }
+};
+
+/**
+ * 生成引用块样式字符串
+ * @param {object} theme - 主题对象
+ * @param {number} level - 引用层级
+ * @returns {string} CSS样式字符串
+ */
+function generateBlockquoteStyle(theme, level) {
+  const styleConfig = BLOCKQUOTE_STYLES[`level${level}`] || BLOCKQUOTE_STYLES.default;
+  const shadowOpacity = level <= 3 ? ['1A', '14', '0F'][level - 1] || '0A' : '0A';
+  
+  return `
+    border-left: 4px solid ${theme.primary};
+    background: linear-gradient(135deg, ${theme.primary}14 0%, ${theme.primary}0A 50%, ${theme.primary}14 100%);
+    margin: ${styleConfig.margin};
+    padding: ${styleConfig.padding};
+    border-radius: 6px;
+    position: relative;
+    box-shadow: ${styleConfig.boxShadow} ${theme.primary}${shadowOpacity};
+    color: #1f2328;
+    font-style: italic;
+    line-height: 1.6;
+    font-size: ${styleConfig.fontSize};
+  `.replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * 处理引用行，提取引用内容
+ * @param {string} line - 原始行内容
+ * @returns {object} 处理结果 { isQuote: boolean, content: string, level: number }
+ */
+function processQuoteLine(line) {
+  const trimmedLine = line.trim();
+  
+  if (!trimmedLine.startsWith('>')) {
+    return { isQuote: false, content: line, level: 0 };
+  }
+
+  let level = 0;
+  let content = trimmedLine;
+  
+  // 计算引用层级
+  while (content.startsWith('>')) {
+    level++;
+    content = content.substring(1).trim();
+  }
+  
+  return { isQuote: true, content, level };
+}
+
+/**
+ * 处理段落内容，将内容分割为段落
+ * @param {string[]} lines - 内容行数组
+ * @param {object} theme - 主题对象
+ * @returns {string} 格式化后的段落HTML
+ */
+function processParagraphs(lines, theme) {
+  const content = lines.join('\n').trim();
+  if (!content) return '';
+
+  const paragraphs = content.split(/\n{2,}/);
+  return paragraphs.map(p => {
+    const formattedP = formatInlineTextInternal(p.replace(/\n/g, '<br>'), theme);
+    return `<p style="margin: 8px 0; line-height: 1.6;">${formattedP}</p>`;
+  }).join('');
+}
+
+/**
+ * 构建嵌套引用HTML结构
+ * @param {string[]} lines - 内容行数组
+ * @param {number} level - 引用层级
+ * @param {object} theme - 主题对象
+ * @returns {string} 引用块HTML
+ */
+function buildNestedQuotes(lines, level, theme) {
+  if (!lines || lines.length === 0) return '';
+
+  let html = '';
+  let currentBlockLines = [];
+  let childLines = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const { isQuote, content, level: lineLevel } = processQuoteLine(line);
+
+    if (isQuote && lineLevel > 1) {
+      // 处理嵌套引用
+      if (currentBlockLines.length > 0) {
+        html += processParagraphs(currentBlockLines, theme);
+        currentBlockLines = [];
+      }
+      childLines.push('>' + content);
+    } else if (isQuote) {
+      // 处理当前层级引用
+      if (childLines.length > 0) {
+        html += buildNestedQuotes(childLines, level + 1, theme);
+        childLines = [];
+      }
+      currentBlockLines.push(content);
+    } else {
+      // 处理非引用行
+      currentBlockLines.push(line);
+    }
+  }
+
+  // 处理剩余内容
+  if (currentBlockLines.length > 0) {
+    html += processParagraphs(currentBlockLines, theme);
+  }
+  if (childLines.length > 0) {
+    html += buildNestedQuotes(childLines, level + 1, theme);
+  }
+
+  const style = generateBlockquoteStyle(theme, level);
+  return `<blockquote style="${style}">${html}</blockquote>`;
+}
+
+/**
  * Formats a blockquote, handling nested quotes and applying theme styles.
  * @param {string[]} contentLines - The lines of content within the blockquote.
  * @param {object} [theme=defaultColorTheme] - The color theme object.
  * @returns {string} - The formatted HTML string for the blockquote.
  */
 export function formatBlockquote(contentLines, theme = defaultColorTheme) {
-  function buildNestedQuotes(lines, level = 1) {
-    if (!lines || lines.length === 0) return '';
-
-    let html = '';
-    let currentBlockLines = [];
-    let childLines = [];
-
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      const trimmedLine = line.trim();
-
-      if (trimmedLine.startsWith('>')) {
-        const strippedLine = trimmedLine.substring(1).trim();
-        if (strippedLine.startsWith('>')) {
-          if (currentBlockLines.length > 0) {
-            html += processParagraphs(currentBlockLines);
-            currentBlockLines = [];
-          }
-          childLines.push(strippedLine);
-        } else {
-          if (childLines.length > 0) {
-            html += buildNestedQuotes(childLines, level + 1);
-            childLines = [];
-          }
-          currentBlockLines.push(strippedLine);
-        }
-      } else {
-        currentBlockLines.push(line);
-      }
-    }
-
-    if (currentBlockLines.length > 0) {
-      html += processParagraphs(currentBlockLines);
-    }
-    if (childLines.length > 0) {
-      html += buildNestedQuotes(childLines, level + 1);
-    }
-
-    let style = '';
-    switch (level) {
-      case 1:
-        style = `border-left: 4px solid ${theme.primary}; background: linear-gradient(135deg, ${theme.primary}14 0%, ${theme.primary}0A 50%, ${theme.primary}14 100%); margin: 24px 0; padding: 18px 24px; border-radius: 6px; position: relative; box-shadow: 0 4px 16px ${theme.primary}1A; color: #1f2328; font-style: italic; line-height: 1.6; font-size: 16px;`;
-        break;
-      case 2:
-        style = `border-left: 4px solid ${theme.primary}; background: linear-gradient(135deg, ${theme.primary}14 0%, ${theme.primary}0A 50%, ${theme.primary}14 100%); margin: 12px 0 12px 0px; padding: 12px 18px; border-radius: 6px; position: relative; box-shadow: 0 2px 8px ${theme.primary}14; color: #1f2328; font-style: italic; line-height: 1.6; font-size: 15px;`;
-        break;
-      case 3:
-        style = `border-left: 4px solid ${theme.primary}; background: linear-gradient(135deg, ${theme.primary}14 0%, ${theme.primary}0A 50%, ${theme.primary}14 100%); margin: 8px 0 8px 0px; padding: 8px 12px; border-radius: 6px; position: relative; box-shadow: 0 1px 4px ${theme.primary}0F; color: #1f2328; font-style: italic; line-height: 1.6; font-size: 14px;`;
-        break;
-      default:
-        style = `border-left: 4px solid ${theme.primary}; background: linear-gradient(135deg, ${theme.primary}14 0%, ${theme.primary}0A 50%, ${theme.primary}14 100%); margin: 6px 0 6px 0px; padding: 6px 10px; border-radius: 6px; position: relative; box-shadow: 0 1px 2px ${theme.primary}0A; color: #1f2328; font-style: italic; line-height: 1.6; font-size: 13px;`;
-        break;
-    }
-
-    return `<blockquote style="${style}">${html}</blockquote>`;
-  }
-
-  function processParagraphs(lines) {
-    let content = lines.join('\n').trim();
-    if (!content) return '';
-
-    const paragraphs = content.split(/\n{2,}/);
-    return paragraphs.map(p => {
-      const formattedP = formatInlineTextInternal(p.replace(/\n/g, '<br>'), theme);
-      return `<p style="margin: 8px 0; line-height: 1.6;">${formattedP}</p>`;
-    }).join('');
-  }
-
-  return buildNestedQuotes(contentLines);
-}
-
-/**
- * 将 Markdown 表格格式化为带有对齐和主题样式的 HTML 表格
- * @param {string[]} rows - 表格行数组，包括表头和分隔符
- * @param {object} [theme=defaultColorTheme] - 颜色主题对象
- * @returns {string} - 格式化后的表格 HTML 字符串
- */
-export function formatTable(rows, theme = defaultColorTheme) {
-  if (rows.length < 2) return '';
-
-  const headerRow = rows[0];
-  const alignmentRow = rows[1];
-  const bodyRows = rows.slice(2);
-
-  const alignments = alignmentRow.split('|').map(cell => {
-    const trimmed = cell.trim();
-    if (trimmed.startsWith(':') && trimmed.endsWith(':')) return 'center';
-    if (trimmed.endsWith(':')) return 'right';
-    return 'left';
-  }).slice(1, -1);
-
-  let tableHtml = '<table style="border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 16px;">';
-
-  const headerCells = headerRow.split('|').map(cell => cell.trim()).slice(1, -1);
-  if (headerCells.length > 0) {
-    tableHtml += '<thead><tr style="background-color: #f6f8fa;">';
-    headerCells.forEach((cell, index) => {
-      const align = alignments[index] || 'left';
-      const formattedCell = formatInlineTextInternal(cell, theme);
-      tableHtml += `<th style="border: 1px solid #d0d7de; padding: 8px 12px; text-align: ${align}; font-weight: 600; color: #24292e;">${formattedCell}</th>`;
-    });
-    tableHtml += '</tr></thead>';
-  }
-
-  tableHtml += '<tbody>';
-  bodyRows.forEach(row => {
-    const cells = row.split('|').map(cell => cell.trim()).slice(1, -1);
-    if (cells.length > 0) {
-      tableHtml += '<tr>';
-      cells.forEach((cell, index) => {
-        const align = alignments[index] || 'left';
-        const formattedCell = formatInlineTextInternal(cell, theme);
-        tableHtml += `<td style="border: 1px solid #d0d7de; padding: 8px 12px; text-align: ${align}; color: #24292e;">${formattedCell}</td>`;
-      });
-      tableHtml += '</tr>';
-    }
-  });
-  tableHtml += '</tbody></table>';
-
-  return tableHtml;
+  return buildNestedQuotes(contentLines, 1, theme);
 }

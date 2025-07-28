@@ -14,6 +14,30 @@ import { processInlineFormatsWithoutEscapes } from './text-processors.js';
 import { getThemesSafe } from '../shared/theme-utils.js';
 import { cleanReferenceLinks } from './text-processors.js';
 
+// 导入处理策略
+import {
+  CodeBlockContentStrategy,
+  EmptyLineStrategy,
+  BlockquoteEndCheckStrategy,
+  TableProcessingStrategy,
+  ListProcessingStrategy,
+  LineProcessorStrategy,
+  ParagraphStrategy
+} from './processing-strategies/index.js';
+
+/**
+ * 行处理策略注册表
+ */
+const LINE_PROCESSING_STRATEGIES = [
+  new CodeBlockContentStrategy(),
+  new EmptyLineStrategy(),
+  new BlockquoteEndCheckStrategy(),
+  new TableProcessingStrategy(),
+  new ListProcessingStrategy(),
+  new LineProcessorStrategy(),
+  new ParagraphStrategy() // 必须放在最后作为兜底策略
+];
+
 /**
  * 格式化协调器类
  */
@@ -58,7 +82,7 @@ export class FormatterCoordinator {
   }
 
   /**
-   * 处理单行内容
+   * 处理单行内容 - 重构后的版本
    * @param {string} line - 当前行
    * @param {string} trimmedLine - 去除空白的当前行
    * @param {Array} lines - 所有行
@@ -66,71 +90,20 @@ export class FormatterCoordinator {
    * @returns {Object} 处理结果
    */
   processLine(line, trimmedLine, lines, index) {
-    // 如果在代码块中，直接添加内容
-    if (this.context.inCodeBlock) {
-      return this.handleCodeBlockContent(line, trimmedLine);
-    }
-
-    // 处理空行
-    if (!trimmedLine) {
-      return this.handleEmptyLine();
-    }
-
-    // 检查是否需要结束引用块
-    // 只有当行不是空行且不以 '>' 开头时才结束引用块
-    if (this.context.inBlockquote && trimmedLine && !trimmedLine.startsWith('>')) {
-      const result = this.endBlockquote();
-      // 重新处理当前行
-      const reprocessResult = this.processLine(line, trimmedLine, lines, index);
-      return {
-        result: result + reprocessResult.result,
-        shouldContinue: reprocessResult.shouldContinue,
-        updateContext: reprocessResult.updateContext
-      };
-    }
-
-    // 尝试表格处理
-    const tableResult = this.tableProcessor.processTableRow(line, trimmedLine, lines, index, this.context.currentTheme);
-    if (tableResult.shouldContinue || tableResult.tableComplete) {
-      if (tableResult.reprocessLine) {
-        // 表格结束，需要重新处理当前行
-        const reprocessResult = this.processLine(line, trimmedLine, lines, index);
-        return {
-          result: tableResult.result + reprocessResult.result,
-          shouldContinue: reprocessResult.shouldContinue,
-          updateContext: reprocessResult.updateContext
-        };
+    // 使用策略模式处理行
+    for (const strategy of LINE_PROCESSING_STRATEGIES) {
+      if (strategy.canProcess(this.context, line, trimmedLine, lines, index)) {
+        const result = strategy.process(this, line, trimmedLine, lines, index);
+        
+        // 如果策略返回 null，表示不能处理，继续下一个策略
+        if (result !== null) {
+          return result;
+        }
       }
-      return {
-        result: tableResult.result,
-        shouldContinue: true,
-        updateContext: {}
-      };
     }
-
-    // 尝试列表处理
-    const listResult = this.listProcessor.processListLine(line, this.context.currentTheme);
-    if (listResult.isListItem) {
-      return {
-        result: listResult.result,
-        shouldContinue: true,
-        updateContext: {}
-      };
-    }
-
-    // 尝试使用行处理器
-    const processor = getLineProcessor(line, trimmedLine, this.context);
-    if (processor) {
-      const result = processor.process(line, trimmedLine, this.context);
-      return {
-        result: result.result,
-        shouldContinue: result.shouldContinue,
-        updateContext: result.updateContext
-      };
-    }
-
-    // 处理普通段落
-    return this.handleParagraph(line, trimmedLine);
+    
+    // 理论上不应该到达这里，因为 ParagraphStrategy 总是可以处理
+    throw new Error('没有找到合适的处理策略');
   }
 
   /**

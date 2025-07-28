@@ -143,7 +143,8 @@ export class ListProcessor {
     const num = marker.replace('.', '');
     const displayMarker = `${num}.`;
     
-    const colors = theme.listColors || ['#333', '#666', '#999'];
+    // 改进颜色选择逻辑，确保跟随主题色
+    const colors = this.getListColors(theme);
     const color = colors[Math.min(depth, colors.length - 1)];
     const marginLeft = depth * 20;
 
@@ -163,11 +164,16 @@ export class ListProcessor {
     const symbols = WECHAT_FORMATTING.LIST_SYMBOLS.UNORDERED;
     const displayMarker = symbols[Math.min(depth, symbols.length - 1)];
     
-    const colors = theme.listColors || ['#333', '#666', '#999'];
+    // 改进颜色选择逻辑，确保跟随主题色
+    const colors = this.getListColors(theme);
     const color = colors[Math.min(depth, colors.length - 1)];
     const marginLeft = depth * 20;
+    
+    // 针对不同深度的符号设置合适的字体大小
+    const fontSize = this.getSymbolFontSize(depth, displayMarker);
+    const fontWeight = depth === 0 ? '600' : '500'; // 第一层稍微粗一点
 
-    return `<p style="margin-left: ${marginLeft}px; margin-top: 8px; margin-bottom: 8px; font-size: 16px; line-height: 1.6;"><span style="color: ${color}; font-weight: 600;">${displayMarker}</span> ${formattedContent}</p>`;
+    return `<p style="margin-left: ${marginLeft}px; margin-top: 8px; margin-bottom: 8px; font-size: 16px; line-height: 1.6;"><span style="color: ${color}; font-weight: ${fontWeight}; font-size: ${fontSize}px;">${displayMarker}</span> ${formattedContent}</p>`;
   }
 
   /**
@@ -222,5 +228,89 @@ export class ListProcessor {
    */
   getLastListType() {
     return this.lastListType;
+  }
+
+  /**
+   * 获取列表颜色数组，确保跟随主题色
+   * @param {Object} theme - 主题对象
+   * @returns {Array} 颜色数组
+   */
+  getListColors(theme) {
+    // 如果主题有主色，基于主色生成协调的颜色序列
+    if (theme.primary) {
+      // 生成基于主题色的不同亮度变化
+      const primaryColor = theme.primary;
+
+      return [
+        primaryColor,                                    // 第一层：主色 (100%)
+        this.adjustColorBrightness(primaryColor, 0.7),  // 第二层：主色 70% 亮度
+        this.adjustColorBrightness(primaryColor, 0.5),  // 第三层：主色 50% 亮度
+        this.adjustColorBrightness(primaryColor, 0.3)   // 更深层：主色 30% 亮度
+      ];
+    }
+
+    // 如果主题有自定义的 listColors，使用它们
+    if (theme.listColors && Array.isArray(theme.listColors) && theme.listColors.length > 0) {
+      return theme.listColors;
+    }
+
+    // 最后的备选方案：使用相对现代的颜色
+    return ['#2563eb', '#7c3aed', '#dc2626', '#059669'];
+  }
+
+  /**
+   * 调整颜色的亮度
+   * @param {string} color - 原始颜色 (hex格式)
+   * @param {number} factor - 亮度因子 (0-1)，1为原色，0为黑色
+   * @returns {string} 调整后的颜色
+   */
+  adjustColorBrightness(color, factor) {
+    // 如果是hex颜色，调整亮度
+    if (color.startsWith('#')) {
+      const hex = color.replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+
+      // 调整亮度：将RGB值乘以因子
+      const newR = Math.round(r * factor);
+      const newG = Math.round(g * factor);
+      const newB = Math.round(b * factor);
+
+      // 转换回hex格式
+      const toHex = (n) => {
+        const hex = n.toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+      };
+
+      return `#${toHex(newR)}${toHex(newG)}${toHex(newB)}`;
+    }
+
+    // 其他格式暂时返回原色
+    return color;
+  }
+
+  /**
+   * 根据深度和符号获取合适的字体大小
+   * @param {number} _depth - 嵌套深度（暂未使用，保留以备将来扩展）
+   * @param {string} symbol - 符号字符
+   * @returns {number} 字体大小（像素）
+   */
+  getSymbolFontSize(_depth, symbol) {
+    // 基础字体大小，不随深度变化，保持一致性
+    const baseFontSize = 16;
+
+    // 根据符号类型调整大小，但保持合理的最小尺寸
+    const symbolSizeMap = {
+      '●': 16,   // 实心圆，保持标准大小
+      '○': 16,   // 空心圆，保持标准大小
+      '▪': 16,   // 小方块，保持标准大小
+      '▫': 16,   // 空心方块，保持标准大小
+      '‣': 16,   // 三角形，保持标准大小
+      '⁃': 16    // 短横线，保持标准大小
+    };
+
+    // 返回统一的字体大小，确保深层嵌套时图标仍然清晰可见
+    return symbolSizeMap[symbol] || baseFontSize;
   }
 }

@@ -21,56 +21,19 @@
  *   让 Vue 组件只关注业务逻辑。
  * - **可组合性**: 返回一个包含状态和方法的对象，方便在不同组件中复用。
  * - **响应式**: 利用 Vue 的 `ref` 和 `computed` 属性，使编辑器状态能自然地融入 Vue 的响应式系统。
+ * - **模块化**: 通过组合多个小的 composables 实现复杂功能，提高代码的可维护性。
  */
 
-import { ref, watch, onMounted, onUnmounted, computed } from 'vue'
+import { watch, onMounted, onUnmounted } from 'vue'
 import { EditorView, basicSetup } from 'codemirror'
 import { markdown } from '@codemirror/lang-markdown'
-import { oneDark } from '@codemirror/theme-one-dark'
 import { EditorState } from '@codemirror/state'
-import { toolbarOperations } from '../utils/editor-operations.js'
-import { useGlobalThemeManager } from './useThemeManager.js'
 
-/**
- * 创建 CodeMirror 编辑器的扩展数组。
- * @private
- * @param {Function} onDocChange - 文档内容变化时的回调。
- * @param {boolean} isDark - 是否为暗色主题。
- * @returns {import('@codemirror/state').Extension[]}
- */
-function createEditorExtensions(onDocChange, isDark) {
-  const extensions = [
-    basicSetup,
-    markdown(),
-    EditorView.updateListener.of(onDocChange),
-    EditorView.theme({
-      '&': {
-        height: '100%',
-      },
-      '.cm-scroller': {
-        fontFamily: '"SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-        fontSize: '14px',
-        lineHeight: '1.6'
-      },
-      '.cm-focused': {
-        outline: 'none'
-      },
-      '.cm-editor': {
-        height: '100%'
-      },
-      '.cm-content': {
-        padding: '16px',
-        minHeight: '100%'
-      }
-    })
-  ];
-
-  if (isDark) {
-    extensions.push(oneDark);
-  }
-
-  return extensions;
-}
+// 导入拆分后的 composables
+import { useEditorState } from './useEditorState.js'
+import { useEditorEvents } from './useEditorEvents.js'
+import { useEditorTheme } from './useEditorTheme.js'
+import { useEditorOperations } from './useEditorOperations.js'
 
 /**
  * 创建并管理一个 Markdown 编辑器实例。
@@ -87,124 +50,71 @@ function createEditorExtensions(onDocChange, isDark) {
 export function useMarkdownEditor(options = {}) {
   const {
     initialValue = '',
-    theme = 'auto', // 默认使用自动主题
+    theme = 'auto',
     onContentChange = () => {},
     onScroll = () => {}
   } = options
 
-  // 获取全局主题管理器实例
-  const themeManager = useGlobalThemeManager()
-
-  // --- 响应式状态 (Reactive State) ---
-
-  /** @type {import('vue').Ref<HTMLElement|null>} 编辑器的 DOM 挂载点 */
-  const editorElement = ref(null)
-  /** @type {import('vue').Ref<string>} 编辑器的当前内容 */
-  const content = ref(initialValue)
-  /** @type {EditorView|null} CodeMirror 编辑器实例 */
-  let editorView = null
-
-  // --- 计算属性 (Computed Properties) ---
-
-  /**
-   * 根据配置和全局主题计算出当前应使用的编辑器主题（'light' 或 'dark'）。
-   */
-  const currentTheme = computed(() => {
-    if (theme === 'auto') {
-      const colorTheme = themeManager.currentColorTheme.value
-      return colorTheme?.isDark ? 'dark' : 'light'
-    }
-    return theme
-  })
+  // 使用拆分后的 composables
+  const editorState = useEditorState(initialValue)
+  const editorEvents = useEditorEvents(onContentChange, onScroll)
+  const editorTheme = useEditorTheme(theme)
+  const editorOperations = useEditorOperations(editorState.getEditorView)
 
   // --- 私有方法 (Private Methods) ---
-
-  /**
-   * 创建 CodeMirror 的基础主题扩展。
-   * @returns {import('@codemirror/state').Extension}
-   */
-  const getEditorTheme = () => {
-    return EditorView.theme({
-      '&': {
-        height: '100%',
-      },
-      '.cm-scroller': {
-        fontFamily: '"SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-        fontSize: '14px',
-        lineHeight: '1.6'
-      },
-      '.cm-focused': {
-        outline: 'none'
-      },
-      '.cm-editor': {
-        height: '100%'
-      },
-      '.cm-content': {
-        padding: '16px',
-        minHeight: '100%'
-      }
-    })
-  }
-
-  /**
-   * 处理编辑器滚动事件，计算滚动百分比并触发回调。
-   * @param {Event} e - 滚动事件对象。
-   */
-  const handleScroll = (e) => {
-    const element = e.target
-    const scrollTop = element.scrollTop
-    const scrollHeight = element.scrollHeight
-    const clientHeight = element.clientHeight
-
-    const maxScrollTop = Math.max(0, scrollHeight - clientHeight)
-    const scrollPercentage = maxScrollTop > 0 ? scrollTop / maxScrollTop : 0
-
-    onScroll(scrollPercentage)
-  }
-
-  // --- 公开方法 (Public Methods) ---
 
   /**
    * 初始化 CodeMirror 编辑器。
    */
   const initEditor = () => {
-    if (!editorElement.value || editorView) return;
+    if (!editorState.editorElement.value || editorState.getEditorView()) return;
 
-    const extensions = createEditorExtensions((update) => {
-      if (update.docChanged) {
-        const newContent = update.state.doc.toString();
-        content.value = newContent;
-        onContentChange(newContent);
-      }
-    }, currentTheme.value === 'dark');
+    // 创建更新监听器
+    const updateListener = EditorView.updateListener.of(
+      editorEvents.createUpdateListener(editorState.updateContent)
+    );
 
+    // 获取编辑器扩展
+    const extensions = [
+      basicSetup,
+      markdown(),
+      updateListener,
+      ...editorTheme.getEditorExtensions(updateListener)
+    ];
+
+    // 创建编辑器状态
     const state = EditorState.create({
-      doc: content.value,
+      doc: editorState.content.value,
       extensions
     });
 
-    editorView = new EditorView({
+    // 创建编辑器视图
+    const editorView = new EditorView({
       state,
-      parent: editorElement.value
+      parent: editorState.editorElement.value
     });
 
-    const scrollElement = editorView.scrollDOM;
-    scrollElement.addEventListener('scroll', handleScroll, { passive: true });
+    // 设置编辑器实例
+    editorState.setEditorView(editorView);
+
+    // 绑定滚动事件
+    editorEvents.bindScrollListener(editorView);
   };
 
   /**
    * 销毁 CodeMirror 编辑器实例，清理资源。
    */
   const destroyEditor = () => {
+    const editorView = editorState.getEditorView();
     if (editorView) {
-      const scrollElement = editorView.scrollDOM
-      if (scrollElement) {
-        scrollElement.removeEventListener('scroll', handleScroll)
-      }
-      editorView.destroy()
-      editorView = null
+      // 解绑滚动事件
+      editorEvents.unbindScrollListener(editorView);
+      
+      // 销毁编辑器
+      editorView.destroy();
+      editorState.setEditorView(null);
     }
-  }
+  };
 
   /**
    * 重新初始化编辑器。通常在主题等需要完全重建编辑器的配置变化时调用。
@@ -212,14 +122,15 @@ export function useMarkdownEditor(options = {}) {
   const reinitEditor = () => {
     destroyEditor()
     initEditor()
-  }
+  };
 
   /**
    * 以编程方式更新编辑器的内容。
    * @param {string} newValue - 新的 Markdown 内容。
    */
   const updateContent = (newValue) => {
-    if (newValue !== content.value && editorView) {
+    const editorView = editorState.getEditorView();
+    if (newValue !== editorState.content.value && editorView) {
       const transaction = editorView.state.update({
         changes: {
           from: 0,
@@ -230,40 +141,19 @@ export function useMarkdownEditor(options = {}) {
       editorView.dispatch(transaction)
       // content.value 会在 updateListener 中被更新，这里无需重复设置
     }
-  }
-
-  /**
-   * 创建一个包含所有工具栏操作的对象。
-   * 每个方法都会自动将当前的 editorView 实例作为第一个参数传入。
-   * @returns {Object} 工具栏操作方法的集合。
-   */
-  const createToolbarOperations = () => {
-    const wrappedOperations = {}
-
-    Object.keys(toolbarOperations).forEach(operationKey => {
-      wrappedOperations[operationKey] = (...operationArgs) => {
-        if (editorView) {
-          toolbarOperations[operationKey](editorView, ...operationArgs)
-        }
-      }
-    })
-
-    return wrappedOperations
-  }
-
-  const toolbar = createToolbarOperations()
+  };
 
   // --- 侦听器 (Watchers) ---
 
-  // 监听 `currentTheme` 的变化，自动重新初始化编辑器以应用新主题。
-  watch(currentTheme, () => {
+  // 监听主题变化，自动重新初始化编辑器
+  watch(editorTheme.currentTheme, () => {
     reinitEditor()
   })
 
-  // 如果使用 'auto' 主题，还需监听全局颜色主题的变化。
+  // 如果使用 'auto' 主题，还需监听全局颜色主题的变化
   if (theme === 'auto') {
-    watch(() => themeManager.currentColorTheme.value, () => {
-      // reinitEditor() 会由上面的 `currentTheme` watcher 触发
+    watch(() => editorTheme.themeManager.currentColorTheme.value, () => {
+      // reinitEditor() 会由上面的 currentTheme watcher 触发
     }, { deep: true })
   }
 
@@ -281,10 +171,14 @@ export function useMarkdownEditor(options = {}) {
   // --- 返回 API ---
 
   return {
-    // 响应式状态
-    editorElement,
-    content,
-    currentTheme,
+    // 来自 editorState 的状态和方法
+    editorElement: editorState.editorElement,
+    content: editorState.content,
+    isInitialized: editorState.isInitialized,
+
+    // 来自 editorTheme 的状态
+    currentTheme: editorTheme.currentTheme,
+    themeManager: editorTheme.themeManager,
 
     // 控制方法
     initEditor,
@@ -292,13 +186,10 @@ export function useMarkdownEditor(options = {}) {
     reinitEditor,
     updateContent,
 
-    // 工具栏操作
-    ...toolbar,
+    // 来自 editorOperations 的工具栏操作
+    ...editorOperations,
 
     // 实例访问 (用于高级操作)
-    getEditorView: () => editorView,
-
-    // 主题管理器访问
-    themeManager
+    getEditorView: editorState.getEditorView
   }
 }
