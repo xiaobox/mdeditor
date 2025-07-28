@@ -42,7 +42,8 @@ import {
   getThemeSystem,
   getThemeSystemList,
   defaultThemeSystem,
-  themeSystemPresets
+  themeSystemPresets,
+  themeSystems
 } from '../../core/theme/presets/theme-systems.js'
 
 /**
@@ -118,7 +119,7 @@ export function useThemeManager() {
    * @returns {boolean} 如果设置成功，返回 true。
    */
   const setThemeSystem = (systemId) => {
-    if (systemId && getThemeSystem(systemId)) {
+    if (systemId && themeSystems[systemId]) {
       themeState.themeSystemId = systemId
       ThemeStorage.save(STORAGE_KEYS.THEME_SYSTEM, systemId)
       return true

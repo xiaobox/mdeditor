@@ -1,5 +1,8 @@
 /* PreviewPane 组件样式 */
 
+/* 导入统一默认主题 */
+@import '../themes/default-theme.css';
+
 .preview-pane {
   display: flex;
   flex-direction: column;
@@ -64,7 +67,7 @@
 .mode-btn.active {
   background: var(--primary-color);
   color: white;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .mode-icon {
@@ -113,6 +116,8 @@
 .viewport-desktop .preview-rendered {
   max-width: none;
   margin: 0;
+  border-left: none !important;
+  border-right: none !important;
 }
 
 .viewport-tablet .preview-rendered {
@@ -131,46 +136,12 @@
   box-shadow: var(--shadow-md);
 }
 
-/* 移动端特殊样式调整 */
-.viewport-mobile .preview-rendered :deep(.modern-markdown) {
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.viewport-mobile .preview-rendered :deep(.modern-markdown h1) {
-  font-size: 24px;
-}
-
-.viewport-mobile .preview-rendered :deep(.modern-markdown h2) {
-  font-size: 20px;
-}
-
-.viewport-mobile .preview-rendered :deep(.modern-markdown h3) {
-  font-size: 18px;
-}
-
-.viewport-mobile .preview-rendered :deep(.modern-markdown pre) {
-  font-size: 12px;
-  /* 移除强制padding，让内联样式控制 */
-}
-
-.viewport-mobile .preview-rendered :deep(.modern-markdown table) {
-  font-size: 12px;
-}
-
-.viewport-mobile .preview-rendered :deep(.modern-markdown blockquote) {
-  margin: 16px 0;
-  padding: 12px 16px;
-}
-
-/* 平板端样式调整 */
-.viewport-tablet .preview-rendered :deep(.modern-markdown) {
-  font-size: 15px;
-}
-
-.viewport-tablet .preview-rendered :deep(.modern-markdown pre) {
-  font-size: 13px;
-  /* 移除强制padding，让内联样式控制 */
+/* 响应式调整 - 简化版 */
+@media (max-width: 768px) {
+  .viewport-mobile .preview-rendered,
+  .viewport-tablet .preview-rendered {
+    font-size: 14px;
+  }
 }
 
 /* HTML 预览模式 */
@@ -181,61 +152,31 @@
   padding: 16px;
 }
 
-.html-textarea {
-  flex: 1;
-  width: 100%;
-  border: none;
-  outline: none;
-  resize: none;
-  font-family: 'SF Mono', Monaco, Consolas, monospace;
-  font-size: 13px;
-  line-height: 1.6;
-  padding: 20px;
-  /* 暗色主题 - 类似VS Code */
-  background-color: #1e1e1e;
-  color: #e6edf3;
-  border-radius: var(--radius-lg);
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  border: 1px solid #30363d;
-}
-
-[data-theme="dark"] .html-textarea {
-  background-color: #1e1e1e;
-  color: #e6edf3;
-  border-color: #30363d;
-}
-
-.html-textarea::placeholder {
-  color: #7d8590;
-  font-style: italic;
-}
-
-/* HTML代码查看器样式 */
+/* HTML预览样式 - 简化版 */
+.html-textarea,
 .html-code-viewer {
   flex: 1;
   width: 100%;
   padding: 20px;
-  /* 暗色主题 - 类似VS Code */
+  font-family: var(--theme-code-font-family);
+  font-size: 13px;
+  line-height: 1.6;
   background-color: #1e1e1e;
   color: #e6edf3;
+  border: 1px solid #30363d;
   border-radius: var(--radius-lg);
   white-space: pre-wrap;
   word-wrap: break-word;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  border: 1px solid #30363d;
-  font-family: 'SF Mono', Monaco, Consolas, monospace;
-  font-size: 13px;
-  line-height: 1.6;
-  overflow-y: auto;
-  overflow-x: auto;
 }
 
-[data-theme="dark"] .html-code-viewer {
-  background-color: #1e1e1e;
-  color: #e6edf3;
-  border-color: #30363d;
+.html-textarea {
+  border: none;
+  outline: none;
+  resize: none;
+}
+
+.html-code-viewer {
+  overflow: auto;
 }
 
 .html-placeholder {
@@ -245,82 +186,14 @@
   padding: 40px 20px;
 }
 
-/* HTML代码查看器滚动条样式 */
-.html-code-viewer::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
-}
-
-.html-code-viewer::-webkit-scrollbar-track {
-  background: #2d3748;
-  border-radius: 6px;
-}
-
-.html-code-viewer::-webkit-scrollbar-thumb {
-  background: #4a5568;
-  border-radius: 6px;
-  border: 2px solid #2d3748;
-}
-
-.html-code-viewer::-webkit-scrollbar-thumb:hover {
-  background: #5a6578;
-}
-
-.html-code-viewer::-webkit-scrollbar-corner {
-  background: #2d3748;
-}
-
-/* 错误消息样式 */
+/* 错误消息样式 - 简化版 */
 .preview-rendered :deep(.error) {
-  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  background: #fee2e2;
   border: 1px solid #fca5a5;
   color: #dc2626;
-  padding: 20px;
-  border-radius: var(--radius-lg);
+  padding: 16px;
+  border-radius: var(--radius-md);
   margin: 16px 0;
-  box-shadow: var(--shadow-sm);
-}
-
-[data-theme="dark"] .preview-rendered :deep(.error) {
-  background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
-  border-color: #b91c1c;
-  color: #fca5a5;
-}
-
-.preview-rendered :deep(.error h3) {
-  margin: 0 0 12px 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.preview-rendered :deep(.error p) {
-  margin: 8px 0;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-/* 自定义滚动条 */
-.preview-rendered::-webkit-scrollbar,
-.html-textarea::-webkit-scrollbar {
-  width: 12px;
-}
-
-.preview-rendered::-webkit-scrollbar-track,
-.html-textarea::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
-  border-radius: var(--radius-full);
-}
-
-.preview-rendered::-webkit-scrollbar-thumb,
-.html-textarea::-webkit-scrollbar-thumb {
-  background: var(--gray-400);
-  border-radius: var(--radius-full);
-  border: 3px solid var(--bg-secondary);
-}
-
-.preview-rendered::-webkit-scrollbar-thumb:hover,
-.html-textarea::-webkit-scrollbar-thumb:hover {
-  background: var(--gray-500);
 }
 
 /* 响应式设计 */
@@ -328,5 +201,85 @@
   .html-textarea {
     font-size: 12px;
     padding: 16px;
+  }
+}
+
+/* ========================================
+ * Markdown 渲染样式 (原 modern-markdown.css)
+ * ======================================== */
+
+/* Markdown预览容器样式 */
+.modern-markdown {
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 100%;
+  margin: 0;
+  padding: 32px;
+  font-family: var(--theme-font-family);
+  font-size: 16px;
+  line-height: 1.6;
+  word-wrap: break-word;
+  background-color: var(--theme-bg-primary);
+  color: var(--theme-text-primary);
+}
+
+/* 预览面板标题样式 */
+/* 标题样式现在完全由markdown解析器根据预览模式动态生成 */
+/* 全局主题样式已限制作用域，不再影响预览面板 */
+
+/* 代码块特殊样式 - 预览面板专用 */
+.modern-markdown pre {
+  font-variant-ligatures: common-ligatures;
+}
+
+/* 禁用PrismJS主题的伪元素 */
+pre[class*="language-"]::before,
+pre[class*="language-"]::after {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* 修正预览模式下红绿灯位置 */
+.modern-markdown .mac-traffic-lights {
+  left: 3px !important;
+}
+
+/* 预览面板引用块样式 - 简化版 */
+.modern-markdown blockquote {
+  border-left: 4px solid var(--primary-color);
+  background: var(--theme-quote-bg);
+  margin: 16px 0;
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+}
+
+/* 任务列表样式 - 简化版 */
+.modern-markdown .task-list-item {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.modern-markdown .task-list-item input[type="checkbox"] {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+}
+
+/* 预览面板响应式优化 */
+@media (max-width: 768px) {
+  .modern-markdown {
+    padding: 20px 16px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modern-markdown {
+    padding: 16px 12px;
+    font-size: 14px;
   }
 }

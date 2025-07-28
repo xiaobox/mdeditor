@@ -109,9 +109,9 @@ export class HeadingProcessor extends LineProcessor {
     let result = '';
     
     if (level === 1) {
-      result = this.formatH1(formattedText, currentTheme);
+      result = this.formatH1(formattedText, currentTheme, context);
     } else if (level === 2) {
-      result = this.formatH2(formattedText, currentTheme);
+      result = this.formatH2(formattedText, currentTheme, context);
     } else {
       result = this.formatOtherHeading(level, formattedText, currentTheme);
     }
@@ -123,37 +123,53 @@ export class HeadingProcessor extends LineProcessor {
     };
   }
 
-  formatH1(formattedText, currentTheme) {
-    const h1Style = `
-      margin: 0.67em 0;
-      font-weight: 600;
-      padding-bottom: 16px;
-      font-size: 1.5em;
-      border-bottom: none;
-      position: relative;
-      color: ${currentTheme.textPrimary};
-      line-height: 1.25;
-      text-align: center;
-    `.replace(/\s+/g, ' ').trim();
+  formatH1(formattedText, currentTheme, context = {}) {
+    const { isPreview = false } = context.options || {};
 
-    const underlineStyle = `display: block; position: absolute; bottom: 2px; left: 3%; right: 3%; height: 3px; background: linear-gradient(90deg, transparent 0%, ${currentTheme.primary}4D 10%, ${currentTheme.primary}CC 30%, ${currentTheme.primary} 50%, ${currentTheme.primary}CC 70%, ${currentTheme.primary}4D 90%, transparent 100%); border-radius: 2px; box-shadow: 0 0 6px ${currentTheme.primary}33;`;
-    return `<h1 style="${h1Style}">${formattedText}<span style="${underlineStyle}"></span></h1>`;
+    if (isPreview) {
+      // 预览模式：使用CSS类，样式由主题文件控制
+      return `<h1>${formattedText}</h1>`;
+    } else {
+      // 微信公众号模式：保留内联样式以确保兼容性
+      const h1Style = `
+        margin: 0.67em 0;
+        font-weight: 600;
+        padding-bottom: 16px;
+        font-size: 1.5em;
+        border-bottom: none;
+        position: relative;
+        color: ${currentTheme.textPrimary};
+        line-height: 1.25;
+        text-align: center;
+      `.replace(/\s+/g, ' ').trim();
+
+      const underlineStyle = `display: block; position: absolute; bottom: 2px; left: 3%; right: 3%; height: 3px; background: linear-gradient(90deg, transparent 0%, ${currentTheme.primary}4D 10%, ${currentTheme.primary}CC 30%, ${currentTheme.primary} 50%, ${currentTheme.primary}CC 70%, ${currentTheme.primary}4D 90%, transparent 100%); border-radius: 2px; box-shadow: 0 0 6px ${currentTheme.primary}33;`;
+      return `<h1 style="${h1Style}">${formattedText}<span style="${underlineStyle}"></span></h1>`;
+    }
   }
 
-  formatH2(formattedText, currentTheme) {
-    const h2Style = `
-      margin-top: 1.5rem;
-      margin-bottom: 1rem;
-      font-weight: 600;
-      padding-left: 1.2em;
-      font-size: 1.2em;
-      color: ${currentTheme.textPrimary};
-      line-height: 1.25;
-      position: relative;
-    `.replace(/\s+/g, ' ').trim();
+  formatH2(formattedText, currentTheme, context = {}) {
+    const { isPreview = false } = context.options || {};
 
-    const borderStyle = `position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 4px; height: 1.4em; background: linear-gradient(180deg, ${currentTheme.primary}4D 0%, ${currentTheme.primary} 30%, ${currentTheme.primary} 70%, ${currentTheme.primary}4D 100%); border-radius: 2px; box-shadow: 0 0 4px ${currentTheme.primary}4D;`;
-    return `<h2 style="${h2Style}"><span style="${borderStyle}"></span>${formattedText}</h2>`;
+    if (isPreview) {
+      // 预览模式：使用CSS类，样式由主题文件控制
+      return `<h2>${formattedText}</h2>`;
+    } else {
+      // 微信公众号模式：保留装饰线
+      const h2Style = `
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+        padding-left: 1.2em;
+        font-size: 1.2em;
+        color: ${currentTheme.textPrimary};
+        line-height: 1.25;
+        position: relative;
+      `.replace(/\s+/g, ' ').trim();
+
+      const borderStyle = `position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 4px; height: 1.4em; background: linear-gradient(180deg, ${currentTheme.primary}4D 0%, ${currentTheme.primary} 30%, ${currentTheme.primary} 70%, ${currentTheme.primary}4D 100%); border-radius: 2px; box-shadow: 0 0 4px ${currentTheme.primary}4D;`;
+      return `<h2 style="${h2Style}"><span style="${borderStyle}"></span>${formattedText}</h2>`;
+    }
   }
 
   formatOtherHeading(level, formattedText, currentTheme) {

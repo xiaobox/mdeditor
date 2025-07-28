@@ -160,29 +160,196 @@
 }
 
 .syntax-table code {
-  background-color: #f3f4f6;
-  padding: 6px 8px;
+  background-color: #2d3748;
+  padding: 8px 12px;
   border-radius: 4px;
   font-family: 'SF Mono', Monaco, Consolas, monospace;
   font-size: 13px;
-  color: #374151;
-  line-height: 1.6;
+  color: #e2e8f0;
   white-space: pre-line;
-  text-align: left;
+  border: 1px solid #4a5568;
   display: block;
-  width: 100%;
-  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="dark"] .syntax-table code {
-  background-color: #374151;
-  color: #e5e7eb;
-  line-height: 1.6;
-  white-space: pre-line;
-  text-align: left;
-  display: block;
+  background-color: #1a202c;
+  color: #a0aec0;
+  border-color: #2d3748;
+}
+
+/* 效果预览列样式 - 基础markdown样式 */
+.preview-cell {
+  font-family: inherit;
+  background-color: #f8f9fa !important;
+  border-radius: 6px;
+  padding: 12px !important;
+  border: 1px solid #e9ecef;
+  position: relative;
+}
+
+.preview-cell h1,
+.preview-cell h2,
+.preview-cell h3 {
+  margin: 4px 0 !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  background: none !important;
+  background-clip: unset !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+  border: none !important;
+  padding: 0 !important;
+  position: static !important;
+}
+
+.preview-cell h1 { font-size: 1.5em; }
+.preview-cell h2 { font-size: 1.3em; }
+.preview-cell h3 { font-size: 1.1em; }
+
+.preview-cell blockquote {
+  margin: 0;
+  padding-left: 1em;
+  border-left: 3px solid #ddd;
+  color: #666;
+}
+
+.preview-cell code {
+  background-color: #fff3cd;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.9em;
+  border: 1px solid #ffeaa7;
+  color: #856404;
+  font-family: 'SF Mono', Monaco, Consolas, monospace;
+}
+
+.preview-cell ul,
+.preview-cell ol {
+  margin: 0;
+  padding-left: 1.5em;
+}
+
+.preview-cell li {
+  margin: 2px 0;
+}
+
+.preview-cell a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.preview-cell a:hover {
+  text-decoration: underline;
+}
+
+.preview-cell pre {
+  background-color: #263238;
+  border: 1px solid #37474f;
+  border-radius: 6px;
+  padding: 16px;
+  margin: 8px 0;
+  overflow-x: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.preview-cell pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: 'SF Mono', Monaco, Consolas, monospace;
+  font-size: 13px;
+  color: #a7ffeb;
+  white-space: pre;
+  line-height: 1.5;
+}
+
+/* 演示表格样式 */
+.demo-table {
+  border-collapse: collapse;
+  margin: 8px 0;
   width: 100%;
-  box-sizing: border-box;
+  font-size: 13px;
+  border: 1px solid #e2e8f0;
+}
+
+.demo-table th,
+.demo-table td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 10px;
+  text-align: left;
+}
+
+.demo-table th {
+  background-color: #f1f5f9;
+  font-weight: 600;
+  color: #475569;
+}
+
+.demo-table td {
+  background-color: #ffffff;
+  color: #334155;
+}
+
+[data-theme="dark"] .preview-cell blockquote {
+  border-left-color: #555;
+  color: #ccc;
+}
+
+[data-theme="dark"] .preview-cell code {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  border-color: #4a5568;
+}
+
+[data-theme="dark"] .demo-table {
+  border-color: #4a5568;
+}
+
+[data-theme="dark"] .demo-table th,
+[data-theme="dark"] .demo-table td {
+  border-color: #4a5568;
+}
+
+[data-theme="dark"] .demo-table th {
+  background-color: #374151;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .demo-table td {
+  background-color: #2d3748;
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .preview-cell pre {
+  background-color: #2d3748;
+  border-color: #4a5568;
+}
+
+[data-theme="dark"] .preview-cell pre code {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .preview-cell {
+  background-color: #2d3748 !important;
+  border-color: #4a5568;
+}
+
+[data-theme="dark"] .preview-cell h1,
+[data-theme="dark"] .preview-cell h2,
+[data-theme="dark"] .preview-cell h3 {
+  color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .preview-cell code {
+  background-color: #4a5568;
+  border-color: #718096;
+  color: #fbb6ce;
+}
+
+[data-theme="dark"] .preview-cell blockquote {
+  border-left-color: #718096;
+  color: #a0aec0;
 }
 
 .code-example {
@@ -207,18 +374,21 @@
 }
 
 .code-example pre {
-  background-color: #1f2937;
-  color: #e5e7eb;
+  background-color: #f8f9fa;
+  color: #333;
   padding: 16px;
   border-radius: 6px;
   overflow-x: auto;
   font-size: 14px;
   line-height: 1.5;
   margin: 0;
+  border: 1px solid #e9ecef;
 }
 
 [data-theme="dark"] .code-example pre {
-  background-color: #111827;
+  background-color: #2d3748;
+  color: #e2e8f0;
+  border-color: #4a5568;
 }
 
 .modal-footer {

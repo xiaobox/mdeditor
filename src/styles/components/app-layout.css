@@ -15,10 +15,8 @@
   padding: 16px 24px;
   background-color: var(--bg-primary);
   border-bottom: 1px solid var(--border-light);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
-  backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0.9);
 }
 
 
@@ -65,8 +63,8 @@
   flex: 1;
   min-width: 400px;
   background-color: var(--bg-primary);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
@@ -76,7 +74,7 @@
 
 .editor-panel:hover,
 .preview-panel:hover {
-  box-shadow: var(--shadow-xl);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 /* 面板头部 */

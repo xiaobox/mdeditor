@@ -37,18 +37,18 @@ import { createThemeSystem } from './base.js';
  * 包含所有预定义排版主题系统的对象。
  */
 export const themeSystems = {
-  // 微信主题: 经典、简洁、易读
-  wechat: createThemeSystem({
-    id: 'wechat',
-    name: '微信主题',
-    description: '专为微信公众号优化的经典主题，简洁易读',
-    supportedColors: ['green', 'blue', 'red', 'purple', 'orange', 'pink'],
+  // 默认主题: 统一的现代化主题
+  default: createThemeSystem({
+    id: 'default',
+    name: '默认主题',
+    description: '现代化Markdown编辑器统一主题，简洁优雅',
+    supportedColors: ['green'],
     layout: {
       padding: '16px',
       lineHeight: '1.75',
     },
     typography: {
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
       fontSize: {
         base: '16px',
         h1: '28px',
@@ -60,7 +60,7 @@ export const themeSystems = {
 };
 
 /** 默认的排版主题系统 */
-export const defaultThemeSystem = themeSystems.wechat;
+export const defaultThemeSystem = themeSystems.default;
 
 /**
  * 根据 ID 获取排版主题系统对象。
@@ -85,9 +85,9 @@ export const getThemeSystemList = () => {
 };
 
 /**
- * 用于 UI 筛选的排版主题系统预设分组。
+ * 主题系统预设 - 简化为单一默认主题
  */
 export const themeSystemPresets = {
-  all: ['wechat'],
-  wechat: ['wechat'], // 专为微信优化的
+  all: ['default'],
+  default: ['default'], // 统一默认主题
 };
