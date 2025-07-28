@@ -9,7 +9,7 @@
 /**
  * Markdown 语法常量
  */
-export const MARKDOWN_SYNTAX = {
+export const MARKDOWN_SYNTAX = Object.freeze({
   // 标题语法
   HEADING_PREFIX: '#',
   
@@ -40,7 +40,7 @@ export const MARKDOWN_SYNTAX = {
   // 换行
   LINE_BREAK: '  \n',
   HARD_BREAK: '\n\n',
-};
+});
 
 /**
  * 微信公众号格式化配置

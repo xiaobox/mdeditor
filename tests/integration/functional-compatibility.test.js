@@ -5,12 +5,12 @@
  * 验证重构后的代码是否保持 100% 向后兼容性
  */
 
-import { parseMarkdown } from '../../src/utils/formatters/formatter-coordinator.js';
-import { formatCodeBlock, formatInlineText } from '../../src/utils/formatters/style-formatters.js';
-import { ErrorHandler, ERROR_TYPES } from '../../src/utils/shared/error-handler.js';
-import { ThemeUtils } from '../../src/utils/shared/theme-utils.js';
-import { TextUtils } from '../../src/utils/shared/text-utils.js';
-import { colorThemes } from '../../src/config/themes/color-themes.js';
+import { parseMarkdown } from '../../src/core/markdown/parser/coordinator.js';
+import { formatCodeBlock, formatInlineText } from '../../src/core/markdown/formatters/legacy.js';
+import { ErrorHandler, ERROR_TYPES } from '../../src/shared/utils/error.js';
+import { ThemeUtils } from '../../src/shared/utils/theme.js';
+import { TextUtils } from '../../src/shared/utils/text.js';
+import { colorThemes } from '../../src/core/theme/presets/color-themes.js';
 
 // Mock 主题数据
 const mockTheme = colorThemes.green; // 使用有效的主题对象

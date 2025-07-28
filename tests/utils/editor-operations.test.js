@@ -19,7 +19,7 @@ import {
   insertTable,
   insertHorizontalRule,
   toolbarOperations
-} from '../../src/utils/editor-operations.js';
+} from '../../src/core/editor/operations.js';
 
 // Mock EditorView
 const createMockEditorView = (initialContent = '', selection = { from: 0, to: 0 }) => {

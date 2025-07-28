@@ -43,8 +43,8 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { getColorThemeList, getColorTheme } from '../config/themes/color-themes.js'
-import { saveColorTheme, loadSavedColorTheme } from '../config/themes/storage.js'
+import { getColorThemeList, getColorTheme } from '../core/theme/presets/color-themes.js'
+import { saveColorTheme, loadSavedColorTheme } from '../core/theme/storage.js'
 
 // Props
 const props = defineProps({

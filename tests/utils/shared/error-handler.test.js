@@ -11,7 +11,7 @@ import {
   handleError,
   safeExecute,
   retryExecute 
-} from '../../../src/utils/shared/error-handler.js';
+} from '../../../src/shared/utils/error.js';
 
 describe('ErrorHandler', () => {
   describe('AppError', () => {

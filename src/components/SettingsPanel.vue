@@ -178,7 +178,7 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useGlobalThemeManager } from '../composables/index.js'
-import { getCodeStyle } from '../config/themes/code-styles.js'
+import { getCodeStyle } from '../core/theme/presets/code-styles.js'
 
 // Props
 const props = defineProps({

@@ -9,7 +9,7 @@
 /**
  * 编辑器基础配置常量
  */
-export const EDITOR_CONFIG = {
+export const EDITOR_CONFIG = Object.freeze({
   // 编辑器基本设置
   DEFAULT_THEME: 'auto',
   MIN_HEIGHT: 300,
@@ -23,39 +23,39 @@ export const EDITOR_CONFIG = {
   // 自动保存设置
   AUTO_SAVE_ENABLED: true,
   AUTO_SAVE_DELAY: 2000, // 毫秒
-};
+});
 
 /**
  * 编辑器操作相关常量
  */
-export const EDITOR_OPERATIONS = {
+export const EDITOR_OPERATIONS = Object.freeze({
   // 标题级别配置
-  HEADING_LEVELS: {
+  HEADING_LEVELS: Object.freeze({
     MIN: 1,
     MAX: 6,
     DEFAULT: 2,
-  },
+  }),
   
   // 列表缩进配置
-  LIST_INDENT: {
+  LIST_INDENT: Object.freeze({
     SPACES_PER_LEVEL: 2,
     MAX_DEPTH: 6,
-  },
+  }),
   
   // 表格默认配置
-  TABLE_DEFAULTS: {
+  TABLE_DEFAULTS: Object.freeze({
     ROWS: 3,
     COLS: 3,
-  },
+  }),
   
   // 代码块默认语言
   DEFAULT_CODE_LANGUAGE: 'javascript',
-};
+});
 
 /**
  * 占位符文本常量
  */
-export const PLACEHOLDER_TEXT = {
+export const PLACEHOLDER_TEXT = Object.freeze({
   HEADING: '标题',
   BOLD: '粗体文本',
   ITALIC: '斜体文本',
@@ -71,4 +71,4 @@ export const PLACEHOLDER_TEXT = {
   TABLE_HEADER: '表头',
   TABLE_CELL: '单元格',
   TABLE_SEPARATOR: '---',
-};
+});

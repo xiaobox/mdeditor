@@ -47,8 +47,8 @@
 
 <script>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { parseMarkdown } from '../utils/formatters/formatter-coordinator.js'
-import { highlightHtml } from '../utils/html-highlighter.js'
+import { parseMarkdown } from '../core/markdown/parser/coordinator.js'
+import { highlightHtml } from '../shared/helpers/html.js'
 import { useGlobalThemeManager } from '../composables/index.js'
 
 import '../styles/modern-markdown.css'

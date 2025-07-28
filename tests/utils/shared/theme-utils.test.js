@@ -13,7 +13,7 @@ import {
   isDarkTheme,
   mergeThemes,
   validateTheme
-} from '../../../src/utils/shared/theme-utils.js';
+} from '../../../src/shared/utils/theme.js';
 
 
 

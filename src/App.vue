@@ -133,7 +133,7 @@ import MarkdownEditor from './components/MarkdownEditor.vue'
 import PreviewPane from './components/PreviewPane.vue'
 import MarkdownGuide from './components/MarkdownGuide.vue'
 import SettingsPanel from './components/SettingsPanel.vue'
-import { copyToWechatClean } from './utils/clipboard-handler.js'
+import { copyToWechatClean } from './core/editor/clipboard.js'
 import { useGlobalThemeManager } from './composables/index.js'
 
 export default {

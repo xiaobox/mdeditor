@@ -66,7 +66,7 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue'
 import { useGlobalThemeManager } from '../composables/index.js'
-import { getCodeStyle } from '../config/themes/code-styles.js'
+import { getCodeStyle } from '../core/theme/presets/code-styles.js'
 
 // Props
 const props = defineProps({

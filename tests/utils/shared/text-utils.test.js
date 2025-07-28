@@ -16,7 +16,7 @@ import {
   isEmpty,
   isValidEmail,
   isValidUrl
-} from '../../../src/utils/shared/text-utils.js';
+} from '../../../src/shared/utils/text.js';
 
 describe('TextUtils', () => {
   describe('escapeHtml', () => {

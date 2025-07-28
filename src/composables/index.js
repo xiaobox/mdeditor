@@ -1,13 +1,15 @@
 /**
  * @file src/composables/index.js
- * @description Composables 统一导出文件
+ * @description 统一导出所有组合式API
+ * 
+ * 重构后的模块化架构，按功能分组导出
  */
 
-export { useMarkdownEditor } from './useMarkdownEditor.js';
-export { useThemeManager, useGlobalThemeManager } from './useThemeManager.js';
+// 编辑器相关组合式API
+export * from './editor/index.js';
 
-// 新增的细分 composables
-export { useEditorState } from './useEditorState.js';
-export { useEditorEvents } from './useEditorEvents.js';
-export { useEditorTheme } from './useEditorTheme.js';
-export { useEditorOperations } from './useEditorOperations.js';
+// 主题相关组合式API  
+export * from './theme/index.js';
+
+// 为向后兼容性保留的别名导出
+export { useEditor as useMarkdownEditor } from './editor/index.js';
