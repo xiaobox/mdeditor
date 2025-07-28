@@ -32,6 +32,47 @@ import { toolbarOperations } from '../utils/editor-operations.js'
 import { useGlobalThemeManager } from './useThemeManager.js'
 
 /**
+ * 创建 CodeMirror 编辑器的扩展数组。
+ * @private
+ * @param {Function} onDocChange - 文档内容变化时的回调。
+ * @param {boolean} isDark - 是否为暗色主题。
+ * @returns {import('@codemirror/state').Extension[]}
+ */
+function createEditorExtensions(onDocChange, isDark) {
+  const extensions = [
+    basicSetup,
+    markdown(),
+    EditorView.updateListener.of(onDocChange),
+    EditorView.theme({
+      '&': {
+        height: '100%',
+      },
+      '.cm-scroller': {
+        fontFamily: '"SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+        fontSize: '14px',
+        lineHeight: '1.6'
+      },
+      '.cm-focused': {
+        outline: 'none'
+      },
+      '.cm-editor': {
+        height: '100%'
+      },
+      '.cm-content': {
+        padding: '16px',
+        minHeight: '100%'
+      }
+    })
+  ];
+
+  if (isDark) {
+    extensions.push(oneDark);
+  }
+
+  return extensions;
+}
+
+/**
  * 创建并管理一个 Markdown 编辑器实例。
  * @param {Object} [options={}] - 配置选项。
  * @param {string} [options.initialValue=''] - 编辑器的初始内容。
@@ -127,40 +168,29 @@ export function useMarkdownEditor(options = {}) {
    * 初始化 CodeMirror 编辑器。
    */
   const initEditor = () => {
-    if (!editorElement.value || editorView) return
+    if (!editorElement.value || editorView) return;
 
-    const extensions = [
-      basicSetup,
-      markdown(),
-      EditorView.updateListener.of((update) => {
-        if (update.docChanged) {
-          const newContent = update.state.doc.toString()
-          content.value = newContent
-          onContentChange(newContent)
-        }
-      }),
-      getEditorTheme()
-    ]
-
-    // 如果是暗色主题，添加 oneDark 扩展
-    if (currentTheme.value === 'dark') {
-      extensions.push(oneDark)
-    }
+    const extensions = createEditorExtensions((update) => {
+      if (update.docChanged) {
+        const newContent = update.state.doc.toString();
+        content.value = newContent;
+        onContentChange(newContent);
+      }
+    }, currentTheme.value === 'dark');
 
     const state = EditorState.create({
-      doc: content.value, // 使用响应式 ref 的当前值
+      doc: content.value,
       extensions
-    })
+    });
 
     editorView = new EditorView({
       state,
       parent: editorElement.value
-    })
+    });
 
-    // 绑定滚动事件
-    const scrollElement = editorView.scrollDOM
-    scrollElement.addEventListener('scroll', handleScroll, { passive: true })
-  }
+    const scrollElement = editorView.scrollDOM;
+    scrollElement.addEventListener('scroll', handleScroll, { passive: true });
+  };
 
   /**
    * 销毁 CodeMirror 编辑器实例，清理资源。

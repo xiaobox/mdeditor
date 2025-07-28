@@ -47,7 +47,7 @@
 
 <script>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { formatForWechat } from '../utils/wechat-formatter.js'
+import { parseMarkdown } from '../utils/formatters/formatter-coordinator.js'
 import { highlightHtml } from '../utils/html-highlighter.js'
 import { useGlobalThemeManager } from '../composables/index.js'
 
@@ -220,12 +220,21 @@ export default {
       }
 
       try {
-        // 1. 生成微信公众号格式 - 使用格式化器、当前主题、代码样式和主题系统
-        const wechatFormatted = formatForWechat(props.markdown, currentColorTheme.value, currentCodeStyle.value, currentLayoutId.value)
+        // 1. 生成微信公众号格式 - 使用 parseMarkdown 函数直接处理
+        const wechatFormatted = parseMarkdown(props.markdown, {
+          theme: currentColorTheme.value,
+          codeTheme: currentCodeStyle.value,
+          themeSystem: currentLayoutId.value
+        })
         wechatHtml.value = wechatFormatted
 
         // 2. 预览版本使用相同的格式化器，但标记为预览环境以调整样式
-        const previewFormatted = formatForWechat(props.markdown, currentColorTheme.value, currentCodeStyle.value, currentLayoutId.value, { isPreview: true })
+        const previewFormatted = parseMarkdown(props.markdown, {
+          theme: currentColorTheme.value,
+          codeTheme: currentCodeStyle.value,
+          themeSystem: currentLayoutId.value,
+          isPreview: true
+        })
         renderedHtml.value = previewFormatted
 
         // 3. 发送给父组件

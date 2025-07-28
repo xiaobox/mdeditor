@@ -5,20 +5,27 @@
  * 验证重构后的代码是否保持 100% 向后兼容性
  */
 
-import { describe, it, expect, vi } from 'vitest';
-import { formatForWechat, formatCodeBlock, formatInlineText } from '../../src/utils/wechat-formatter.js';
+import { parseMarkdown } from '../../src/utils/formatters/formatter-coordinator.js';
+import { formatCodeBlock, formatInlineText } from '../../src/utils/formatters/style-formatters.js';
 import { ErrorHandler, ERROR_TYPES } from '../../src/utils/shared/error-handler.js';
 import { ThemeUtils } from '../../src/utils/shared/theme-utils.js';
 import { TextUtils } from '../../src/utils/shared/text-utils.js';
+import { colorThemes } from '../../src/config/themes/color-themes.js';
 
 // Mock 主题数据
-const mockTheme = {
-  background: '#ffffff',
-  textPrimary: '#333333',
-  textSecondary: '#666666',
-  codeBackground: '#f8f8f8',
-  codeText: '#333333'
-};
+const mockTheme = colorThemes.green; // 使用有效的主题对象
+
+// Helper function to replace formatForWechat
+function formatForWechat(markdownText, theme, codeTheme = null, themeSystem = 'wechat', options = {}) {
+  return parseMarkdown(markdownText, {
+    theme,
+    codeTheme,
+    themeSystem,
+    isPreview: options.isPreview
+  });
+}
+
+
 
 const mockCodeTheme = {
   background: '#1e1e1e',

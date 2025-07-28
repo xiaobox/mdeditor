@@ -15,17 +15,7 @@
 // 导出编辑器相关常量
 export * from './editor.js';
 
-// 导出 UI 文本常量（重命名冲突的导出）
-export {
-  UI_TEXT,
-  TOOLBAR_TEXT,
-  THEME_TEXT,
-  SETTINGS_TEXT,
-  HELP_TEXT,
-  FILE_TEXT,
-  UI_PLACEHOLDER_TEXT,
-  TOOLTIP_TEXT
-} from './ui-text.js';
+
 
 // 导出时间和超时相关常量
 export * from './timing.js';

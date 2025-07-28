@@ -4,7 +4,7 @@
  *
  * 本文件负责集中管理应用程序的所有主题相关状态，包括：
  * - 颜色主题 (Color Theme): 如亮色、暗色、微信主题等。
- * - 代码高亮样式 (Code Style): 如 GitHub、Monokai 等。
+ * - 代码高亮样式 (Code Style): 如 Mac、GitHub、VS Code、Terminal 等。
  * - 排版主题 (Theme System): 如微信、掘金等，定义整体布局和字体。
  *
  * 主要功能：

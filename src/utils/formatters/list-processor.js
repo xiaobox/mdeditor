@@ -11,7 +11,7 @@ import {
   WECHAT_FORMATTING,
   EDITOR_OPERATIONS
 } from '../../config/constants/index.js';
-import { formatInlineText } from '../wechat-formatter.js';
+import { formatInlineText } from './style-formatters.js';
 
 /**
  * 列表类型枚举

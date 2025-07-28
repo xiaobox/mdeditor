@@ -6,11 +6,10 @@
  * 包含错误分类、错误包装、重试机制等功能。
  */
 
-import { 
-  GENERIC_ERRORS, 
-  CLIPBOARD_ERRORS, 
-  NETWORK_ERRORS,
-  VALIDATION_ERRORS 
+import {
+  GENERIC_ERRORS,
+  CLIPBOARD_ERRORS,
+  NETWORK_ERRORS
 } from '../../config/constants/index.js';
 
 /**
@@ -170,29 +169,7 @@ export class ErrorHandler {
     );
   }
 
-  /**
-   * 处理验证错误
-   * @param {string} field - 字段名
-   * @param {string} _value - 字段值（保留用于未来扩展）
-   * @param {string} rule - 验证规则
-   * @returns {AppError} 验证错误
-   */
-  static handleValidationError(field, _value, rule) {
-    const ruleMessages = {
-      required: VALIDATION_ERRORS.REQUIRED_FIELD,
-      email: VALIDATION_ERRORS.INVALID_EMAIL,
-      url: VALIDATION_ERRORS.INVALID_URL,
-      format: VALIDATION_ERRORS.INVALID_FORMAT,
-      length: VALIDATION_ERRORS.VALUE_TOO_LONG,
-      range: VALIDATION_ERRORS.INVALID_RANGE
-    };
-    
-    const message = ruleMessages[rule] || VALIDATION_ERRORS.INVALID_FORMAT;
-    return new AppError(
-      `字段 "${field}" ${message}`,
-      ERROR_TYPES.VALIDATION
-    );
-  }
+
 
   /**
    * 安全执行函数，捕获并处理错误

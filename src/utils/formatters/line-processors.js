@@ -7,7 +7,7 @@
  */
 
 import { REGEX_PATTERNS, MARKDOWN_SYNTAX } from '../../config/constants/index.js';
-import { formatCodeBlock, formatInlineText } from '../wechat-formatter.js';
+import { formatCodeBlock, formatInlineText } from './style-formatters.js';
 
 /**
  * 行处理器基类

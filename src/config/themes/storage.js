@@ -26,26 +26,15 @@
  *   兼容旧版本代码，确保平滑过渡。
  */
 
-import { defaultColorTheme } from './color-themes.js';
-import { defaultCodeStyle } from './code-styles.js';
-import { defaultThemeSystem } from './theme-systems.js';
+import { THEME_DEFAULTS, STORAGE_KEYS } from '../constants/defaults.js';
 
-/**
- * 定义用于 localStorage 的键名。
- */
-export const STORAGE_KEYS = {
-  COLOR_THEME: 'markdown-editor-color-theme',
-  CODE_STYLE: 'markdown-editor-code-style',
-  THEME_SYSTEM: 'markdown-editor-theme-system'
-};
+// 重新导出 STORAGE_KEYS 以保持向后兼容性
+export { STORAGE_KEYS };
 
-/**
- * 定义各项设置的默认值。
- */
 export const STORAGE_DEFAULTS = {
-  COLOR_THEME: defaultColorTheme.id,
-  CODE_STYLE: defaultCodeStyle.id,
-  THEME_SYSTEM: defaultThemeSystem.id
+  COLOR_THEME: THEME_DEFAULTS.COLOR_THEME_ID,
+  CODE_STYLE: THEME_DEFAULTS.CODE_STYLE_ID,
+  THEME_SYSTEM: THEME_DEFAULTS.THEME_SYSTEM_ID
 };
 
 /**

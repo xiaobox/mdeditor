@@ -74,6 +74,35 @@ function createRichTextContainer(html) {
  * @param {string} html - 要复制的 HTML 内容。
  * @returns {Promise<boolean>} - 复制成功时 resolve(true)，否则 reject(error)。
  */
+/**
+ * 尝试使用现代 Clipboard API 进行复制。
+ * @private
+ */
+async function copyWithClipboardAPI(container) {
+  console.log('尝试使用 Clipboard API...');
+  const blobHtml = new Blob([container.outerHTML], { type: 'text/html' });
+  const blobText = new Blob([container.textContent], { type: 'text/plain' });
+  await navigator.clipboard.write([new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })]);
+  console.log('Clipboard API 复制成功');
+}
+
+/**
+ * 尝试使用传统的 execCommand 进行复制。
+ * @private
+ */
+function copyWithExecCommand() {
+  console.log('尝试使用 execCommand...');
+  if (!document.execCommand('copy')) {
+    throw new Error('execCommand returned false.');
+  }
+  console.log('execCommand 复制成功');
+}
+
+/**
+ * 将 HTML 字符串作为富文本复制到剪贴板，并针对微信公众号进行优化。
+ * @param {string} html - 要复制的 HTML 内容。
+ * @returns {Promise<boolean>} - 复制成功时 resolve(true)，否则 reject(error)。
+ */
 export async function copyToWechatClean(html) {
   if (!html) {
     throw ErrorHandler.wrap(
@@ -95,68 +124,48 @@ export async function copyToWechatClean(html) {
       setTimeout(() => reject(new Error('复制操作超时')), TIMEOUTS.CLIPBOARD_OPERATION);
     });
 
-    const copyPromise = (async () => {
-      // 选中临时容器中的内容
+    const copyPromise = async () => {
       const range = document.createRange();
       range.selectNodeContents(container);
       const selection = window.getSelection();
       selection.removeAllRanges();
       selection.addRange(range);
 
-      let success = false;
-      let lastError = null;
-
-      // 方法1: 尝试使用现代的 Clipboard API
-      if (navigator.clipboard && navigator.clipboard.write) {
-        try {
-          console.log('尝试使用 Clipboard API...');
-          const blobHtml = new Blob([container.outerHTML], { type: 'text/html' });
-          const blobText = new Blob([container.textContent], { type: 'text/plain' });
-          await navigator.clipboard.write([new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })]);
-          success = true;
-          console.log('Clipboard API 复制成功');
-        } catch (modernError) {
-          console.warn('Clipboard API 失败:', modernError.message);
-          lastError = modernError;
+      try {
+        // 优先尝试现代 API
+        if (navigator.clipboard && navigator.clipboard.write) {
+          await copyWithClipboardAPI(container);
+        } else {
+          // 降级到传统方法
+          copyWithExecCommand();
         }
-      }
-
-      // 方法2: 如果现代 API 失败或不可用，降级到传统的 execCommand
-      if (!success) {
+        return true;
+      } catch (error) {
+        console.warn('首选复制方法失败，尝试备用方法...', error.message);
+        // 如果首选方法失败，尝试另一种
         try {
-          console.log('尝试使用 execCommand...');
-          success = document.execCommand('copy');
-          if (success) {
-            console.log('execCommand 复制成功');
+          if (navigator.clipboard && navigator.clipboard.write) {
+            copyWithExecCommand();
           } else {
-            console.warn('execCommand 复制失败');
-            lastError = lastError || new Error('execCommand returned false.');
+            await copyWithClipboardAPI(container);
           }
-        } catch (execError) {
-          console.warn('execCommand 失败:', execError.message);
-          lastError = execError;
+          return true;
+        } catch (fallbackError) {
+          console.error('所有复制方法都失败了:', fallbackError);
+          throw fallbackError;
         }
       }
+    };
 
-      if (!success) {
-        throw lastError || new Error('所有复制方法都失败了');
-      }
-
-      return true;
-    })();
-
-    return await Promise.race([copyPromise, timeoutPromise]);
+    return await Promise.race([copyPromise(), timeoutPromise]);
 
   } catch (error) {
     console.error('复制失败:', error);
-    // 使用统一的错误处理器
     throw ErrorHandler.handleClipboardError(error, parseFloat(sizeKB));
   } finally {
-    // 无论成功与否，都清理 DOM
     if (document.body.contains(container)) {
       document.body.removeChild(container);
     }
-    // 清理选区
     const selection = window.getSelection();
     if (selection) {
       selection.removeAllRanges();

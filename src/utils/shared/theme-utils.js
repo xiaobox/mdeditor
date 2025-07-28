@@ -17,6 +17,7 @@ import {
   getThemeSystem, 
   defaultThemeSystem 
 } from '../../config/themes/theme-systems.js';
+import { TextUtils } from './text-utils.js';
 
 /**
  * 主题类型枚举
@@ -218,7 +219,7 @@ export class ThemeUtils {
    * @returns {string} kebab-case字符串
    */
   static kebabCase(str) {
-    return str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+    return TextUtils.kebabCase(str);
   }
 
   /**

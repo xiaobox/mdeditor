@@ -9,8 +9,10 @@
 import { getLineProcessor } from './line-processors.js';
 import { TableProcessor } from './table-processor.js';
 import { ListProcessor } from './list-processor.js';
-import { formatBlockquote, formatCodeBlock } from '../wechat-formatter.js';
+import { formatBlockquote, formatCodeBlock } from './style-formatters.js';
 import { processInlineFormatsWithoutEscapes } from './text-processors.js';
+import { getThemesSafe } from '../shared/theme-utils.js';
+import { cleanReferenceLinks } from './text-processors.js';
 
 /**
  * 格式化协调器类
@@ -26,17 +28,23 @@ export class FormatterCoordinator {
    * 重置协调器状态
    */
   reset() {
+    // 保留主题信息和选项，只重置处理状态
+    const currentTheme = this.context?.currentTheme || null;
+    const codeTheme = this.context?.codeTheme || null;
+    const themeSystem = this.context?.themeSystem || 'wechat';
+    const currentOptions = this.options || {};
+
     this.context = {
       inCodeBlock: false,
       codeBlockContent: '',
       codeBlockLanguage: '',
       inBlockquote: false,
       blockquoteContent: [],
-      currentTheme: null,
-      codeTheme: null,
-      themeSystem: 'wechat'
+      currentTheme: currentTheme,
+      codeTheme: codeTheme,
+      themeSystem: themeSystem
     };
-    this.options = {};
+    this.options = currentOptions; // 保留现有选项
     this.tableProcessor.reset();
     this.listProcessor.reset();
   }
@@ -263,4 +271,67 @@ export class FormatterCoordinator {
   getContext() {
     return { ...this.context };
   }
+}
+
+/**
+ * 解析 Markdown 文本为 HTML 的便捷函数
+ * 这个函数替代了原来的 MarkdownParser 类，提供相同的功能但更简洁
+ *
+ * @param {string} markdownText - 要解析的 Markdown 文本
+ * @param {object} [options={}] - 解析器的配置选项
+ * @param {object} [options.theme] - 颜色主题对象或 ID
+ * @param {object} [options.codeTheme] - 代码样式对象或 ID
+ * @param {string} [options.themeSystem] - 排版系统 ID
+ * @param {boolean} [options.isPreview=false] - 是否为预览模式
+ * @returns {string} - 生成的 HTML 字符串
+ */
+export function parseMarkdown(markdownText, options = {}) {
+  if (!markdownText || typeof markdownText !== 'string') {
+    return '';
+  }
+
+  // 获取安全的主题配置
+  const { colorTheme, codeStyle, themeSystem } = getThemesSafe({
+    colorTheme: options.theme,
+    codeStyle: options.codeTheme,
+    themeSystem: options.themeSystem
+  });
+
+  // 创建协调器实例
+  const coordinator = new FormatterCoordinator();
+  coordinator.setThemes(colorTheme, codeStyle, themeSystem);
+
+  if (options.isPreview) {
+    coordinator.setOptions({ isPreview: true });
+  }
+
+  // 预处理：清理不兼容的语法
+  const cleanedText = cleanReferenceLinks(markdownText);
+  const lines = cleanedText.split('\n');
+  let result = '';
+
+  coordinator.reset(); // 每次解析前重置状态
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmedLine = line.trim();
+
+    const processResult = coordinator.processLine(line, trimmedLine, lines, i);
+
+    if (processResult.updateContext) {
+      coordinator.updateContext(processResult.updateContext);
+    }
+
+    if (processResult.result) {
+      result += processResult.result;
+    }
+
+    if (processResult.reprocessLine) {
+      i--; // 重新处理当前行
+    }
+  }
+
+  result += coordinator.finalize(); // 处理任何未结束的块
+
+  return result;
 }

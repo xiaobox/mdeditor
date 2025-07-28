@@ -81,6 +81,11 @@ pre[class*="language-"]::after {
   /* 移除所有强制样式，让内联样式完全控制 */
 }
 
+/* 修正预览模式下红绿灯位置 */
+.modern-markdown .mac-traffic-lights {
+  left: 3px !important;
+}
+
 /* 时尚高级引用块样式 */
 .modern-markdown blockquote {
   border-left: 4px solid rgba(0, 168, 107, 0.9);
