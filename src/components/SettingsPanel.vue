@@ -236,6 +236,12 @@ const selectThemeSystem = (systemId) => {
 
 const selectTheme = (themeId) => {
   selectedThemeId.value = themeId
+  // 立即应用选中主题的颜色到CSS变量，以便选中状态边框颜色实时更新
+  // 获取完整的主题对象并临时应用，不保存到本地存储
+  import('../core/theme/presets/color-themes.js').then(({ getColorTheme }) => {
+    const fullTheme = getColorTheme(themeId)
+    themeManager.cssManager.applyColorTheme(fullTheme)
+  })
 }
 
 const selectCodeStyle = (styleId) => {
@@ -292,6 +298,8 @@ const resetSelections = () => {
   selectedThemeSystemId.value = currentLayoutId.value
   selectedThemeId.value = currentColorThemeId.value
   selectedCodeStyleId.value = currentCodeStyleId.value
+  // 恢复当前主题的CSS变量
+  themeManager.updateAllCSS()
 }
 
 // 当面板打开时重置选择
@@ -299,10 +307,13 @@ onMounted(() => {
   resetSelections()
 })
 
-// 监听visible变化，当面板打开时重置选择
-watch(() => props.visible, (newVisible) => {
+// 监听visible变化，当面板打开时重置选择，关闭时恢复主题
+watch(() => props.visible, (newVisible, oldVisible) => {
   if (newVisible) {
     resetSelections()
+  } else if (oldVisible) {
+    // 面板关闭时，恢复到当前保存的主题
+    themeManager.updateAllCSS()
   }
 })
 

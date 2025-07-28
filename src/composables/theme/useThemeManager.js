@@ -323,6 +323,9 @@ export function useThemeManager() {
     clearAllSettings,
     initialize,
 
+    // CSS 管理器
+    cssManager,
+
     // 预设 ID
     presets: {
       colorThemes: colorThemePresets,
