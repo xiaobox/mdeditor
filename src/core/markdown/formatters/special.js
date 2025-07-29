@@ -14,8 +14,8 @@
 /**
  * 处理高亮文本
  * 使用 ==text== 语法创建高亮效果
- * 支持微信公众号友好的样式
- * 
+ * 支持社交平台友好的样式
+ *
  * @param {string} text - 包含高亮标记的文本
  * @param {Object} theme - 主题对象
  * @returns {string} - 处理后的文本

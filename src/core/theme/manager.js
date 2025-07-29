@@ -111,11 +111,17 @@ class CSSVariableManager {
    */
   _shouldUpdateTheme(theme, type) {
     if (!theme) return false;
-    
+
     const cached = this._currentThemeCache[type];
     if (!cached) return true;
-    
-    // 简单的相等性检查
+
+    // 对于自定义主题，需要更深入的比较
+    if (theme.id && theme.id.startsWith('custom-')) {
+      // 自定义主题比较主要颜色值
+      return cached.primary !== theme.primary || cached.id !== theme.id;
+    }
+
+    // 内置主题的简单相等性检查
     return cached.id !== theme.id || cached.name !== theme.name;
   }
 
@@ -126,7 +132,21 @@ class CSSVariableManager {
    * @param {string} type - 主题类型
    */
   _updateThemeCache(theme, type) {
-    this._currentThemeCache[type] = theme ? { id: theme.id, name: theme.name } : null;
+    if (!theme) {
+      this._currentThemeCache[type] = null;
+      return;
+    }
+
+    // 对于自定义主题，缓存更多信息
+    if (theme.id && theme.id.startsWith('custom-')) {
+      this._currentThemeCache[type] = {
+        id: theme.id,
+        name: theme.name,
+        primary: theme.primary
+      };
+    } else {
+      this._currentThemeCache[type] = { id: theme.id, name: theme.name };
+    }
   }
 
   /**
@@ -146,6 +166,18 @@ class CSSVariableManager {
     }
     
     return variables;
+  }
+
+  /**
+   * 强制应用颜色主题，跳过缓存检查
+   * @param {Object} colorTheme - 颜色主题对象。
+   */
+  forceApplyColorTheme(colorTheme) {
+    if (!colorTheme) return;
+
+    // 清除缓存以强制更新
+    this._currentThemeCache.colorTheme = null;
+    this.applyColorTheme(colorTheme);
   }
 
   /**
@@ -176,7 +208,20 @@ class CSSVariableManager {
       '--theme-hr-color': colorTheme.hrColor,
       '--theme-table-header-bg': colorTheme.tableHeaderBg,
       '--theme-table-border': colorTheme.tableBorder,
+
+      // 兼容性变量 - 确保所有组件都能使用新颜色
+      '--primary-color': colorTheme.primary,
+      '--primary-hover': colorTheme.primaryHover,
+      '--primary-light': colorTheme.primaryLight,
+      '--primary-dark': colorTheme.primaryDark,
     };
+
+    // 应用列表颜色
+    if (colorTheme.listColors && Array.isArray(colorTheme.listColors)) {
+      colorTheme.listColors.forEach((color, index) => {
+        variables[`--theme-list-color-${index + 1}`] = color;
+      });
+    }
 
     // 动态生成主题色的透明度变体
     if (colorTheme.primary) {

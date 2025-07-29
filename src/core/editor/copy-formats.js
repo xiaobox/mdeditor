@@ -3,20 +3,20 @@
  * @description 多格式复制功能
  *
  * 提供不同格式的内容复制功能：
- * - 公众号格式：带内联样式的HTML，适合微信公众号
+ * - 公众号格式：带内联样式的HTML，适合社交平台
  * - MD格式：原始Markdown文本
  */
 
 import { parseMarkdown } from '../markdown/parser/index.js';
-import { copyToWechatClean } from './clipboard.js';
+import { copyToSocialClean } from './clipboard.js';
 
 /**
- * 生成微信公众号格式HTML（带内联样式）
+ * 生成公众号格式HTML（带内联样式）
  * @param {string} markdownText - Markdown文本
  * @param {Object} options - 解析选项
- * @returns {string} 微信格式HTML
+ * @returns {string} 公众号格式HTML
  */
-function generateWechatHtml(markdownText, options = {}) {
+function generateSocialHtml(markdownText, options = {}) {
   // 使用非预览模式生成HTML，这样会包含内联样式
   return parseMarkdown(markdownText, {
     ...options,
@@ -60,7 +60,7 @@ async function copyTextToClipboard(text) {
  * @param {Object} options - 解析选项
  * @returns {Promise<{success: boolean, message: string}>}
  */
-export async function copyWechatFormat(markdownText, options = {}) {
+export async function copySocialFormat(markdownText, options = {}) {
   if (!markdownText.trim()) {
     return {
       success: false,
@@ -69,12 +69,12 @@ export async function copyWechatFormat(markdownText, options = {}) {
   }
 
   try {
-    const wechatHtml = generateWechatHtml(markdownText, options);
-    const success = await copyToWechatClean(wechatHtml);
-    
+    const socialHtml = generateSocialHtml(markdownText, options);
+    const success = await copyToSocialClean(socialHtml);
+
     return {
       success,
-      message: success ? '🎉 公众号格式已复制！可以粘贴到微信公众号编辑器' : '❌ 复制失败，请重试'
+      message: success ? '🎉 公众号格式已复制！可以粘贴到社交平台编辑器' : '❌ 复制失败，请重试'
     };
   } catch (error) {
     console.error('复制公众号格式失败:', error);
@@ -121,7 +121,7 @@ export async function copyMarkdownFormat(markdownText) {
 export function getCopyFormatOptions() {
   return [
     {
-      value: 'wechat',
+      value: 'social',
       label: '公众号格式',
       icon: 'M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M8.5,9A1.5,1.5 0 0,1 10,10.5A1.5,1.5 0 0,1 8.5,12A1.5,1.5 0 0,1 7,10.5A1.5,1.5 0 0,1 8.5,9M15.5,9A1.5,1.5 0 0,1 17,10.5A1.5,1.5 0 0,1 15.5,12A1.5,1.5 0 0,1 14,10.5A1.5,1.5 0 0,1 15.5,9M12,17.23C10.25,17.23 8.71,16.5 7.81,15.42L9.23,14C9.68,14.72 10.75,15.23 12,15.23C13.25,15.23 14.32,14.72 14.77,14L16.19,15.42C15.29,16.5 13.75,17.23 12,17.23Z'
     },
@@ -132,3 +132,7 @@ export function getCopyFormatOptions() {
     }
   ];
 }
+
+// 向后兼容性导出
+export const copyWechatFormat = copySocialFormat;
+export const generateWechatHtml = generateSocialHtml;

@@ -130,7 +130,7 @@ export class HeadingProcessor extends LineProcessor {
       // 预览模式：使用CSS类，样式由主题文件控制
       return `<h1>${formattedText}</h1>`;
     } else {
-      // 微信公众号模式：保留内联样式以确保兼容性
+      // 社交平台模式：保留内联样式以确保兼容性
       const h1Style = `
         margin: 1.8em 0 1.5em 0;
         font-weight: 700;
@@ -171,7 +171,7 @@ export class HeadingProcessor extends LineProcessor {
       // 预览模式：使用CSS类，样式由主题文件控制
       return `<h2>${formattedText}</h2>`;
     } else {
-      // 微信公众号模式：保留装饰线
+      // 社交平台模式：保留装饰线
       const h2Style = `
         margin-top: 2rem;
         margin-bottom: 1.5rem;

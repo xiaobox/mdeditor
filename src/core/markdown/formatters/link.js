@@ -12,8 +12,8 @@ import { cleanUrl as sharedCleanUrl } from '../../../shared/utils/text.js';
 /**
  * 处理链接
  * 将 Markdown 格式的链接转换为 HTML 链接标签
- * 支持微信公众号友好的样式
- * 
+ * 支持社交平台友好的样式
+ *
  * @param {string} text - 包含链接标记的文本
  * @param {Object} theme - 主题对象
  * @returns {string} - 处理后的文本

@@ -15,8 +15,8 @@ import { colorThemes } from '../../src/core/theme/presets/color-themes.js';
 // Mock 主题数据
 const mockTheme = colorThemes.green; // 使用有效的主题对象
 
-// Helper function to replace formatForWechat
-function formatForWechat(markdownText, theme, codeTheme = null, themeSystem = 'wechat', options = {}) {
+// Helper function to replace formatForSocial
+function formatForSocial(markdownText, theme, codeTheme = null, themeSystem = 'default', options = {}) {
   return parseMarkdown(markdownText, {
     theme,
     codeTheme,
@@ -24,6 +24,9 @@ function formatForWechat(markdownText, theme, codeTheme = null, themeSystem = 'w
     isPreview: options.isPreview
   });
 }
+
+// 向后兼容性别名
+const formatForWechat = formatForSocial;
 
 
 
@@ -317,14 +320,14 @@ console.log('Hello World');
     it('should maintain consistent function signatures', () => {
       // Test that all main functions accept expected parameters
       expect(() => {
-        formatForWechat('test', mockTheme, mockCodeTheme, 'wechat');
+        formatForSocial('test', mockTheme, mockCodeTheme, 'default');
         formatCodeBlock('code', 'js', mockTheme, mockCodeTheme);
         formatInlineText('text', mockTheme);
       }).not.toThrow();
     });
 
     it('should return consistent data types', () => {
-      const markdownResult = formatForWechat('# Test', mockTheme);
+      const markdownResult = formatForSocial('# Test', mockTheme);
       const codeResult = formatCodeBlock('test', 'js', mockTheme, mockCodeTheme);
       const inlineResult = formatInlineText('test', mockTheme);
       

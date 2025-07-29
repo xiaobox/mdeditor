@@ -32,7 +32,7 @@ import {
 } from './style.js';
 
 /**
- * 清理引用式链接和图片引用（微信不兼容）
+ * 清理引用式链接和图片引用（社交平台不兼容）
  * @param {string} text - 原始 Markdown 文本
  * @returns {string} - 清理后的文本
  */
@@ -65,7 +65,7 @@ export function processInlineCode(text, theme) {
 
   return text.replace(REGEX_PATTERNS.CODE, (_, code) => {
     const escapedCode = escapeHtml(code);
-    // 使用主题色的微信兼容样式
+    // 使用主题色的社交平台兼容样式
     const codeHtml = `<code style="background-color: ${theme.inlineCodeBg}; color: ${theme.inlineCodeText}; padding: 2px 4px; border-radius: 3px; font-family: Consolas, monospace; font-size: 14px; border: 1px solid ${theme.inlineCodeBorder};">${escapedCode}</code>`;
 
     // 创建安全的占位符（使用不会被格式化的字符）

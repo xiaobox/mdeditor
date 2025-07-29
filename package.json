@@ -1,7 +1,7 @@
 {
-  "name": "wechat-markdown-editor",
+  "name": "social-markdown-editor",
   "version": "1.0.0",
-  "description": "微信公众号Markdown编辑器",
+  "description": "社交平台Markdown编辑器",
   "type": "module",
   "scripts": {
     "dev": "vite",

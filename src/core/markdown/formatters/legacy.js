@@ -81,7 +81,7 @@ export function formatCodeBlock(content, language, theme = defaultColorTheme, co
 
   let decorations = '';
   if (safeCodeTheme.hasTrafficLights) {
-    // 统一使用相同的HTML结构，通过CSS来处理预览模式和微信模式的差异
+    // 统一使用相同的HTML结构，通过CSS来处理预览模式和社交平台模式的差异
     const trafficLightsStyle = `position: absolute; top: 14px; left: 12px; font-size: 16px; line-height: 1; z-index: 2; letter-spacing: 5px;`;
     decorations += `
       <span class="mac-traffic-lights" style="${trafficLightsStyle}">

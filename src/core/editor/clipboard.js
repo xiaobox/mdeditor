@@ -3,11 +3,11 @@
  * @description 剪贴板操作处理器
  *
  * 本文件封装了将 HTML 内容复制到系统剪贴板的复杂逻辑，
- * 特别针对微信公众号编辑器的怪异行为进行了优化。
+ * 特别针对社交平台编辑器的怪异行为进行了优化。
  *
  * 主要功能:
- * 1.  **富文本复制**: 核心功能 `copyToWechatClean` 旨在将一段 HTML 字符串
- *     作为富文本（而不是纯文本）复制到剪贴板，这样粘贴到微信编辑器时能保留样式。
+ * 1.  **富文本复制**: 核心功能 `copyToSocialClean` 旨在将一段 HTML 字符串
+ *     作为富文本（而不是纯文本）复制到剪贴板，这样粘贴到社交平台时能保留样式。
  * 2.  **动态 DOM 操作**: 为了实现复制，它会动态创建一个临时的 `div` 元素，
  *     将 HTML 内容注入其中，然后使用 `document.createRange` 和 `window.getSelection`
  *     来选中这个 `div` 的内容。
@@ -19,12 +19,12 @@
  * 4.  **健壮性与错误处理**:
  *     - 包含了超时机制，防止因内容过大或浏览器问题导致复制过程卡死。
  *     - 提供了详细的错误信息，帮助用户理解复制失败的原因（如权限问题、内容过大等）。
- * 5.  **微信特化容器**: `createRichTextContainer` 函数创建的容器带有一些特定的
- *     CSS 样式，旨在模拟微信编辑器的环境，提高样式兼容性。
+ * 5.  **社交平台特化容器**: `createRichTextContainer` 函数创建的容器带有一些特定的
+ *     CSS 样式，旨在模拟社交平台的环境，提高样式兼容性。
  *
  * 设计思想:
  * - **封装复杂性**: 将与剪贴板交互的底层、繁琐且充满兼容性问题的代码封装起来，
- *   对外提供一个简单的 `copyToWechatClean(html)` 接口。
+ *   对外提供一个简单的 `copyToSocialClean(html)` 接口。
  * - **用户体验优先**: 尽管实现复杂，但目标是为用户提供一个“一键复制”的无缝体验。
  *   超时和明确的错误提示都是为了改善用户体验。
  * - **面向未来，兼容过去**: 优先使用现代 API，但保留了对旧 API 的支持，
@@ -47,7 +47,7 @@ function createRichTextContainer(html) {
   const container = document.createElement('div');
 
   // 这些样式旨在模拟一个干净的、标准的富文本环境，
-  // 以提高在不同粘贴目标（特别是微信）中的兼容性。
+  // 以提高在不同粘贴目标（特别是社交平台）中的兼容性。
   container.style.cssText = `
     font-family: ${EDITOR_CONFIG.FONT_FAMILY};
     font-size: ${EDITOR_CONFIG.FONT_SIZE};
@@ -70,7 +70,7 @@ function createRichTextContainer(html) {
 }
 
 /**
- * 将 HTML 字符串作为富文本复制到剪贴板，并针对微信公众号进行优化。
+ * 将 HTML 字符串作为富文本复制到剪贴板，并针对社交平台进行优化。
  * @param {string} html - 要复制的 HTML 内容。
  * @returns {Promise<boolean>} - 复制成功时 resolve(true)，否则 reject(error)。
  */
@@ -99,11 +99,11 @@ function copyWithExecCommand() {
 }
 
 /**
- * 将 HTML 字符串作为富文本复制到剪贴板，并针对微信公众号进行优化。
+ * 将 HTML 字符串作为富文本复制到剪贴板，并针对社交平台进行优化。
  * @param {string} html - 要复制的 HTML 内容。
  * @returns {Promise<boolean>} - 复制成功时 resolve(true)，否则 reject(error)。
  */
-export async function copyToWechatClean(html) {
+export async function copyToSocialClean(html) {
   if (!html) {
     throw ErrorHandler.wrap(
       new Error(CLIPBOARD_ERRORS.NO_CONTENT),
@@ -173,3 +173,6 @@ export async function copyToWechatClean(html) {
     console.log(`复制流程结束，内容大小: ${sizeKB}KB`);
   }
 }
+
+// 向后兼容性导出
+export const copyToWechatClean = copyToSocialClean;

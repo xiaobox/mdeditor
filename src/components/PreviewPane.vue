@@ -81,7 +81,7 @@ export default {
     } = themeManager
 
     const renderedHtml = ref('')
-    const wechatHtml = ref('')
+    const socialHtml = ref('')
     const previewContent = ref(null)
     const currentViewportMode = ref('desktop')
     const scrollPosition = ref(0)
@@ -193,27 +193,46 @@ export default {
       }
     })
 
+    // 获取当前有效的颜色主题（包括临时自定义主题）
+    const getCurrentTheme = () => {
+      // 检查是否有临时自定义主题
+      try {
+        const tempTheme = localStorage.getItem('temp-custom-theme')
+        if (tempTheme) {
+          return JSON.parse(tempTheme)
+        }
+      } catch (error) {
+        console.warn('Failed to load temp custom theme:', error)
+      }
+
+      // 返回当前主题
+      return currentColorTheme.value
+    }
+
     // 处理Markdown解析和转换
     const processMarkdown = () => {
       if (!props.markdown) {
         renderedHtml.value = ''
-        wechatHtml.value = ''
+        socialHtml.value = ''
         emit('html-generated', '')
         return
       }
 
       try {
-        // 1. 生成微信公众号格式 - 使用 parseMarkdown 函数直接处理
-        const wechatFormatted = parseMarkdown(props.markdown, {
-          theme: currentColorTheme.value,
+        // 获取当前有效主题（可能是临时自定义主题）
+        const effectiveTheme = getCurrentTheme()
+
+        // 1. 生成公众号格式 - 使用 parseMarkdown 函数直接处理
+        const socialFormatted = parseMarkdown(props.markdown, {
+          theme: effectiveTheme,
           codeTheme: currentCodeStyle.value,
           themeSystem: currentLayoutId.value
         })
-        wechatHtml.value = wechatFormatted
+        socialHtml.value = socialFormatted
 
         // 2. 预览版本使用相同的格式化器，但标记为预览环境以调整样式
         const previewFormatted = parseMarkdown(props.markdown, {
-          theme: currentColorTheme.value,
+          theme: effectiveTheme,
           codeTheme: currentCodeStyle.value,
           themeSystem: currentLayoutId.value,
           isPreview: true
@@ -221,7 +240,7 @@ export default {
         renderedHtml.value = previewFormatted
 
         // 3. 发送给父组件
-        emit('html-generated', wechatFormatted)
+        emit('html-generated', socialFormatted)
       } catch (error) {
         console.error('处理Markdown时出错:', error)
         const errorMessage = `<div class="error">
@@ -231,7 +250,7 @@ export default {
         </div>`
 
         renderedHtml.value = errorMessage
-        wechatHtml.value = ''
+        socialHtml.value = ''
         emit('html-generated', '')
       }
     }
@@ -260,10 +279,23 @@ export default {
       processMarkdown()
     })
 
+    // 监听临时自定义主题变化
+    const handleCustomThemeChange = () => {
+      processMarkdown()
+    }
+
     // 组件生命周期
     onMounted(() => {
       // 初始化主题系统
       initialize()
+
+      // 监听自定义主题变化事件
+      window.addEventListener('custom-theme-changed', handleCustomThemeChange)
+
+      // 保存清理函数
+      onUnmounted(() => {
+        window.removeEventListener('custom-theme-changed', handleCustomThemeChange)
+      })
     })
 
     onUnmounted(() => {
@@ -272,7 +304,7 @@ export default {
 
     return {
       renderedHtml,
-      wechatHtml,
+      socialHtml,
       previewContent,
       currentViewportMode,
       viewportModes,

@@ -43,9 +43,9 @@ export const MARKDOWN_SYNTAX = Object.freeze({
 });
 
 /**
- * 微信公众号格式化配置
+ * 社交平台文章格式化配置
  */
-export const WECHAT_FORMATTING = {
+export const SOCIAL_FORMATTING = {
   // 列表符号配置
   LIST_SYMBOLS: {
     UNORDERED: ['●', '○', '▪', '▫', '‣', '⁃'],

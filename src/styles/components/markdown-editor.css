@@ -149,17 +149,17 @@
 .markdown-editor :deep(.cm-strong) { font-weight: bold; }
 .markdown-editor :deep(.cm-em) { font-style: italic; }
 .markdown-editor :deep(.cm-strikethrough) { text-decoration: line-through; }
-.markdown-editor :deep(.cm-link) { color: #007bff; text-decoration: underline; }
-.markdown-editor :deep(.cm-quote) { color: #6c757d; font-style: italic; }
-.markdown-editor :deep(.cm-comment) { color: #6a737d; }
-.markdown-editor :deep(.cm-keyword) { color: #d73a49; }
-.markdown-editor :deep(.cm-string) { color: #032f62; }
-.markdown-editor :deep(.cm-number) { color: #005cc5; }
-.markdown-editor :deep(.cm-atom) { color: #005cc5; }
-.markdown-editor :deep(.cm-property) { color: #e36209; }
-.markdown-editor :deep(.cm-def) { color: #6f42c1; }
-.markdown-editor :deep(.cm-variable) { color: #e36209; }
-.markdown-editor :deep(.cm-operator) { color: #d73a49; }
-.markdown-editor :deep(.cm-meta) { color: #032f62; }
-.markdown-editor :deep(.cm-tag) { color: #22863a; }
-.markdown-editor :deep(.cm-attribute) { color: #6f42c1; }
+.markdown-editor :deep(.cm-link) { color: var(--primary-color); text-decoration: underline; }
+.markdown-editor :deep(.cm-quote) { color: var(--theme-text-secondary); font-style: italic; }
+.markdown-editor :deep(.cm-comment) { color: var(--theme-text-tertiary); }
+.markdown-editor :deep(.cm-keyword) { color: var(--primary-color); }
+.markdown-editor :deep(.cm-string) { color: var(--primary-dark); }
+.markdown-editor :deep(.cm-number) { color: var(--primary-color); }
+.markdown-editor :deep(.cm-atom) { color: var(--primary-color); }
+.markdown-editor :deep(.cm-property) { color: var(--primary-hover); }
+.markdown-editor :deep(.cm-def) { color: var(--primary-dark); }
+.markdown-editor :deep(.cm-variable) { color: var(--primary-hover); }
+.markdown-editor :deep(.cm-operator) { color: var(--primary-color); }
+.markdown-editor :deep(.cm-meta) { color: var(--primary-dark); }
+.markdown-editor :deep(.cm-tag) { color: var(--primary-color); }
+.markdown-editor :deep(.cm-attribute) { color: var(--primary-dark); }

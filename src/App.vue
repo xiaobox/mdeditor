@@ -118,14 +118,14 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import MarkdownEditor from './components/MarkdownEditor.vue'
 import PreviewPane from './components/PreviewPane.vue'
 import MarkdownGuide from './components/MarkdownGuide.vue'
 import SettingsPanel from './components/SettingsPanel.vue'
 import DropdownMenu from './components/DropdownMenu.vue'
 import {
-  copyWechatFormat,
+  copySocialFormat,
   copyMarkdownFormat,
   getCopyFormatOptions
 } from './core/editor/copy-formats.js'
@@ -161,7 +161,7 @@ export default {
 
 ## 📋 所有格式枚举测试
 
-这是一个包含所有 Markdown 格式的完整测试文档，用于检查微信公众号兼容性。
+这是一个包含所有 Markdown 格式的完整测试文档，用于检查社交平台兼容性。
 
 ---
 
@@ -337,7 +337,7 @@ ___
 - 表格（简单、对齐、包含格式）
 - 分割线
 
-🎯 **测试目标**：检查所有格式在微信公众号中的显示效果和兼容性。`)
+🎯 **测试目标**：检查所有格式在社交平台中的显示效果和兼容性。`)
 
     const htmlContent = ref('')
     const notifications = ref([])
@@ -346,7 +346,7 @@ ___
 
     // 复制格式相关
     const copyFormatOptions = getCopyFormatOptions()
-    const selectedCopyFormat = ref('wechat')
+    const selectedCopyFormat = ref(null) // 不设置默认选中，避免用户困惑
 
     // 计算属性
     const estimatedReadTime = computed(() => {
@@ -379,7 +379,7 @@ ___
 
 ## 📋 所有格式枚举测试
 
-这是一个包含所有 Markdown 格式的完整测试文档，用于检查微信公众号兼容性。
+这是一个包含所有 Markdown 格式的完整测试文档，用于检查社交平台兼容性。
 
 ### 基础格式测试
 - **粗体文本** 和 __另一种粗体语法__
@@ -422,7 +422,7 @@ function greet(name) {
 | *斜体* | \`*text*\` | *示例文本* |
 | \`代码\` | \`\\\`code\\\`\` | \`console.log()\` |
 
-🎯 **测试目标**：检查所有格式在微信公众号中的显示效果和兼容性。`
+🎯 **测试目标**：检查所有格式在社交平台中的显示效果和兼容性。`
       }
     }
 
@@ -447,6 +447,19 @@ function greet(name) {
 
 
 
+    // 获取当前有效的颜色主题（包括临时自定义主题）
+    const getCurrentEffectiveTheme = () => {
+      try {
+        const tempTheme = localStorage.getItem('temp-custom-theme')
+        if (tempTheme) {
+          return JSON.parse(tempTheme)
+        }
+      } catch (error) {
+        console.warn('Failed to load temp custom theme:', error)
+      }
+      return currentColorTheme.value
+    }
+
     const handleCopyFormatSelect = async (option) => {
       if (!markdownContent.value.trim()) {
         showNotification('请先编辑内容', 'warning')
@@ -456,14 +469,17 @@ function greet(name) {
       try {
         let result
         const copyOptions = {
-          theme: currentColorTheme.value,
+          theme: getCurrentEffectiveTheme(), // 使用有效主题
           codeTheme: currentCodeStyle.value,
           themeSystem: currentLayoutId.value
         }
 
-        switch (option.value) {
-          case 'wechat':
-            result = await copyWechatFormat(markdownContent.value, copyOptions)
+        // 如果没有指定格式，默认使用社交格式
+        const formatValue = option.value || 'social'
+
+        switch (formatValue) {
+          case 'social':
+            result = await copySocialFormat(markdownContent.value, copyOptions)
             break
           case 'markdown':
             result = await copyMarkdownFormat(markdownContent.value)
@@ -484,7 +500,7 @@ function greet(name) {
       setLayout(systemId)
       // 重新应用当前颜色主题，确保颜色变量也被更新
       setColorTheme(currentColorThemeId.value)
-      const systemName = currentLayoutId.value === 'wechat' ? '微信主题' : '主题系统'
+      const systemName = currentLayoutId.value === 'default' ? '默认主题' : '主题系统'
       showNotification(`主题风格已更新为${systemName}`, 'success')
     }
 
@@ -504,10 +520,8 @@ function greet(name) {
       showNotification(`代码样式已更新为${styleName}`, 'success')
     }
 
-    // 初始化主题
-    onMounted(() => {
-      initialize()
-    })
+    // 初始化主题 - 立即初始化避免闪烁
+    initialize()
 
     return {
       markdownContent,

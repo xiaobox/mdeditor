@@ -230,30 +230,42 @@ onUnmounted(() => {
   transform: translateY(0) scale(1);
 }
 
-/* 专用的复制按钮样式类 - 简洁版本 */
+/* 专用的复制按钮样式类 - 与其他按钮保持一致 */
 .btn-copy-custom {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 6px;
-  border: none;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--theme-border-light);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: all 0.3s ease;
   text-decoration: none;
   white-space: nowrap;
-  background-color: var(--primary-color, #00A86B);
-  color: white;
+  background: var(--theme-bg-tertiary);
+  color: var(--theme-text-secondary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-copy-custom:hover:not(:disabled) {
-  background-color: var(--primary-hover, #008B5A);
+  background: var(--theme-bg-secondary);
+  color: var(--theme-text-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
+}
+
+.btn-copy-custom:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .btn-copy-custom:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
 }
 </style>

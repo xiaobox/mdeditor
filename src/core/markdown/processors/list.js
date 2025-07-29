@@ -8,7 +8,7 @@
 
 import {
   MARKDOWN_SYNTAX,
-  WECHAT_FORMATTING,
+  SOCIAL_FORMATTING,
   EDITOR_OPERATIONS
 } from '../../../config/constants/index.js';
 import { formatInlineText } from '../formatters/legacy.js';
@@ -117,15 +117,15 @@ export class ListProcessor {
     let checkboxHtml;
     if (isChecked) {
       // 已完成任务
-      checkboxHtml = `<span style="display: inline-block; width: 18px; height: 18px; background-color: ${theme.primary}; border-radius: 3px; margin-right: 8px; text-align: center; line-height: 18px; color: white; font-size: 12px; font-weight: bold; vertical-align: middle;">${WECHAT_FORMATTING.LIST_SYMBOLS.TASK_CHECKED}</span>`;
+      checkboxHtml = `<span style="display: inline-block; width: 18px; height: 18px; background-color: ${theme.primary}; border-radius: 3px; margin-right: 8px; text-align: center; line-height: 18px; color: white; font-size: 12px; font-weight: bold; vertical-align: middle;">${SOCIAL_FORMATTING.LIST_SYMBOLS.TASK_CHECKED}</span>`;
     } else {
       // 未完成任务
-      checkboxHtml = `<span style="display: inline-block; width: 18px; height: 18px; background-color: #ffffff; border: 2px solid ${theme.borderMedium}; border-radius: 3px; margin-right: 8px; vertical-align: middle;"></span>`;
+      checkboxHtml = `<span style="display: inline-block; width: 18px; height: 18px; background-color: ${theme.bgPrimary || '#ffffff'}; border: 2px solid ${theme.borderMedium || '#8b949e'}; border-radius: 3px; margin-right: 8px; vertical-align: middle;"></span>`;
     }
 
-    const textStyle = isChecked 
-      ? 'text-decoration: line-through; color: #656d76; opacity: 0.8;' 
-      : 'color: #24292f;';
+    const textStyle = isChecked
+      ? `text-decoration: line-through; color: ${theme.textSecondary || '#656d76'}; opacity: 0.8;`
+      : `color: ${theme.textPrimary || '#24292f'};`;
 
     return `<p style="margin-left: ${marginLeft}px; margin-top: 8px; margin-bottom: 8px; font-size: 16px; line-height: 1.6; display: flex; align-items: center;">${checkboxHtml}<span style="${textStyle}">${formattedTaskText}</span></p>`;
   }
@@ -223,7 +223,7 @@ export class ListProcessor {
     const { depth, content } = listItem;
     const formattedContent = formatInlineText(content, theme);
     
-    const symbols = WECHAT_FORMATTING.LIST_SYMBOLS.UNORDERED;
+    const symbols = SOCIAL_FORMATTING.LIST_SYMBOLS.UNORDERED;
     const displayMarker = symbols[Math.min(depth, symbols.length - 1)];
     
     // 改进颜色选择逻辑，确保跟随主题色
@@ -316,8 +316,14 @@ export class ListProcessor {
       return theme.listColors;
     }
 
-    // 最后的备选方案：使用相对现代的颜色
-    return ['#2563eb', '#7c3aed', '#dc2626', '#059669'];
+    // 最后的备选方案：使用主题色或现代的颜色
+    const fallbackPrimary = theme.primary || '#2563eb';
+    return [
+      fallbackPrimary,
+      this.adjustColorBrightness(fallbackPrimary, 0.7),
+      this.adjustColorBrightness(fallbackPrimary, 0.5),
+      this.adjustColorBrightness(fallbackPrimary, 0.3)
+    ];
   }
 
   /**

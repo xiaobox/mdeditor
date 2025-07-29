@@ -26,7 +26,7 @@ export class FormatterContext {
     // 保留的状态
     const currentTheme = preserveOptions.currentTheme || this.currentTheme || null;
     const codeTheme = preserveOptions.codeTheme || this.codeTheme || null;
-    const themeSystem = preserveOptions.themeSystem || this.themeSystem || 'wechat';
+    const themeSystem = preserveOptions.themeSystem || this.themeSystem || 'default';
     const options = preserveOptions.options || this.options || {};
 
     // 重置处理状态
@@ -179,7 +179,7 @@ export class FormatterContext {
     this.blockquoteContent = state.blockquoteContent || [];
     this.currentTheme = state.currentTheme || null;
     this.codeTheme = state.codeTheme || null;
-    this.themeSystem = state.themeSystem || 'wechat';
+    this.themeSystem = state.themeSystem || 'default';
     this.options = state.options || {};
   }
 } 

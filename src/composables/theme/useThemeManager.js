@@ -3,9 +3,9 @@
  * @description 统一主题管理 Composable
  *
  * 本文件负责集中管理应用程序的所有主题相关状态，包括：
- * - 颜色主题 (Color Theme): 如亮色、暗色、微信主题等。
+ * - 颜色主题 (Color Theme): 如亮色、暗色、社交平台等。
  * - 代码高亮样式 (Code Style): 如 Mac、GitHub、VS Code、Terminal 等。
- * - 排版主题 (Theme System): 如微信、掘金等，定义整体布局和字体。
+ * - 排版主题 (Theme System): 如默认主题、掘金等，定义整体布局和字体。
  *
  * 主要功能：
  * 1.  **状态管理**: 使用 Vue 3 的 `reactive` API 创建全局响应式主题状态 `themeState`。
@@ -30,7 +30,9 @@ import {
   getColorTheme,
   getColorThemeList,
   defaultColorTheme,
-  colorThemePresets
+  colorThemePresets,
+  ColorThemeGenerator,
+  CUSTOM_THEME_STORAGE_KEY
 } from '../../core/theme/presets/color-themes.js'
 import {
   getCodeStyle,
@@ -57,7 +59,8 @@ const themeState = reactive({
   colorThemeId: ThemeStorage.load(STORAGE_KEYS.COLOR_THEME, STORAGE_DEFAULTS.COLOR_THEME),
   codeStyleId: ThemeStorage.load(STORAGE_KEYS.CODE_STYLE, STORAGE_DEFAULTS.CODE_STYLE),
   themeSystemId: ThemeStorage.load(STORAGE_KEYS.THEME_SYSTEM, STORAGE_DEFAULTS.THEME_SYSTEM),
-  isInitialized: false
+  isInitialized: false,
+  hasTemporaryCustomTheme: false // 标记是否有临时自定义主题
 })
 
 /**
@@ -69,14 +72,38 @@ export function useThemeManager() {
   // --- 计算属性 (Computed Properties) ---
 
   /** 当前激活的颜色主题对象 */
-  const currentColorTheme = computed(() => getColorTheme(themeState.colorThemeId))
+  const currentColorTheme = computed(() => {
+    // 先尝试获取内置主题
+    const builtinTheme = getColorTheme(themeState.colorThemeId)
+    if (builtinTheme) return builtinTheme
+
+    // 再尝试获取自定义主题
+    try {
+      const customThemes = JSON.parse(localStorage.getItem(CUSTOM_THEME_STORAGE_KEY) || '[]')
+      const customTheme = customThemes.find(t => t.id === themeState.colorThemeId)
+      if (customTheme) return customTheme
+    } catch (error) {
+      console.error('Failed to load custom theme:', error)
+    }
+
+    return defaultColorTheme
+  })
   /** 当前激活的代码高亮样式对象 */
   const currentCodeStyle = computed(() => getCodeStyle(themeState.codeStyleId))
   /** 当前激活的排版主题对象 */
   const currentThemeSystem = computed(() => getThemeSystem(themeState.themeSystemId))
 
-  /** 所有可用的颜色主题列表 */
-  const colorThemeList = computed(() => getColorThemeList())
+  /** 所有可用的颜色主题列表（包含自定义主题） */
+  const colorThemeList = computed(() => {
+    const builtinThemes = getColorThemeList()
+    try {
+      const customThemes = JSON.parse(localStorage.getItem(CUSTOM_THEME_STORAGE_KEY) || '[]')
+      return [...builtinThemes, ...customThemes]
+    } catch (error) {
+      console.error('Failed to load custom themes:', error)
+      return builtinThemes
+    }
+  })
   /** 所有可用的代码高亮样式列表 */
   const codeStyleList = computed(() => getCodeStyleList())
   /** 所有可用的排版主题列表 */
@@ -90,9 +117,27 @@ export function useThemeManager() {
    * @returns {boolean} 如果设置成功，返回 true。
    */
   const setColorTheme = (themeId) => {
-    if (themeId && getColorTheme(themeId)) {
+    // 检查内置主题或自定义主题
+    const theme = getColorTheme(themeId) || (() => {
+      try {
+        const customThemes = JSON.parse(localStorage.getItem(CUSTOM_THEME_STORAGE_KEY) || '[]')
+        return customThemes.find(t => t.id === themeId)
+      } catch {
+        return null
+      }
+    })()
+
+    if (themeId && theme) {
       themeState.colorThemeId = themeId
       ThemeStorage.save(STORAGE_KEYS.COLOR_THEME, themeId)
+
+      // 对于自定义主题，立即强制更新CSS
+      if (themeId.startsWith('custom-')) {
+        setTimeout(() => {
+          cssManager.forceApplyColorTheme(theme)
+        }, 0)
+      }
+
       // updateAllCSS() 会由 watch 触发
       return true
     }
@@ -264,7 +309,31 @@ export function useThemeManager() {
    */
   const initialize = () => {
     if (!themeState.isInitialized) {
-      updateAllCSS()
+      // 首先检查是否有临时自定义颜色需要恢复
+      try {
+        const savedColor = localStorage.getItem('temp-custom-color')
+        const savedTheme = localStorage.getItem('temp-custom-theme')
+
+        if (savedColor && savedTheme) {
+          const customTheme = JSON.parse(savedTheme)
+          // 设置临时主题标记，阻止自动更新
+          themeState.hasTemporaryCustomTheme = true
+          // 直接应用自定义主题，不更新themeState
+          cssManager.forceApplyColorTheme(customTheme)
+        } else {
+          // 没有自定义颜色，清除标记并应用正常主题
+          themeState.hasTemporaryCustomTheme = false
+          updateAllCSS()
+        }
+      } catch (error) {
+        console.warn('Failed to restore custom color on init:', error)
+        // 清除损坏的数据并应用正常主题
+        localStorage.removeItem('temp-custom-color')
+        localStorage.removeItem('temp-custom-theme')
+        themeState.hasTemporaryCustomTheme = false
+        updateAllCSS()
+      }
+
       themeState.isInitialized = true
     }
   }
@@ -276,10 +345,10 @@ export function useThemeManager() {
    * `deep: true` 确保即使主题对象的内部属性变化也能被捕获。
    */
   watch([currentColorTheme, currentCodeStyle, currentThemeSystem], () => {
-    if (themeState.isInitialized) {
+    if (themeState.isInitialized && !themeState.hasTemporaryCustomTheme) {
       updateAllCSS()
     }
-  }, { deep: true })
+  }, { deep: true, immediate: false })
 
   // --- 返回 API ---
 
@@ -289,6 +358,9 @@ export function useThemeManager() {
     currentCodeStyleId: computed(() => themeState.codeStyleId),
     currentThemeSystemId: computed(() => themeState.themeSystemId),
     isInitialized: computed(() => themeState.isInitialized),
+
+    // 主题状态（用于外部访问）
+    themeState,
 
     // 当前主题对象
     currentColorTheme,
@@ -332,6 +404,88 @@ export function useThemeManager() {
       colorThemes: colorThemePresets,
       codeStyles: codeStylePresets,
       themeSystems: themeSystemPresets
+    },
+
+    // --- 自定义主题管理 ---
+
+    // 获取所有自定义主题
+    getCustomThemes() {
+      try {
+        const stored = localStorage.getItem(CUSTOM_THEME_STORAGE_KEY)
+        return stored ? JSON.parse(stored) : []
+      } catch (error) {
+        console.error('Failed to load custom themes:', error)
+        return []
+      }
+    },
+
+    // 保存自定义主题
+    saveCustomTheme(color, name = '自定义主题', description = '用户自定义的颜色主题') {
+      const customTheme = ColorThemeGenerator.createCustomTheme(color, name, description)
+      const customThemes = this.getCustomThemes()
+
+      // 检查是否已存在相同颜色的主题
+      const existingIndex = customThemes.findIndex(theme => theme.primary === color)
+      if (existingIndex >= 0) {
+        // 更新现有主题
+        customThemes[existingIndex] = customTheme
+      } else {
+        // 添加新主题
+        customThemes.push(customTheme)
+      }
+
+      // 限制自定义主题数量（最多20个）
+      if (customThemes.length > 20) {
+        customThemes.splice(0, customThemes.length - 20)
+      }
+
+      try {
+        localStorage.setItem(CUSTOM_THEME_STORAGE_KEY, JSON.stringify(customThemes))
+        return customTheme
+      } catch (error) {
+        console.error('Failed to save custom theme:', error)
+        throw new Error('保存自定义主题失败')
+      }
+    },
+
+    // 删除自定义主题
+    deleteCustomTheme(themeId) {
+      const customThemes = this.getCustomThemes()
+      const filteredThemes = customThemes.filter(theme => theme.id !== themeId)
+
+      try {
+        localStorage.setItem(CUSTOM_THEME_STORAGE_KEY, JSON.stringify(filteredThemes))
+
+        // 如果删除的是当前主题，切换到默认主题
+        if (themeState.currentColorTheme === themeId) {
+          this.setColorTheme(defaultColorTheme.id)
+        }
+
+        return true
+      } catch (error) {
+        console.error('Failed to delete custom theme:', error)
+        throw new Error('删除自定义主题失败')
+      }
+    },
+
+    // 获取扩展的颜色主题列表（包含自定义主题）
+    getExtendedColorThemeList() {
+      const builtinThemes = getColorThemeList()
+      const customThemes = this.getCustomThemes()
+      return [...builtinThemes, ...customThemes]
+    },
+
+    // 获取扩展的颜色主题（包含自定义主题）
+    getExtendedColorTheme(id) {
+      // 先尝试获取内置主题
+      const builtinTheme = getColorTheme(id)
+      if (builtinTheme) {
+        return builtinTheme
+      }
+
+      // 再尝试获取自定义主题
+      const customThemes = this.getCustomThemes()
+      return customThemes.find(theme => theme.id === id) || null
     }
   }
 }

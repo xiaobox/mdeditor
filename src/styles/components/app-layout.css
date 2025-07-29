@@ -1,12 +1,10 @@
 /* App 主布局样式 */
-
 #app {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  background: linear-gradient(135deg, var(--theme-bg-secondary) 0%, var(--theme-bg-tertiary) 100%);
 }
-
 /* 应用头部 */
 .app-header {
   display: flex;
@@ -20,15 +18,11 @@
   position: relative;
   overflow: visible;
 }
-
-
-
 .header-left {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-
 .header-left h1 {
   font-size: 26px;
   font-weight: 800;
@@ -40,7 +34,6 @@
   letter-spacing: -0.8px;
   position: relative;
 }
-
 .header-left h1::after {
   content: '';
   position: absolute;
@@ -52,24 +45,20 @@
   border-radius: 2px;
   opacity: 0.6;
 }
-
 .header-subtitle {
   font-size: 14px;
   color: var(--theme-text-secondary);
   font-weight: 500;
   letter-spacing: 0.2px;
 }
-
 .header-center {
   display: none;
 }
-
 .header-right {
   display: flex;
   align-items: center;
   gap: 16px;
 }
-
 /* 主内容区域 */
 .app-main {
   flex: 1;
@@ -79,7 +68,6 @@
   overflow: hidden;
   background: linear-gradient(135deg, var(--theme-bg-primary) 0%, var(--theme-bg-secondary) 100%);
 }
-
 /* 面板通用样式 */
 .editor-panel,
 .preview-panel {
@@ -95,14 +83,12 @@
   transition: all 0.3s ease;
   position: relative;
 }
-
 .editor-panel:hover,
 .preview-panel:hover {
   transform: translateY(-2px);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
   border-color: var(--primary-color);
 }
-
 /* 面板头部 */
 .panel-header {
   display: flex;
@@ -114,7 +100,6 @@
   position: relative;
   overflow: hidden;
 }
-
 .panel-header::before {
   content: '';
   position: absolute;
@@ -125,7 +110,6 @@
   background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
   opacity: 0.8;
 }
-
 .panel-header h3 {
   font-size: 18px;
   font-weight: 700;
@@ -137,7 +121,6 @@
   letter-spacing: -0.3px;
   position: relative;
 }
-
 .panel-header h3::before {
   content: '';
   width: 6px;
@@ -146,19 +129,16 @@
   border-radius: 50%;
   box-shadow: 0 0 8px var(--primary-color);
 }
-
 .panel-actions {
   display: flex;
   gap: 12px;
 }
-
 /* 内容区域 */
 .editor-content,
 .preview-content {
   flex: 1;
   overflow: hidden;
 }
-
 /* 应用页脚 */
 .app-footer {
   display: flex;
@@ -171,7 +151,6 @@
   flex-shrink: 0;
   position: relative;
 }
-
 .app-footer::before {
   content: '';
   position: absolute;
@@ -182,14 +161,12 @@
   background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
   opacity: 0.6;
 }
-
 .footer-left,
 .footer-right {
   display: flex;
   align-items: center;
   gap: 24px;
 }
-
 .footer-left span,
 .footer-right span {
   font-size: 14px;
@@ -197,7 +174,6 @@
   font-weight: 600;
   letter-spacing: 0.2px;
 }
-
 /* 状态指示器 */
 .status-indicator {
   display: inline-flex;
@@ -209,7 +185,6 @@
   font-weight: 600;
   transition: all var(--transition-fast);
 }
-
 .status-indicator::before {
   content: '';
   width: 6px;
@@ -217,26 +192,21 @@
   border-radius: 50%;
   transition: all var(--transition-fast);
 }
-
 .status-indicator.ready {
   background-color: var(--primary-light);
   color: var(--primary-color);
 }
-
 .status-indicator.ready::before {
   background-color: var(--primary-color);
   animation: pulse 2s infinite;
 }
-
 .status-indicator.pending {
   background-color: var(--theme-bg-tertiary);
   color: var(--theme-text-tertiary);
 }
-
 .status-indicator.pending::before {
   background-color: var(--gray-400);
 }
-
 @keyframes pulse {
   0% {
     opacity: 1;
@@ -248,7 +218,6 @@
     opacity: 1;
   }
 }
-
 /* 动画效果 */
 @keyframes fadeInUp {
   from {
@@ -260,23 +229,19 @@
     transform: translateY(0);
   }
 }
-
 .editor-panel {
   animation: fadeInUp 0.5s ease-out;
 }
-
 .preview-panel {
   animation: fadeInUp 0.5s ease-out 0.1s;
   animation-fill-mode: both;
 }
-
 /* 主题切换动画 */
 * {
   transition: background-color var(--transition-normal), 
               color var(--transition-normal),
               border-color var(--transition-normal);
 }
-
 /* 响应式设计 */
 @media (max-width: 1200px) {
   .app-main {
@@ -284,58 +249,46 @@
     gap: 20px;
     padding: 24px;
   }
-
   .editor-panel,
   .preview-panel {
     min-width: 100%;
     min-height: 400px;
   }
 }
-
 @media (max-width: 768px) {
   .app-header {
     padding: 20px 24px;
   }
-
   .header-left h1 {
     font-size: 22px;
   }
-
   .header-left h1::after {
     width: 40px;
     height: 2px;
   }
-
   .header-subtitle {
     font-size: 13px;
   }
-
   .header-right {
     gap: 12px;
   }
-
   .app-main {
     padding: 20px;
     gap: 16px;
   }
-
   .editor-panel,
   .preview-panel {
     border-radius: 16px;
   }
-
   .panel-header {
     padding: 16px 20px;
   }
-
   .panel-header h3 {
     font-size: 16px;
   }
-
   .app-footer {
     padding: 16px 24px;
   }
-
   .footer-left,
   .footer-right {
     gap: 16px;
