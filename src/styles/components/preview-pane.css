@@ -161,9 +161,9 @@
   font-family: var(--theme-code-font-family);
   font-size: 13px;
   line-height: 1.6;
-  background-color: #1e1e1e;
-  color: #e6edf3;
-  border: 1px solid #30363d;
+  background-color: var(--code-bg);
+  color: var(--code-color);
+  border: 1px solid var(--code-border);
   border-radius: var(--radius-lg);
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -188,9 +188,9 @@
 
 /* 错误消息样式 - 简化版 */
 .preview-rendered :deep(.error) {
-  background: #fee2e2;
-  border: 1px solid #fca5a5;
-  color: #dc2626;
+  background: var(--theme-bg-tertiary);
+  border: 1px solid var(--theme-border-medium);
+  color: var(--theme-text-secondary);
   padding: 16px;
   border-radius: var(--radius-md);
   margin: 16px 0;

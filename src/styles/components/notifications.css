@@ -2,45 +2,45 @@
 
 .notification {
   position: relative;
-  padding: 6px 12px;
+  padding: 8px 16px;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  max-width: 180px;
-  min-width: 100px;
-  max-height: 40px;
-  line-height: 1.3;
+  max-width: 400px;
+  min-width: 120px;
+  min-height: 36px;
+  line-height: 1.4;
   text-align: center;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   animation: slideDown 0.3s ease;
   backdrop-filter: blur(10px);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow: visible;
 }
 
 .notification.success {
-  background-color: rgba(212, 237, 218, 0.95);
-  color: #155724;
-  border: 1px solid #c3e6cb;
+  background-color: var(--theme-primary-light);
+  color: var(--theme-primary-dark);
+  border: 1px solid var(--theme-primary);
 }
 
 .notification.error {
-  background-color: rgba(248, 215, 218, 0.95);
-  color: #721c24;
-  border: 1px solid #f5c6cb;
+  background-color: var(--theme-primary-lighter);
+  color: var(--theme-primary-dark);
+  border: 1px solid var(--theme-primary);
 }
 
 .notification.warning {
-  background-color: rgba(255, 243, 205, 0.95);
-  color: #856404;
-  border: 1px solid #ffeaa7;
+  background-color: var(--theme-primary-lighter);
+  color: var(--theme-primary-dark);
+  border: 1px solid var(--theme-primary);
 }
 
 .notification.info {
-  background-color: rgba(209, 236, 241, 0.95);
-  color: #0c5460;
-  border: 1px solid #bee5eb;
+  background-color: var(--theme-primary-lighter);
+  color: var(--theme-primary-dark);
+  border: 1px solid var(--theme-primary);
 }
 
 /* 暗色主题通知 */
@@ -141,12 +141,12 @@
     left: 50%;
     right: auto;
     transform: translateX(-50%);
-    max-width: 200px;
+    max-width: 320px;
     min-width: 120px;
-    max-height: 36px;
+    min-height: 36px;
     padding: 8px 12px;
     font-size: 12px;
-    line-height: 1.2;
+    line-height: 1.3;
   }
 
   .notification-container {
@@ -154,6 +154,6 @@
     left: 50%;
     right: auto;
     transform: translateX(-50%);
-    max-width: 200px;
+    max-width: 340px;
   }
 }

@@ -3,7 +3,17 @@
     <div class="settings-overlay" @click="$emit('close')"></div>
     <div class="settings-content">
       <div class="settings-header">
-        <h2>设置</h2>
+        <div class="header-content">
+          <div class="header-icon">
+            <svg viewBox="0 0 24 24" width="28" height="28">
+              <path fill="currentColor" d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
+            </svg>
+          </div>
+          <div class="header-text">
+            <h2>设置</h2>
+            <p>个性化定制您的编辑器体验</p>
+          </div>
+        </div>
         <button class="close-btn" @click="$emit('close')">
           <svg viewBox="0 0 24 24" width="20" height="20">
             <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
@@ -12,19 +22,19 @@
       </div>
       
       <div class="settings-body">
-        <!-- 主题系统设置 -->
-        <div class="settings-section">
-          <div class="section-header">
-            <h3>
-              <svg viewBox="0 0 24 24" width="20" height="20">
-                <path fill="currentColor" d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z"/>
-              </svg>
-              主题风格
-            </h3>
-            <p>选择您喜欢的整体主题风格</p>
-          </div>
+        <div class="settings-sections">
+          <!-- 主题系统设置 -->
+          <section class="settings-section">
+            <div class="section-header">
+              <div class="section-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20">
+                  <path fill="currentColor" d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z"/>
+                </svg>
+              </div>
+              <h3>主题风格</h3>
+            </div>
 
-          <div class="theme-system-grid">
+            <div class="theme-system-grid">
             <div
               v-for="themeSystem in layoutList"
               :key="themeSystem.id"
@@ -58,21 +68,20 @@
               </div>
             </div>
           </div>
-        </div>
+          </section>
 
-        <!-- 主题色设置 -->
-        <div class="settings-section">
-          <div class="section-header">
-            <h3>
-              <svg viewBox="0 0 24 24" width="20" height="20">
-                <path fill="currentColor" d="M17.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,9A1.5,1.5 0 0,1 19,10.5A1.5,1.5 0 0,1 17.5,12M14.5,8A1.5,1.5 0 0,1 13,6.5A1.5,1.5 0 0,1 14.5,5A1.5,1.5 0 0,1 16,6.5A1.5,1.5 0 0,1 14.5,8M9.5,8A1.5,1.5 0 0,1 8,6.5A1.5,1.5 0 0,1 9.5,5A1.5,1.5 0 0,1 11,6.5A1.5,1.5 0 0,1 9.5,8M6.5,12A1.5,1.5 0 0,1 5,10.5A1.5,1.5 0 0,1 6.5,9A1.5,1.5 0 0,1 8,10.5A1.5,1.5 0 0,1 6.5,12M12,3A9,9 0 0,0 3,12A9,9 0 0,0 12,21A8.5,8.5 0 0,0 16.5,19C15.9,18.7 15.2,18.4 14.5,18.1C13.3,17.6 12,17 12,17C12,17 13.3,17.6 14.5,18.1C15.2,18.4 15.9,18.7 16.5,19A8.5,8.5 0 0,0 12,3Z"/>
-              </svg>
-              主题色
-            </h3>
-            <p>选择您喜欢的主题色彩</p>
-          </div>
-          
-          <div class="theme-grid">
+          <!-- 主题色设置 -->
+          <section class="settings-section">
+            <div class="section-header">
+              <div class="section-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20">
+                  <path fill="currentColor" d="M17.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,9A1.5,1.5 0 0,1 19,10.5A1.5,1.5 0 0,1 17.5,12M14.5,8A1.5,1.5 0 0,1 13,6.5A1.5,1.5 0 0,1 14.5,5A1.5,1.5 0 0,1 16,6.5A1.5,1.5 0 0,1 14.5,8M9.5,8A1.5,1.5 0 0,1 8,6.5A1.5,1.5 0 0,1 9.5,5A1.5,1.5 0 0,1 11,6.5A1.5,1.5 0 0,1 9.5,8M6.5,12A1.5,1.5 0 0,1 5,10.5A1.5,1.5 0 0,1 6.5,9A1.5,1.5 0 0,1 8,10.5A1.5,1.5 0 0,1 6.5,12M12,3A9,9 0 0,0 3,12A9,9 0 0,0 12,21A8.5,8.5 0 0,0 16.5,19C15.9,18.7 15.2,18.4 14.5,18.1C13.3,17.6 12,17 12,17C12,17 13.3,17.6 14.5,18.1C15.2,18.4 15.9,18.7 16.5,19A8.5,8.5 0 0,0 12,3Z"/>
+                </svg>
+              </div>
+              <h3>主题色</h3>
+            </div>
+
+            <div class="theme-grid">
             <div
               v-for="theme in colorThemeList"
               :key="theme.id"
@@ -96,21 +105,20 @@
               </div>
             </div>
           </div>
-        </div>
-        
-        <!-- 代码样式设置 -->
-        <div class="settings-section">
-          <div class="section-header">
-            <h3>
-              <svg viewBox="0 0 24 24" width="20" height="20">
-                <path fill="currentColor" d="M8,3A2,2 0 0,0 6,5V9A2,2 0 0,1 4,11H3V13H4A2,2 0 0,1 6,15V19A2,2 0 0,0 8,21H10V19H8V14A2,2 0 0,0 6,12A2,2 0 0,0 8,10V5H10V3M16,3A2,2 0 0,1 18,5V9A2,2 0 0,0 20,11H21V13H20A2,2 0 0,0 18,15V19A2,2 0 0,1 16,21H14V19H16V14A2,2 0 0,1 18,12A2,2 0 0,1 16,10V5H14V3H16Z"/>
-              </svg>
-              代码样式
-            </h3>
-            <p>选择您喜欢的代码块样式</p>
-          </div>
-          
-          <div class="code-style-grid">
+          </section>
+
+          <!-- 代码样式设置 -->
+          <section class="settings-section">
+            <div class="section-header">
+              <div class="section-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20">
+                  <path fill="currentColor" d="M8,3A2,2 0 0,0 6,5V9A2,2 0 0,1 4,11H3V13H4A2,2 0 0,1 6,15V19A2,2 0 0,0 8,21H10V19H8V14A2,2 0 0,0 6,12A2,2 0 0,0 8,10V5H10V3M16,3A2,2 0 0,1 18,5V9A2,2 0 0,0 20,11H21V13H20A2,2 0 0,0 18,15V19A2,2 0 0,1 16,21H14V19H16V14A2,2 0 0,1 18,12A2,2 0 0,1 16,10V5H14V3H16Z"/>
+                </svg>
+              </div>
+              <h3>代码样式</h3>
+            </div>
+
+            <div class="code-style-grid">
             <div
               v-for="codeStyle in codeStyleList"
               :key="codeStyle.id"
@@ -158,7 +166,8 @@
                 </svg>
               </div>
             </div>
-          </div>
+            </div>
+          </section>
         </div>
       </div>
       
@@ -348,116 +357,210 @@ defineExpose({
 
 .settings-content {
   position: relative;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-  width: 90%;
-  max-width: 800px;
+  background: var(--theme-bg-primary);
+  border-radius: 20px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.25);
+  width: 95%;
+  max-width: 1000px;
   max-height: 90vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  border: 1px solid var(--theme-border-light);
 }
 
 .settings-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
-  border-bottom: 1px solid #e5e7eb;
-  background: #f9fafb;
+  padding: 32px 40px;
+  background: linear-gradient(135deg, var(--theme-bg-secondary), var(--theme-bg-primary));
+  border-bottom: 1px solid var(--theme-border-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.settings-header h2 {
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.header-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.header-icon::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: rotate(45deg);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.header-text h2 {
+  margin: 0 0 4px 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--theme-text-primary);
+  letter-spacing: -0.5px;
+}
+
+.header-text p {
   margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-  color: #111827;
+  font-size: 14px;
+  color: var(--theme-text-secondary);
+  font-weight: 500;
 }
 
 .close-btn {
-  background: none;
-  border: none;
-  padding: 8px;
-  border-radius: 6px;
+  width: 44px;
+  height: 44px;
+  background: var(--theme-bg-tertiary);
+  border: 1px solid var(--theme-border-light);
+  border-radius: 12px;
   cursor: pointer;
-  color: #6b7280;
-  transition: all 0.2s;
+  color: var(--theme-text-secondary);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .close-btn:hover {
-  background: #e5e7eb;
-  color: #374151;
+  background: var(--theme-bg-secondary);
+  color: var(--theme-text-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
 }
 
 .settings-body {
   flex: 1;
   overflow-y: auto;
-  padding: 24px;
+  padding: 40px;
+  background: linear-gradient(135deg, var(--theme-bg-primary) 0%, var(--theme-bg-secondary) 100%);
+}
+
+.settings-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 }
 
 .settings-section {
-  margin-bottom: 32px;
+  background: var(--theme-bg-primary);
+  border: 1px solid var(--theme-border-light);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
 }
 
-.settings-section:last-child {
-  margin-bottom: 0;
+.settings-section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
 }
 
 .section-header {
-  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--theme-border-light);
+}
+
+.section-icon {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.section-icon::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: rotate(45deg);
+  animation: shimmer 3s infinite;
 }
 
 .section-header h3 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0 0 8px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.section-header p {
   margin: 0;
-  font-size: 14px;
-  color: #6b7280;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--theme-text-primary);
+  letter-spacing: -0.5px;
 }
 
 /* 主题系统网格样式 */
 .theme-system-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin-bottom: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
 }
 
 .theme-system-card {
   position: relative;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 20px;
+  background: var(--theme-bg-secondary);
+  border: 1px solid var(--theme-border-light);
+  border-radius: 16px;
+  padding: 24px;
   cursor: pointer;
-  transition: all 0.2s;
-  background: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
 }
 
 .theme-system-card:hover {
-  border-color: #d1d5db;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
 }
 
 .theme-system-card.active {
-  border-color: var(--theme-primary, #10b981);
-  box-shadow: 0 0 0 1px var(--theme-primary, #10b981), 0 4px 12px rgba(16, 185, 129, 0.15);
-  transform: translateY(-2px);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color), 0 8px 32px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  background: linear-gradient(135deg, var(--theme-bg-secondary), var(--theme-bg-primary));
 }
 
 .theme-system-preview {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .theme-system-header {
@@ -467,100 +570,115 @@ defineExpose({
 }
 
 .theme-system-title {
-  font-weight: 600;
-  font-size: 16px;
-  color: #111827;
-  transition: all 0.2s ease;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--theme-text-primary);
+  transition: all 0.3s ease;
+  letter-spacing: -0.3px;
 }
 
 .theme-system-card:hover .theme-system-title {
-  color: var(--theme-primary, #10b981);
+  color: var(--primary-color);
 }
 
 .theme-system-colors {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 
 .color-dot {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--theme-bg-primary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.theme-system-card:hover .color-dot {
+  transform: scale(1.1);
 }
 
 .color-more {
-  font-size: 10px;
-  color: #6b7280;
-  margin-left: 2px;
+  font-size: 12px;
+  color: var(--theme-text-secondary);
+  margin-left: 4px;
+  font-weight: 600;
 }
 
 .theme-system-description {
-  font-size: 13px;
-  color: #6b7280;
-  line-height: 1.4;
+  font-size: 14px;
+  color: var(--theme-text-secondary);
+  line-height: 1.5;
+  font-weight: 500;
 }
 
 .theme-system-check {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 12px;
+  right: 12px;
   z-index: 10;
-  background: white;
+  background: var(--theme-bg-primary);
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border: 2px solid var(--primary-color);
 }
 
 /* 主题色网格样式 */
 .theme-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
 }
 
 .theme-card {
   position: relative;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 16px;
+  background: var(--theme-bg-secondary);
+  border: 1px solid var(--theme-border-light);
+  border-radius: 16px;
+  padding: 20px;
   cursor: pointer;
-  transition: all 0.2s;
-  background: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
 }
 
 .theme-card:hover {
-  border-color: #d1d5db;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
 }
 
 .theme-card.active {
-  border-color: var(--theme-primary, #10b981);
-  box-shadow: 0 0 0 1px var(--theme-primary, #10b981), 0 4px 12px rgba(16, 185, 129, 0.15);
-  transform: translateY(-2px);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color), 0 8px 32px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  background: linear-gradient(135deg, var(--theme-bg-secondary), var(--theme-bg-primary));
 }
 
 .theme-preview {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .theme-color-bar {
-  height: 4px;
-  border-radius: 2px;
+  height: 6px;
+  border-radius: 3px;
   width: 100%;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .theme-card:hover .theme-color-bar {
-  height: 6px;
+  height: 8px;
+  transform: scaleX(1.02);
 }
 
 .theme-content {
@@ -568,67 +686,74 @@ defineExpose({
 }
 
 .theme-title {
-  font-weight: 600;
-  font-size: 14px;
-  margin-bottom: 4px;
-  transition: all 0.2s ease;
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 6px;
+  transition: all 0.3s ease;
+  letter-spacing: -0.3px;
 }
 
 .theme-card:hover .theme-title {
-  transform: translateX(2px);
+  transform: translateX(3px);
 }
 
 .theme-description {
-  font-size: 12px;
-  color: #6b7280;
+  font-size: 13px;
+  color: var(--theme-text-secondary);
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .theme-check {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 12px;
+  right: 12px;
   z-index: 10;
-  background: white;
+  background: var(--theme-bg-primary);
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border: 2px solid var(--primary-color);
 }
 
 /* 代码样式网格样式 */
 .code-style-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
 }
 
 .code-style-card {
   position: relative;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 16px;
+  background: var(--theme-bg-secondary);
+  border: 1px solid var(--theme-border-light);
+  border-radius: 16px;
+  padding: 20px;
   cursor: pointer;
-  transition: all 0.2s;
-  background: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
 }
 
 .code-style-card:hover {
-  border-color: #d1d5db;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
 }
 
 .code-style-card.active {
-  border-color: var(--theme-primary, #10b981);
-  box-shadow: 0 0 0 1px var(--theme-primary, #10b981), 0 4px 12px rgba(16, 185, 129, 0.15);
-  transform: translateY(-2px);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color), 0 8px 32px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  background: linear-gradient(135deg, var(--theme-bg-secondary), var(--theme-bg-primary));
 }
 
 .code-style-preview {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .code-preview-container {
@@ -768,80 +893,154 @@ defineExpose({
 }
 
 .code-style-name {
-  font-weight: 600;
-  font-size: 14px;
-  margin-bottom: 4px;
-  color: #111827;
-  transition: all 0.2s ease;
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 6px;
+  color: var(--theme-text-primary);
+  transition: all 0.3s ease;
+  letter-spacing: -0.3px;
 }
 
 .code-style-card:hover .code-style-name {
-  color: var(--theme-primary, #10b981);
+  color: var(--primary-color);
+  transform: translateY(-1px);
 }
 
 .code-style-description {
-  font-size: 12px;
-  color: #6b7280;
+  font-size: 13px;
+  color: var(--theme-text-secondary);
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .code-style-check {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 12px;
+  right: 12px;
   z-index: 10;
-  background: white;
+  background: var(--theme-bg-primary);
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border: 2px solid var(--primary-color);
 }
 
 .settings-footer {
-  padding: 20px 24px;
-  border-top: 1px solid #e5e7eb;
-  background: #f9fafb;
+  padding: 32px 40px;
+  background: linear-gradient(135deg, var(--theme-bg-secondary), var(--theme-bg-primary));
+  border-top: 1px solid var(--theme-border-light);
   display: flex;
   justify-content: flex-end;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .apply-button {
-  background: var(--theme-primary, #10b981);
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
   color: white;
-  border: 2px solid var(--theme-primary, #10b981);
-  padding: 10px 24px;
-  border-radius: 6px;
-  font-weight: 600;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 16px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: -0.3px;
+}
+
+.apply-button::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: rotate(45deg);
+  transition: all 0.3s ease;
+  opacity: 0;
 }
 
 .apply-button:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.apply-button:hover::before {
+  opacity: 1;
+  animation: shimmer 0.6s ease-in-out;
+}
+
+.apply-button:active {
+  transform: translateY(0);
 }
 
 /* 响应式设计 */
+@media (max-width: 1024px) {
+  .theme-system-grid,
+  .theme-grid,
+  .code-style-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
   .settings-content {
     width: 95%;
     max-height: 95vh;
+    border-radius: 16px;
   }
 
+  .theme-system-grid,
   .theme-grid,
   .code-style-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .settings-body {
-    padding: 16px;
+    padding: 24px;
   }
 
-  .settings-header,
+  .settings-sections {
+    gap: 32px;
+  }
+
+  .settings-section {
+    padding: 24px;
+  }
+
+  .section-header {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .section-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .section-header h3 {
+    font-size: 18px;
+  }
+
+  .settings-header {
+    padding: 24px 32px;
+  }
+
   .settings-footer {
-    padding: 16px 20px;
+    padding: 24px 32px;
+  }
+
+  .apply-button {
+    padding: 14px 28px;
+    font-size: 15px;
   }
 }
 </style>

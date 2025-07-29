@@ -26,29 +26,19 @@
     <!-- 预览容器 -->
     <div class="preview-container" :class="`viewport-${currentViewportMode}`">
       <!-- 渲染预览模式 -->
-      <div v-if="previewMode === 'rendered'"
-           ref="previewContent"
+      <div ref="previewContent"
            class="preview-rendered markdown-body modern-markdown"
            :class="getPreviewClasses()"
            @scroll="handleScroll"
            v-html="renderedHtml">
-      </div>
-
-      <!-- HTML源码模式 -->
-      <div v-else class="preview-html">
-        <div
-          class="html-code-viewer"
-          v-html="highlightedHtml"
-        ></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { parseMarkdown } from '../core/markdown/parser/coordinator.js'
-import { highlightHtml } from '../shared/helpers/html.js'
 import { useGlobalThemeManager } from '../composables/index.js'
 
 // 图标组件
@@ -75,12 +65,7 @@ export default {
     markdown: {
       type: String,
       default: ''
-    },
-    previewMode: {
-      type: String,
-      default: 'rendered'
-    },
-
+    }
   },
   emits: ['html-generated'],
   setup(props, { emit }) {
@@ -251,13 +236,7 @@ export default {
       }
     }
 
-    // HTML语法高亮
-    const highlightedHtml = computed(() => {
-      if (!wechatHtml.value) {
-        return '<div class="html-placeholder">生成的HTML代码将在这里显示...</div>'
-      }
-      return highlightHtml(wechatHtml.value)
-    })
+    // HTML语法高亮功能已移除
 
 
 
@@ -294,7 +273,6 @@ export default {
     return {
       renderedHtml,
       wechatHtml,
-      highlightedHtml,
       previewContent,
       currentViewportMode,
       viewportModes,

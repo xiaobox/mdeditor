@@ -21,12 +21,14 @@
           语法指南
         </button>
 
-        <button class="btn btn-primary" @click="copyToClipboard" :disabled="!htmlContent">
-          <svg viewBox="0 0 24 24" width="18" height="18">
-            <path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/>
-          </svg>
-          复制HTML格式
-        </button>
+        <DropdownMenu
+          :options="copyFormatOptions"
+          v-model="selectedCopyFormat"
+          trigger-text="复制"
+          trigger-class="btn-copy-custom"
+          :disabled="!markdownContent.trim()"
+          @select="handleCopyFormatSelect"
+        />
       </div>
     </header>
 
@@ -62,24 +64,12 @@
         <div class="panel-header">
           <h3>预览</h3>
           <div class="panel-actions">
-            <button 
-              @click="previewMode = previewMode === 'rendered' ? 'html' : 'rendered'"
-              class="btn-small"
-              :title="previewMode === 'rendered' ? '查看HTML源码' : '查看渲染效果'"
-            >
-              <svg v-if="previewMode === 'rendered'" viewBox="0 0 24 24" width="20" height="20">
-                <path fill="currentColor" d="M12.89,3L14.85,3.4L11.11,21L9.15,20.6L12.89,3M19.59,12L16,8.41V5.58L22.42,12L16,18.41V15.58L19.59,12M1.58,12L8,5.58V8.41L4.41,12L8,15.58V18.41L1.58,12Z"/>
-              </svg>
-              <svg v-else viewBox="0 0 24 24" width="20" height="20">
-                <path fill="currentColor" d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z"/>
-              </svg>
-            </button>
+            <!-- HTML源码查看功能已移除 -->
           </div>
         </div>
         
         <PreviewPane
           :markdown="markdownContent"
-          :preview-mode="previewMode"
           @html-generated="handleHtmlGenerated"
           class="preview-content"
         />
@@ -133,7 +123,12 @@ import MarkdownEditor from './components/MarkdownEditor.vue'
 import PreviewPane from './components/PreviewPane.vue'
 import MarkdownGuide from './components/MarkdownGuide.vue'
 import SettingsPanel from './components/SettingsPanel.vue'
-import { copyToWechatClean } from './core/editor/clipboard.js'
+import DropdownMenu from './components/DropdownMenu.vue'
+import {
+  copyWechatFormat,
+  copyMarkdownFormat,
+  getCopyFormatOptions
+} from './core/editor/copy-formats.js'
 import { useGlobalThemeManager } from './composables/index.js'
 
 export default {
@@ -142,7 +137,8 @@ export default {
     MarkdownEditor,
     PreviewPane,
     MarkdownGuide,
-    SettingsPanel
+    SettingsPanel,
+    DropdownMenu
   },
   setup() {
     // 使用统一主题管理器
@@ -151,7 +147,9 @@ export default {
     // 解构所需的功能
     const {
       currentColorThemeId,
+      currentColorTheme,
       currentCodeStyleId,
+      currentCodeStyle,
       currentThemeSystemId: currentLayoutId,
       setColorTheme,
       setCodeStyle,
@@ -343,9 +341,12 @@ ___
 
     const htmlContent = ref('')
     const notifications = ref([])
-    const previewMode = ref('rendered')
     const showMarkdownGuide = ref(false)
     const showSettingsPanel = ref(false)
+
+    // 复制格式相关
+    const copyFormatOptions = getCopyFormatOptions()
+    const selectedCopyFormat = ref('wechat')
 
     // 计算属性
     const estimatedReadTime = computed(() => {
@@ -446,24 +447,32 @@ function greet(name) {
 
 
 
-    const copyToClipboard = async () => {
-      if (!htmlContent.value) {
-        showNotification('请先编辑内容，等待HTML生成', 'warning')
+    const handleCopyFormatSelect = async (option) => {
+      if (!markdownContent.value.trim()) {
+        showNotification('请先编辑内容', 'warning')
         return
       }
 
       try {
-        // 直接使用微信兼容的HTML，不再复制预览元素
-        // 因为预览元素包含的是复杂的HTML结构，不适合微信
-        console.log('复制微信兼容HTML，长度:', htmlContent.value.length)
-
-        const success = await copyToWechatClean(htmlContent.value)
-
-        if (success) {
-          showNotification('🎉 内容已复制！可以粘贴到微信公众号编辑器', 'success')
-        } else {
-          showNotification('❌ 复制失败，请重试', 'error')
+        let result
+        const copyOptions = {
+          theme: currentColorTheme.value,
+          codeTheme: currentCodeStyle.value,
+          themeSystem: currentLayoutId.value
         }
+
+        switch (option.value) {
+          case 'wechat':
+            result = await copyWechatFormat(markdownContent.value, copyOptions)
+            break
+          case 'markdown':
+            result = await copyMarkdownFormat(markdownContent.value)
+            break
+          default:
+            result = { success: false, message: '未知的复制格式' }
+        }
+
+        showNotification(result.message, result.success ? 'success' : 'error')
       } catch (err) {
         console.error('复制错误:', err)
         showNotification('❌ 复制失败：' + err.message, 'error')
@@ -504,18 +513,19 @@ function greet(name) {
       markdownContent,
       htmlContent,
       notifications,
-      previewMode,
       estimatedReadTime,
       currentThemeSystemId: currentLayoutId,
       currentThemeId: currentColorThemeId,
       currentCodeStyleId,
       showSettingsPanel,
+      showMarkdownGuide,
+      copyFormatOptions,
+      selectedCopyFormat,
       handleMarkdownChange,
       handleHtmlGenerated,
+      handleCopyFormatSelect,
       clearContent,
       loadSample,
-      copyToClipboard,
-      showMarkdownGuide,
       handleThemeSystemChanged,
       handleThemeChanged,
       handleCodeStyleChanged

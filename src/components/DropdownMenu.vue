@@ -1,0 +1,259 @@
+<template>
+  <div class="dropdown" ref="dropdownRef">
+    <button
+      class="dropdown-trigger"
+      :class="[triggerClass, { 'dropdown-open': isOpen }]"
+      @click="toggleDropdown"
+      :disabled="disabled"
+    >
+      <slot name="trigger">
+        <svg viewBox="0 0 24 24" width="18" height="18">
+          <path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/>
+        </svg>
+        <span>{{ triggerText }}</span>
+        <svg class="dropdown-arrow" :class="{ 'dropdown-arrow-open': isOpen }" viewBox="0 0 24 24" width="14" height="14">
+          <path fill="currentColor" d="M7,10L12,15L17,10H7Z"/>
+        </svg>
+      </slot>
+    </button>
+    
+    <Transition name="dropdown">
+      <div v-if="isOpen" class="dropdown-menu" :class="menuClass">
+        <div 
+          v-for="(option, index) in options" 
+          :key="option.value || index"
+          class="dropdown-item"
+          :class="{ 
+            'dropdown-item-active': option.value === selectedValue,
+            'dropdown-item-disabled': option.disabled 
+          }"
+          @click="selectOption(option)"
+        >
+          <div class="dropdown-item-content">
+            <svg v-if="option.icon" class="dropdown-item-icon" viewBox="0 0 24 24" width="16" height="16">
+              <path fill="currentColor" :d="option.icon"/>
+            </svg>
+            <span class="dropdown-item-text">{{ option.label }}</span>
+            <svg v-if="option.value === selectedValue" class="dropdown-item-check" viewBox="0 0 24 24" width="16" height="16">
+              <path fill="currentColor" d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+
+// Props
+const props = defineProps({
+  options: {
+    type: Array,
+    required: true,
+    default: () => []
+  },
+  modelValue: {
+    type: [String, Number],
+    default: null
+  },
+  triggerText: {
+    type: String,
+    default: '选择选项'
+  },
+  triggerClass: {
+    type: String,
+    default: ''
+  },
+  menuClass: {
+    type: String,
+    default: ''
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  }
+})
+
+// Emits
+const emit = defineEmits(['update:modelValue', 'select'])
+
+// Reactive data
+const isOpen = ref(false)
+const dropdownRef = ref(null)
+const selectedValue = ref(props.modelValue)
+
+// Methods
+const toggleDropdown = () => {
+  if (!props.disabled) {
+    isOpen.value = !isOpen.value
+  }
+}
+
+const selectOption = (option) => {
+  if (option.disabled) return
+  
+  selectedValue.value = option.value
+  emit('update:modelValue', option.value)
+  emit('select', option)
+  isOpen.value = false
+}
+
+const closeDropdown = () => {
+  isOpen.value = false
+}
+
+const handleClickOutside = (event) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+    closeDropdown()
+  }
+}
+
+const handleEscape = (event) => {
+  if (event.key === 'Escape') {
+    closeDropdown()
+  }
+}
+
+// Lifecycle
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+  document.addEventListener('keydown', handleEscape)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+  document.removeEventListener('keydown', handleEscape)
+})
+</script>
+
+<style scoped>
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+
+
+.dropdown-arrow {
+  transition: transform 0.2s ease;
+}
+
+.dropdown-arrow-open {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 220px;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.12),
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    0 1px 4px rgba(0, 0, 0, 0.04);
+  z-index: 9999;
+  overflow: hidden;
+  margin-top: 8px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dropdown-item {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.dropdown-item:hover:not(.dropdown-item-disabled) {
+  background-color: var(--gray-100, #f3f4f6);
+}
+
+.dropdown-item:active:not(.dropdown-item-disabled) {
+  background-color: var(--gray-200, #e5e7eb);
+}
+
+.dropdown-item-active {
+  background-color: var(--primary-light, rgba(0, 168, 107, 0.1));
+  border-left: 3px solid var(--primary-color, #00A86B);
+}
+
+.dropdown-item-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.dropdown-item-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.dropdown-item-icon {
+  flex-shrink: 0;
+  color: var(--primary-color, #00A86B);
+}
+
+.dropdown-item-text {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text-primary, #333);
+  font-weight: 500;
+}
+
+.dropdown-item-check {
+  flex-shrink: 0;
+  color: var(--primary-color, #00A86B);
+}
+
+/* Transition animations */
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.15s ease;
+}
+
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.95);
+}
+
+.dropdown-enter-to,
+.dropdown-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* 专用的复制按钮样式类 - 简洁版本 */
+.btn-copy-custom {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: var(--primary-color, #00A86B);
+  color: white;
+}
+
+.btn-copy-custom:hover:not(:disabled) {
+  background-color: var(--primary-hover, #008B5A);
+}
+
+.btn-copy-custom:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+</style>

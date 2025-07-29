@@ -12,30 +12,52 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
-  background-color: var(--bg-primary);
-  border-bottom: 1px solid var(--border-light);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px 32px;
+  background: linear-gradient(135deg, var(--theme-bg-secondary), var(--theme-bg-primary));
+  border-bottom: 1px solid var(--theme-border-light);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   flex-shrink: 0;
+  position: relative;
+  overflow: visible;
 }
 
 
 
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .header-left h1 {
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 26px;
+  font-weight: 800;
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin: 0 0 2px 0;
-  letter-spacing: -0.5px;
+  margin: 0;
+  letter-spacing: -0.8px;
+  position: relative;
+}
+
+.header-left h1::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  border-radius: 2px;
+  opacity: 0.6;
 }
 
 .header-subtitle {
-  font-size: 13px;
-  color: var(--text-tertiary);
-  font-weight: 400;
+  font-size: 14px;
+  color: var(--theme-text-secondary);
+  font-weight: 500;
+  letter-spacing: 0.2px;
 }
 
 .header-center {
@@ -45,16 +67,17 @@
 .header-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
 /* 主内容区域 */
 .app-main {
   flex: 1;
   display: flex;
-  gap: 20px;
-  padding: 20px;
+  gap: 24px;
+  padding: 32px;
   overflow: hidden;
+  background: linear-gradient(135deg, var(--theme-bg-primary) 0%, var(--theme-bg-secondary) 100%);
 }
 
 /* 面板通用样式 */
@@ -62,19 +85,22 @@
 .preview-panel {
   flex: 1;
   min-width: 400px;
-  background-color: var(--bg-primary);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--border-light);
+  background: var(--theme-bg-primary);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--theme-border-light);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transition: all var(--transition-normal);
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .editor-panel:hover,
 .preview-panel:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+  border-color: var(--primary-color);
 }
 
 /* 面板头部 */
@@ -82,24 +108,48 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
-  background: linear-gradient(to bottom, var(--bg-primary), var(--bg-secondary));
-  border-bottom: 1px solid var(--border-light);
+  padding: 16px 24px;
+  background: linear-gradient(135deg, var(--theme-bg-secondary), var(--theme-bg-primary));
+  border-bottom: 1px solid var(--theme-border-light);
+  position: relative;
+  overflow: hidden;
+}
+
+.panel-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+  opacity: 0.8;
 }
 
 .panel-header h3 {
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--theme-text-primary);
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  letter-spacing: -0.3px;
+  position: relative;
+}
+
+.panel-header h3::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--primary-color);
 }
 
 .panel-actions {
   display: flex;
-  gap: 8px;
+  gap: 12px;
 }
 
 /* 内容区域 */
@@ -114,25 +164,38 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 24px;
-  background-color: var(--bg-primary);
-  border-top: 1px solid var(--border-light);
-  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
+  padding: 20px 32px;
+  background: linear-gradient(135deg, var(--theme-bg-secondary), var(--theme-bg-primary));
+  border-top: 1px solid var(--theme-border-light);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
   flex-shrink: 0;
+  position: relative;
+}
+
+.app-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+  opacity: 0.6;
 }
 
 .footer-left,
 .footer-right {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
 }
 
 .footer-left span,
 .footer-right span {
-  font-size: 13px;
-  color: var(--text-tertiary);
-  font-weight: 500;
+  font-size: 14px;
+  color: var(--theme-text-secondary);
+  font-weight: 600;
+  letter-spacing: 0.2px;
 }
 
 /* 状态指示器 */
@@ -166,8 +229,8 @@
 }
 
 .status-indicator.pending {
-  background-color: var(--gray-100);
-  color: var(--text-tertiary);
+  background-color: var(--theme-bg-tertiary);
+  color: var(--theme-text-tertiary);
 }
 
 .status-indicator.pending::before {
@@ -218,10 +281,10 @@
 @media (max-width: 1200px) {
   .app-main {
     flex-direction: column;
-    gap: 16px;
-    padding: 16px;
+    gap: 20px;
+    padding: 24px;
   }
-  
+
   .editor-panel,
   .preview-panel {
     min-width: 100%;
@@ -231,38 +294,50 @@
 
 @media (max-width: 768px) {
   .app-header {
-    padding: 12px 16px;
+    padding: 20px 24px;
   }
-  
+
   .header-left h1 {
-    font-size: 18px;
+    font-size: 22px;
   }
-  
+
+  .header-left h1::after {
+    width: 40px;
+    height: 2px;
+  }
+
   .header-subtitle {
-    display: none;
+    font-size: 13px;
   }
-  
-  .app-main {
-    padding: 12px;
+
+  .header-right {
     gap: 12px;
   }
-  
+
+  .app-main {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .editor-panel,
+  .preview-panel {
+    border-radius: 16px;
+  }
+
   .panel-header {
-    padding: 12px 16px;
+    padding: 16px 20px;
   }
-  
+
   .panel-header h3 {
-    font-size: 15px;
+    font-size: 16px;
   }
-  
+
   .app-footer {
-    flex-direction: column;
-    gap: 8px;
-    padding: 12px 16px;
+    padding: 16px 24px;
   }
-  
+
   .footer-left,
   .footer-right {
-    gap: 12px;
+    gap: 16px;
   }
 }

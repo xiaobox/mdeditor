@@ -255,7 +255,10 @@ function _parseMarkdownInternal(markdownText, options = {}) {
   coordinator.setThemes(colorTheme, codeStyle, themeSystem);
 
   if (options.isPreview) {
-    coordinator.setOptions({ isPreview: true });
+    coordinator.setOptions({
+      isPreview: true,
+      cleanHtml: options.cleanHtml || false
+    });
   }
 
   // 预处理：清理不兼容的语法

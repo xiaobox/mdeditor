@@ -69,6 +69,7 @@ export function formatCodeBlock(content, language, theme = defaultColorTheme, co
     font-family: Consolas, monospace;
     font-size: 14px;
     line-height: 1.7;
+    color: ${safeCodeTheme.color} !important;
     ${safeCodeTheme.hasHeader ? 'margin-top: 40px;' : ''}
     ${safeCodeTheme.hasTrafficLights ? 'margin-top: 28px;' : ''}
     display: block;

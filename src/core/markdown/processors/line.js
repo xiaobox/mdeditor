@@ -132,18 +132,34 @@ export class HeadingProcessor extends LineProcessor {
     } else {
       // 微信公众号模式：保留内联样式以确保兼容性
       const h1Style = `
-        margin: 0.67em 0;
-        font-weight: 600;
-        padding-bottom: 16px;
-        font-size: 1.5em;
-        border-bottom: none;
-        position: relative;
-        color: ${currentTheme.textPrimary};
-        line-height: 1.25;
+        margin: 1.8em 0 1.5em 0;
+        font-weight: 700;
+        font-size: 2.2em;
+        line-height: 1.3;
         text-align: center;
+        position: relative;
+        padding-bottom: 0.8rem;
+        background: linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.primaryDark || currentTheme.primary} 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        color: ${currentTheme.textPrimary};
       `.replace(/\s+/g, ' ').trim();
 
-      const underlineStyle = `display: block; position: absolute; bottom: 2px; left: 3%; right: 3%; height: 3px; background: linear-gradient(90deg, transparent 0%, ${currentTheme.primary}4D 10%, ${currentTheme.primary}CC 30%, ${currentTheme.primary} 50%, ${currentTheme.primary}CC 70%, ${currentTheme.primary}4D 90%, transparent 100%); border-radius: 2px; box-shadow: 0 0 6px ${currentTheme.primary}33;`;
+      const underlineStyle = `
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, transparent 0%, ${currentTheme.primary} 20%, ${currentTheme.primary} 80%, transparent 100%);
+        border-radius: 2px;
+        box-shadow: 0 2px 8px ${currentTheme.primary}40;
+        display: block;
+      `.replace(/\s+/g, ' ').trim();
+
       return `<h1 style="${h1Style}">${formattedText}<span style="${underlineStyle}"></span></h1>`;
     }
   }
@@ -157,17 +173,30 @@ export class HeadingProcessor extends LineProcessor {
     } else {
       // 微信公众号模式：保留装饰线
       const h2Style = `
-        margin-top: 1.5rem;
-        margin-bottom: 1rem;
+        margin-top: 2rem;
+        margin-bottom: 1.5rem;
         font-weight: 600;
-        padding-left: 1.2em;
-        font-size: 1.2em;
+        padding-left: 0.5em;
+        font-size: 1.5em;
+        line-height: 1.4;
         color: ${currentTheme.textPrimary};
-        line-height: 1.25;
         position: relative;
       `.replace(/\s+/g, ' ').trim();
 
-      const borderStyle = `position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 4px; height: 1.4em; background: linear-gradient(180deg, ${currentTheme.primary}4D 0%, ${currentTheme.primary} 30%, ${currentTheme.primary} 70%, ${currentTheme.primary}4D 100%); border-radius: 2px; box-shadow: 0 0 4px ${currentTheme.primary}4D;`;
+      const borderStyle = `
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 5px;
+        height: 1.1em;
+        background: linear-gradient(180deg, ${currentTheme.primary}20 0%, ${currentTheme.primary}60 15%, ${currentTheme.primary} 35%, ${currentTheme.primary} 65%, ${currentTheme.primary}60 85%, ${currentTheme.primary}20 100%);
+        border-radius: 3px;
+        box-shadow: 0 0 6px ${currentTheme.primary}25;
+        display: block;
+      `.replace(/\s+/g, ' ').trim();
+
       return `<h2 style="${h2Style}"><span style="${borderStyle}"></span>${formattedText}</h2>`;
     }
   }

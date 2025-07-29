@@ -110,7 +110,13 @@ export function highlightCode(code, language, codeTheme) {
     { pattern: /\b\d+(?:\.\d+)?\b/g, color: highlight.number },
 
     // 5. 函数名
-    { pattern: /\b[a-zA-Z_$][a-zA-Z0-9_$]*(?=\()/g, color: highlight.function }
+    { pattern: /\b[a-zA-Z_$][a-zA-Z0-9_$]*(?=\()/g, color: highlight.function },
+
+    // 6. 操作符（如果定义了）
+    ...(highlight.operator ? [{ pattern: /[+\-*/%=<>!&|^~?:]+/g, color: highlight.operator }] : []),
+
+    // 7. 标点符号（如果定义了）
+    ...(highlight.punctuation ? [{ pattern: /[{}[\]();,\.]/g, color: highlight.punctuation }] : [])
   ];
 
   // 按优先级处理每个规则，避免重叠
@@ -162,7 +168,7 @@ export function highlightCode(code, language, codeTheme) {
     }
 
     // 添加高亮的文本
-    finalResult += `<span style="color:${highlight.color}!important;">${highlight.text}</span>`;
+    finalResult += `<span style="color: ${highlight.color} !important;">${highlight.text}</span>`;
     lastIndex = highlight.end;
   });
 
