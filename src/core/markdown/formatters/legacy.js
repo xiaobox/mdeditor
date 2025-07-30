@@ -15,22 +15,24 @@ import { highlightCode } from './code.js';
  * 格式化内联文本（粗体、斜体、链接等）
  * @param {string} text - 要格式化的文本内容
  * @param {object} [theme=defaultColorTheme] - 颜色主题对象
+ * @param {number} [baseFontSize=16] - 基础字号
  * @returns {string} - 格式化后的 HTML 字符串
  */
-export function formatInlineText(text, theme = defaultColorTheme) {
+export function formatInlineText(text, theme = defaultColorTheme, baseFontSize = 16) {
   if (!text) return '';
-  return processAllInlineFormats(text, theme);
+  return processAllInlineFormats(text, theme, true, baseFontSize);
 }
 
 /**
  * Formats inline text for internal nested calls, without handling escape characters.
  * @param {string} text - The text content to format.
  * @param {object} [theme=defaultColorTheme] - The color theme object.
+ * @param {number} [baseFontSize=16] - 基础字号
  * @returns {string} - The formatted HTML string.
  */
-function formatInlineTextInternal(text, theme = defaultColorTheme) {
+function formatInlineTextInternal(text, theme = defaultColorTheme, baseFontSize = 16) {
   if (!text) return '';
-  return processInlineFormatsWithoutEscapes(text, theme);
+  return processInlineFormatsWithoutEscapes(text, theme, baseFontSize);
 }
 
 /**
@@ -40,19 +42,23 @@ function formatInlineTextInternal(text, theme = defaultColorTheme) {
  * @param {object} [theme=defaultColorTheme] - 颜色主题对象
  * @param {object|null} [codeTheme=null] - 代码样式主题对象
  * @param {boolean} [isPreview=false] - 是否为预览模式
+ * @param {number} [baseFontSize=16] - 基础字号
  * @returns {string} - 格式化后的代码块 HTML 字符串
  */
-export function formatCodeBlock(content, language, theme = defaultColorTheme, codeTheme = null, isPreview = false) {
+export function formatCodeBlock(content, language, theme = defaultColorTheme, codeTheme = null, isPreview = false, baseFontSize = 16) {
   const trimmedContent = content.trim();
   const safeCodeTheme = codeTheme || getCodeStyle('mac');
   const highlightedContent = highlightCode(trimmedContent, language, safeCodeTheme);
+
+  // 代码块字号通常比正文小一些
+  const codeFontSize = Math.max(12, Math.round(baseFontSize * 0.875)); // 约87.5%的正文字号
 
   const preStyle = `
     background: ${safeCodeTheme.background};
     border-radius: 12px;
     padding: 24px;
     overflow-x: auto;
-    font-size: 14px;
+    font-size: ${codeFontSize}px;
     line-height: 1.7;
     border: none;
     position: relative;
@@ -67,7 +73,7 @@ export function formatCodeBlock(content, language, theme = defaultColorTheme, co
     background: transparent;
     border: none;
     font-family: Consolas, monospace;
-    font-size: 14px;
+    font-size: ${codeFontSize}px;
     line-height: 1.7;
     color: ${safeCodeTheme.color} !important;
     ${safeCodeTheme.hasHeader ? 'margin-top: 40px;' : ''}
@@ -104,42 +110,47 @@ export function formatCodeBlock(content, language, theme = defaultColorTheme, co
 
 /**
  * 引用块样式配置
+ * @param {number} baseFontSize - 基础字号
  */
-const BLOCKQUOTE_STYLES = {
-  level1: {
-    margin: '24px 0',
-    padding: '18px 24px',
-    fontSize: '16px',
-    boxShadow: '0 4px 16px'
-  },
-  level2: {
-    margin: '12px 0 12px 0px',
-    padding: '12px 18px',
-    fontSize: '15px',
-    boxShadow: '0 2px 8px'
-  },
-  level3: {
-    margin: '8px 0 8px 0px',
-    padding: '8px 12px',
-    fontSize: '14px',
-    boxShadow: '0 1px 4px'
-  },
-  default: {
-    margin: '6px 0 6px 0px',
-    padding: '6px 10px',
-    fontSize: '13px',
-    boxShadow: '0 1px 2px'
-  }
-};
+function getBlockquoteStyles(baseFontSize = 16) {
+  return {
+    level1: {
+      margin: '24px 0',
+      padding: '18px 24px',
+      fontSize: `${baseFontSize}px`,
+      boxShadow: '0 4px 16px'
+    },
+    level2: {
+      margin: '12px 0 12px 0px',
+      padding: '12px 18px',
+      fontSize: `${Math.round(baseFontSize * 0.94)}px`,
+      boxShadow: '0 2px 8px'
+    },
+    level3: {
+      margin: '8px 0 8px 0px',
+      padding: '8px 12px',
+      fontSize: `${Math.round(baseFontSize * 0.88)}px`,
+      boxShadow: '0 1px 4px'
+    },
+    default: {
+      margin: '6px 0 6px 0px',
+      padding: '6px 10px',
+      fontSize: `${Math.round(baseFontSize * 0.81)}px`,
+      boxShadow: '0 1px 2px'
+    }
+  };
+}
 
 /**
  * 生成引用块样式字符串
  * @param {object} theme - 主题对象
  * @param {number} level - 引用层级
+ * @param {number} baseFontSize - 基础字号
  * @returns {string} CSS样式字符串
  */
-function generateBlockquoteStyle(theme, level) {
-  const styleConfig = BLOCKQUOTE_STYLES[`level${level}`] || BLOCKQUOTE_STYLES.default;
+function generateBlockquoteStyle(theme, level, baseFontSize = 16) {
+  const blockquoteStyles = getBlockquoteStyles(baseFontSize);
+  const styleConfig = blockquoteStyles[`level${level}`] || blockquoteStyles.default;
   const shadowOpacity = level <= 3 ? ['1A', '14', '0F'][level - 1] || '0A' : '0A';
   
   return `
@@ -185,16 +196,19 @@ function processQuoteLine(line) {
  * 处理段落内容，将内容分割为段落
  * @param {string[]} lines - 内容行数组
  * @param {object} theme - 主题对象
+ * @param {number} baseFontSize - 基础字号
  * @returns {string} 格式化后的段落HTML
  */
-function processParagraphs(lines, theme) {
+function processParagraphs(lines, theme, baseFontSize = 16) {
   const content = lines.join('\n').trim();
   if (!content) return '';
 
   const paragraphs = content.split(/\n{2,}/);
+  const lineHeight = baseFontSize <= 14 ? '1.7' : baseFontSize <= 18 ? '1.6' : '1.5';
+
   return paragraphs.map(p => {
-    const formattedP = formatInlineTextInternal(p.replace(/\n/g, '<br>'), theme);
-    return `<p style="margin: 8px 0; line-height: 1.6;">${formattedP}</p>`;
+    const formattedP = formatInlineTextInternal(p.replace(/\n/g, '<br>'), theme, baseFontSize);
+    return `<p style="margin: 8px 0; line-height: ${lineHeight}; font-size: ${baseFontSize}px;">${formattedP}</p>`;
   }).join('');
 }
 
@@ -203,9 +217,10 @@ function processParagraphs(lines, theme) {
  * @param {string[]} lines - 内容行数组
  * @param {number} level - 引用层级
  * @param {object} theme - 主题对象
+ * @param {number} baseFontSize - 基础字号
  * @returns {string} 引用块HTML
  */
-function buildNestedQuotes(lines, level, theme) {
+function buildNestedQuotes(lines, level, theme, baseFontSize = 16) {
   if (!lines || lines.length === 0) return '';
 
   let html = '';
@@ -219,14 +234,14 @@ function buildNestedQuotes(lines, level, theme) {
     if (isQuote && lineLevel > 1) {
       // 处理嵌套引用
       if (currentBlockLines.length > 0) {
-        html += processParagraphs(currentBlockLines, theme);
+        html += processParagraphs(currentBlockLines, theme, baseFontSize);
         currentBlockLines = [];
       }
       childLines.push('>' + content);
     } else if (isQuote) {
       // 处理当前层级引用
       if (childLines.length > 0) {
-        html += buildNestedQuotes(childLines, level + 1, theme);
+        html += buildNestedQuotes(childLines, level + 1, theme, baseFontSize);
         childLines = [];
       }
       currentBlockLines.push(content);
@@ -238,13 +253,13 @@ function buildNestedQuotes(lines, level, theme) {
 
   // 处理剩余内容
   if (currentBlockLines.length > 0) {
-    html += processParagraphs(currentBlockLines, theme);
+    html += processParagraphs(currentBlockLines, theme, baseFontSize);
   }
   if (childLines.length > 0) {
-    html += buildNestedQuotes(childLines, level + 1, theme);
+    html += buildNestedQuotes(childLines, level + 1, theme, baseFontSize);
   }
 
-  const style = generateBlockquoteStyle(theme, level);
+  const style = generateBlockquoteStyle(theme, level, baseFontSize);
   return `<blockquote style="${style}">${html}</blockquote>`;
 }
 
@@ -252,8 +267,9 @@ function buildNestedQuotes(lines, level, theme) {
  * Formats a blockquote, handling nested quotes and applying theme styles.
  * @param {string[]} contentLines - The lines of content within the blockquote.
  * @param {object} [theme=defaultColorTheme] - The color theme object.
+ * @param {number} [baseFontSize=16] - 基础字号
  * @returns {string} - The formatted HTML string for the blockquote.
  */
-export function formatBlockquote(contentLines, theme = defaultColorTheme) {
-  return buildNestedQuotes(contentLines, 1, theme);
+export function formatBlockquote(contentLines, theme = defaultColorTheme, baseFontSize = 16) {
+  return buildNestedQuotes(contentLines, 1, theme, baseFontSize);
 }

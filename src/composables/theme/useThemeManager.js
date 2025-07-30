@@ -47,6 +47,13 @@ import {
   themeSystemPresets,
   themeSystems
 } from '../../core/theme/presets/theme-systems.js'
+import {
+  getFontFamily,
+  getFontFamilyList,
+  defaultFontSettings,
+  fontSettingsUtils,
+  getValidFontSize
+} from '../../core/theme/presets/font-settings.js'
 
 /**
  * 全局响应式主题状态。
@@ -59,6 +66,8 @@ const themeState = reactive({
   colorThemeId: ThemeStorage.load(STORAGE_KEYS.COLOR_THEME, STORAGE_DEFAULTS.COLOR_THEME),
   codeStyleId: ThemeStorage.load(STORAGE_KEYS.CODE_STYLE, STORAGE_DEFAULTS.CODE_STYLE),
   themeSystemId: ThemeStorage.load(STORAGE_KEYS.THEME_SYSTEM, STORAGE_DEFAULTS.THEME_SYSTEM),
+  fontFamily: ThemeStorage.load(STORAGE_KEYS.FONT_FAMILY, STORAGE_DEFAULTS.FONT_FAMILY),
+  fontSize: parseInt(ThemeStorage.load(STORAGE_KEYS.FONT_SIZE, STORAGE_DEFAULTS.FONT_SIZE.toString()), 10),
   isInitialized: false,
   hasTemporaryCustomTheme: false // 标记是否有临时自定义主题
 })
@@ -93,6 +102,15 @@ export function useThemeManager() {
   /** 当前激活的排版主题对象 */
   const currentThemeSystem = computed(() => getThemeSystem(themeState.themeSystemId))
 
+  /** 当前字体设置对象 */
+  const currentFontSettings = computed(() => ({
+    fontFamily: themeState.fontFamily,
+    fontSize: themeState.fontSize
+  }))
+
+  /** 当前字体族对象 */
+  const currentFontFamily = computed(() => getFontFamily(themeState.fontFamily) || getFontFamily(defaultFontSettings.fontFamily))
+
   /** 所有可用的颜色主题列表（包含自定义主题） */
   const colorThemeList = computed(() => {
     const builtinThemes = getColorThemeList()
@@ -108,6 +126,8 @@ export function useThemeManager() {
   const codeStyleList = computed(() => getCodeStyleList())
   /** 所有可用的排版主题列表 */
   const themeSystemList = computed(() => getThemeSystemList())
+  /** 所有可用的字体族列表 */
+  const fontFamilyList = computed(() => getFontFamilyList())
 
   // --- 主题切换方法 (Theme Setters) ---
 
@@ -173,31 +193,89 @@ export function useThemeManager() {
   }
 
   /**
+   * 设置字体族。
+   * @param {string} fontId - 目标字体族的 ID。
+   * @returns {boolean} 如果设置成功，返回 true。
+   */
+  const setFontFamily = (fontId) => {
+    if (fontId && fontSettingsUtils.isFontAvailable(fontId)) {
+      themeState.fontFamily = fontId
+      ThemeStorage.save(STORAGE_KEYS.FONT_FAMILY, fontId)
+      return true
+    }
+    return false
+  }
+
+  /**
+   * 设置字号。
+   * @param {number} fontSize - 目标字号。
+   * @returns {boolean} 如果设置成功，返回 true。
+   */
+  const setFontSize = (fontSize) => {
+    const validSize = getValidFontSize(fontSize)
+    if (validSize !== themeState.fontSize) {
+      themeState.fontSize = validSize
+      ThemeStorage.save(STORAGE_KEYS.FONT_SIZE, validSize.toString())
+
+      // 强制更新CSS以确保字号变化立即生效
+      if (themeState.isInitialized) {
+        updateAllCSS()
+      }
+
+      return true
+    }
+    return false
+  }
+
+  /**
+   * 批量设置字体。
+   * @param {Object} fontSettings - 包含 fontFamily, fontSize 的对象。
+   * @returns {boolean} 如果有任何设置发生变化，返回 true。
+   */
+  const setFontSettings = ({ fontFamily, fontSize }) => {
+    let changed = false
+
+    if (fontFamily && fontFamily !== themeState.fontFamily) {
+      changed = setFontFamily(fontFamily) || changed
+    }
+
+    if (fontSize && fontSize !== themeState.fontSize) {
+      changed = setFontSize(fontSize) || changed
+    }
+
+    return changed
+  }
+
+  /**
    * 批量设置主题。
-   * @param {Object} themes - 包含 colorTheme, codeStyle, themeSystem 的对象。
+   * @param {Object} themes - 包含 colorTheme, codeStyle, themeSystem, fontSettings 的对象。
    * @returns {boolean} 如果有任何主题发生变化，返回 true。
    */
-  const setThemes = ({ colorTheme, codeStyle, themeSystem }) => {
+  const setThemes = ({ colorTheme, codeStyle, themeSystem, fontSettings }) => {
     let changed = false
-    
+
     if (colorTheme && colorTheme !== themeState.colorThemeId) {
       themeState.colorThemeId = colorTheme
       ThemeStorage.save(STORAGE_KEYS.COLOR_THEME, colorTheme)
       changed = true
     }
-    
+
     if (codeStyle && codeStyle !== themeState.codeStyleId) {
       themeState.codeStyleId = codeStyle
       ThemeStorage.save(STORAGE_KEYS.CODE_STYLE, codeStyle)
       changed = true
     }
-    
+
     if (themeSystem && themeSystem !== themeState.themeSystemId) {
       themeState.themeSystemId = themeSystem
       ThemeStorage.save(STORAGE_KEYS.THEME_SYSTEM, themeSystem)
       changed = true
     }
-    
+
+    if (fontSettings) {
+      changed = setFontSettings(fontSettings) || changed
+    }
+
     // CSS 更新将由 watch 自动处理
     return changed
   }
@@ -207,11 +285,13 @@ export function useThemeManager() {
   const resetColorTheme = () => setColorTheme(defaultColorTheme.id)
   const resetCodeStyle = () => setCodeStyle(defaultCodeStyle.id)
   const resetThemeSystem = () => setThemeSystem(defaultThemeSystem.id)
+  const resetFontSettings = () => setFontSettings(defaultFontSettings)
   const resetAllThemes = () => {
     setThemes({
       colorTheme: defaultColorTheme.id,
       codeStyle: defaultCodeStyle.id,
-      themeSystem: defaultThemeSystem.id
+      themeSystem: defaultThemeSystem.id,
+      fontSettings: defaultFontSettings
     })
   }
 
@@ -246,7 +326,8 @@ export function useThemeManager() {
     cssManager.applyAllThemes({
       colorTheme: currentColorTheme.value,
       codeStyle: currentCodeStyle.value,
-      themeSystem: currentThemeSystem.value
+      themeSystem: currentThemeSystem.value,
+      fontSettings: currentFontSettings.value
     })
   }
 
@@ -276,8 +357,12 @@ export function useThemeManager() {
       colorTheme: themeState.colorThemeId,
       codeStyle: themeState.codeStyleId,
       themeSystem: themeState.themeSystemId,
+      fontSettings: {
+        fontFamily: themeState.fontFamily,
+        fontSize: themeState.fontSize
+      },
       timestamp: Date.now(),
-      version: '1.0'
+      version: '1.1'
     }
   }
 
@@ -288,11 +373,12 @@ export function useThemeManager() {
    */
   const importSettings = (settings) => {
     if (!settings || typeof settings !== 'object') return false
-    
+
     return setThemes({
       colorTheme: settings.colorTheme,
       codeStyle: settings.codeStyle,
-      themeSystem: settings.themeSystem
+      themeSystem: settings.themeSystem,
+      fontSettings: settings.fontSettings
     })
   }
 
@@ -344,7 +430,7 @@ export function useThemeManager() {
    * 侦听主题状态的变化，并在变化时自动更新 CSS。
    * `deep: true` 确保即使主题对象的内部属性变化也能被捕获。
    */
-  watch([currentColorTheme, currentCodeStyle, currentThemeSystem], () => {
+  watch([currentColorTheme, currentCodeStyle, currentThemeSystem, currentFontSettings], () => {
     if (themeState.isInitialized && !themeState.hasTemporaryCustomTheme) {
       updateAllCSS()
     }
@@ -357,6 +443,8 @@ export function useThemeManager() {
     currentColorThemeId: computed(() => themeState.colorThemeId),
     currentCodeStyleId: computed(() => themeState.codeStyleId),
     currentThemeSystemId: computed(() => themeState.themeSystemId),
+    currentFontFamily: computed(() => themeState.fontFamily),
+    currentFontSize: computed(() => themeState.fontSize),
     isInitialized: computed(() => themeState.isInitialized),
 
     // 主题状态（用于外部访问）
@@ -366,22 +454,29 @@ export function useThemeManager() {
     currentColorTheme,
     currentCodeStyle,
     currentThemeSystem,
+    currentFontSettings,
+    currentFontFamily,
 
     // 主题列表
     colorThemeList,
     codeStyleList,
     themeSystemList,
+    fontFamilyList,
 
     // 设置方法
     setColorTheme,
     setCodeStyle,
     setThemeSystem,
+    setFontFamily,
+    setFontSize,
+    setFontSettings,
     setThemes,
 
     // 重置方法
     resetColorTheme,
     resetCodeStyle,
     resetThemeSystem,
+    resetFontSettings,
     resetAllThemes,
 
     // 切换方法

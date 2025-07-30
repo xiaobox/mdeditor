@@ -16,7 +16,7 @@ export class TableProcessingStrategy extends LineProcessingStrategy {
 
   process(coordinator, line, trimmedLine, lines, index) {
     const tableResult = coordinator.tableProcessor.processTableRow(
-      line, trimmedLine, lines, index, coordinator.context.currentTheme
+      line, trimmedLine, lines, index, coordinator.context.currentTheme, coordinator.context.fontSettings
     );
     
     if (tableResult.shouldContinue || tableResult.tableComplete) {

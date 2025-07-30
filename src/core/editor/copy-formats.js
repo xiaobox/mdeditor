@@ -70,7 +70,7 @@ export async function copySocialFormat(markdownText, options = {}) {
 
   try {
     const socialHtml = generateSocialHtml(markdownText, options);
-    const success = await copyToSocialClean(socialHtml);
+    const success = await copyToSocialClean(socialHtml, options.fontSettings);
 
     return {
       success,

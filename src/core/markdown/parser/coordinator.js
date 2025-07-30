@@ -16,6 +16,214 @@ import { cleanReferenceLinks } from '../formatters/text.js';
 import { FormatterContext } from './context.js';
 import { memoize } from '../../../shared/utils/performance.js';
 
+/**
+ * 使用字体设置包装 HTML 内容 - 采用 doocs/md 的成功方案
+ * @param {string} html - 原始 HTML 内容
+ * @param {Object} fontSettings - 字体设置对象
+ * @returns {string} - 包装后的 HTML
+ */
+function wrapWithFontStyles(html, fontSettings) {
+  if (!fontSettings || !html) return html;
+
+  // 字体族映射 - 使用微信公众号兼容的字体名称
+  const fontFamilyMap = {
+    'system-default': '-apple-system-font,BlinkMacSystemFont, Helvetica Neue, PingFang SC, Hiragino Sans GB, Microsoft YaHei UI, Microsoft YaHei, Arial, sans-serif',
+    'microsoft-yahei': 'Microsoft YaHei, 微软雅黑, Arial, sans-serif',
+    'pingfang-sc': 'PingFang SC, Microsoft YaHei, 微软雅黑, Arial, sans-serif',
+    'source-han-sans': 'Source Han Sans SC, Microsoft YaHei, 微软雅黑, Arial, sans-serif',
+    'helvetica-neue': 'Helvetica Neue, Arial, sans-serif',
+    'roboto': 'Roboto, Arial, sans-serif',
+    'inter': 'Inter, Arial, sans-serif'
+  };
+
+  const fontFamily = fontFamilyMap[fontSettings.fontFamily] || fontFamilyMap['system-default'];
+  const fontSize = fontSettings.fontSize || 16;
+  const lineHeight = fontSize <= 14 ? '1.75' : fontSize <= 18 ? '1.6' : '1.5';
+
+  // 关键：使用更强的 CSS 选择器，确保微信公众号识别
+  const cssStyles = `
+<style>
+/* 微信公众号兼容的字体设置 - 使用更强的选择器 */
+section[data-role="outer"] {
+  font-family: ${fontFamily} !important;
+  font-size: ${fontSize}px !important;
+  line-height: ${lineHeight} !important;
+}
+
+section[data-role="outer"] * {
+  font-family: ${fontFamily} !important;
+}
+
+/* 基础元素样式 - 使用更具体的选择器 */
+section[data-role="outer"] p,
+section p,
+.rich_media_content p,
+div p {
+  font-family: ${fontFamily} !important;
+  font-size: ${fontSize}px !important;
+  line-height: ${lineHeight} !important;
+  margin: 1.5em 8px !important;
+  color: #333 !important;
+}
+
+/* 标题样式 - 多重选择器确保生效 */
+section[data-role="outer"] h1, section h1, .rich_media_content h1, div h1 {
+  font-family: ${fontFamily} !important;
+  font-size: ${Math.round(fontSize * 2.2)}px !important;
+  line-height: 1.3 !important;
+  font-weight: bold !important;
+  margin: 1.8em 0 1.5em !important;
+  color: #333 !important;
+  text-align: center !important;
+}
+
+section[data-role="outer"] h2, section h2, .rich_media_content h2, div h2 {
+  font-family: ${fontFamily} !important;
+  font-size: ${Math.round(fontSize * 1.5)}px !important;
+  line-height: 1.4 !important;
+  font-weight: 600 !important;
+  margin: 2em 0 1.5em !important;
+  color: #333 !important;
+}
+
+section[data-role="outer"] h3, section h3, .rich_media_content h3, div h3 {
+  font-family: ${fontFamily} !important;
+  font-size: ${Math.round(fontSize * 1.3)}px !important;
+  line-height: ${lineHeight} !important;
+  font-weight: 600 !important;
+  margin: 1.5em 0 1em !important;
+  color: #333 !important;
+}
+
+section[data-role="outer"] h4, section h4, .rich_media_content h4, div h4 {
+  font-family: ${fontFamily} !important;
+  font-size: ${Math.round(fontSize * 1.1)}px !important;
+  line-height: ${lineHeight} !important;
+  font-weight: 600 !important;
+  margin: 1.3em 0 1em !important;
+  color: #333 !important;
+}
+
+section[data-role="outer"] h5, section h5, .rich_media_content h5, div h5 {
+  font-family: ${fontFamily} !important;
+  font-size: ${Math.round(fontSize * 1.0)}px !important;
+  line-height: ${lineHeight} !important;
+  font-weight: 600 !important;
+  margin: 1.2em 0 1em !important;
+  color: #333 !important;
+}
+
+section[data-role="outer"] h6, section h6, .rich_media_content h6, div h6 {
+  font-family: ${fontFamily} !important;
+  font-size: ${Math.round(fontSize * 0.9)}px !important;
+  line-height: ${lineHeight} !important;
+  font-weight: 600 !important;
+  margin: 1.2em 0 1em !important;
+  color: #333 !important;
+}
+
+/* 列表样式 */
+section[data-role="outer"] ul, section ul, .rich_media_content ul, div ul,
+section[data-role="outer"] ol, section ol, .rich_media_content ol, div ol {
+  font-family: ${fontFamily} !important;
+  font-size: ${fontSize}px !important;
+  line-height: ${lineHeight} !important;
+  margin: 1.5em 8px !important;
+  padding-left: 25px !important;
+  color: #333 !important;
+}
+
+section[data-role="outer"] li, section li, .rich_media_content li, div li {
+  font-family: ${fontFamily} !important;
+  font-size: ${fontSize}px !important;
+  line-height: ${lineHeight} !important;
+  margin-bottom: 0.5em !important;
+  color: #333 !important;
+}
+
+/* 引用块样式 */
+section[data-role="outer"] blockquote, section blockquote, .rich_media_content blockquote, div blockquote {
+  font-family: ${fontFamily} !important;
+  font-size: ${fontSize}px !important;
+  line-height: ${lineHeight} !important;
+  margin: 1.5em 8px !important;
+  padding: 1em 1em 1em 2em !important;
+  border-left: 3px solid #dbdbdb !important;
+  background-color: #f8f8f8 !important;
+  color: #333 !important;
+}
+
+/* 表格样式 */
+section[data-role="outer"] table, section table, .rich_media_content table, div table {
+  font-family: ${fontFamily} !important;
+  font-size: ${fontSize}px !important;
+  line-height: ${lineHeight} !important;
+  margin: 1.5em 8px !important;
+  border-collapse: collapse !important;
+}
+
+section[data-role="outer"] th, section th, .rich_media_content th, div th,
+section[data-role="outer"] td, section td, .rich_media_content td, div td {
+  font-family: ${fontFamily} !important;
+  font-size: ${fontSize}px !important;
+  line-height: ${lineHeight} !important;
+  padding: 8px 12px !important;
+  border: 1px solid #ddd !important;
+  color: #333 !important;
+}
+
+/* 强调样式 */
+section[data-role="outer"] strong, section strong, .rich_media_content strong, div strong,
+section[data-role="outer"] b, section b, .rich_media_content b, div b {
+  font-family: ${fontFamily} !important;
+  font-size: ${fontSize}px !important;
+  font-weight: bold !important;
+  color: #333 !important;
+}
+
+section[data-role="outer"] em, section em, .rich_media_content em, div em,
+section[data-role="outer"] i, section i, .rich_media_content i, div i {
+  font-family: ${fontFamily} !important;
+  font-size: ${fontSize}px !important;
+  font-style: italic !important;
+  color: #333 !important;
+}
+
+/* 行内代码 */
+section[data-role="outer"] code, section code, .rich_media_content code, div code {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace !important;
+  background: #f5f5f5 !important;
+  padding: 2px 4px !important;
+  border-radius: 3px !important;
+  color: #333 !important;
+}
+
+/* 代码块 */
+section[data-role="outer"] pre, section pre, .rich_media_content pre, div pre {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace !important;
+  line-height: 1.4 !important;
+  margin: 1.5em 8px !important;
+  padding: 1em !important;
+  background: #f5f5f5 !important;
+  border-radius: 5px !important;
+  overflow-x: auto !important;
+}
+
+section[data-role="outer"] pre code, section pre code, .rich_media_content pre code, div pre code {
+  background: none !important;
+  padding: 0 !important;
+}
+</style>`;
+
+  // 使用微信公众号标准的 HTML 结构
+  return `${cssStyles}
+<section data-role="outer" class="rich_media_content" style="font-family: ${fontFamily}; font-size: ${fontSize}px; line-height: ${lineHeight};">
+<section data-role="inner" style="font-family: ${fontFamily}; font-size: ${fontSize}px; line-height: ${lineHeight};">
+${html}
+</section>
+</section>`;
+}
+
 // 导入处理策略
 import {
   CodeBlockContentStrategy,
@@ -111,12 +319,14 @@ export class FormatterCoordinator {
     if (trimmedLine.startsWith('```')) {
       // 结束代码块
       const blockInfo = this.context.endCodeBlock();
+      const fontSize = this.context.fontSettings?.fontSize || 16;
       const result = formatCodeBlock(
         blockInfo.content,
         blockInfo.language,
         this.context.currentTheme,
         this.context.codeTheme,
-        this.context.options.isPreview || false
+        this.context.options.isPreview || false,
+        fontSize
       );
       
       return {
@@ -163,7 +373,9 @@ export class FormatterCoordinator {
   endBlockquote() {
     const content = this.context.endBlockquote();
     if (content.length > 0) {
-      return formatBlockquote(content, this.context.currentTheme);
+      // 获取字体设置
+      const fontSize = this.context.fontSettings?.fontSize || 16;
+      return formatBlockquote(content, this.context.currentTheme, fontSize);
     }
     return '';
   }
@@ -175,8 +387,14 @@ export class FormatterCoordinator {
    * @returns {Object} 处理结果
    */
   handleParagraph(_line, trimmedLine) {
-    const formattedText = processInlineFormatsWithoutEscapes(trimmedLine, this.context.currentTheme);
-    const result = `<p style="margin: 12px 0; line-height: 1.6; font-size: 16px;">${formattedText}</p>`;
+    // 获取字体设置
+    const fontSettings = this.context.fontSettings;
+    const fontSize = fontSettings?.fontSize || 16;
+    const lineHeight = fontSettings?.fontSize <= 14 ? '1.7' : fontSettings?.fontSize <= 18 ? '1.6' : '1.5';
+
+    const formattedText = processInlineFormatsWithoutEscapes(trimmedLine, this.context.currentTheme, fontSize);
+
+    const result = `<p style="margin: 12px 0; line-height: ${lineHeight}; font-size: ${fontSize}px;">${formattedText}</p>`;
 
     return {
       result,
@@ -201,6 +419,14 @@ export class FormatterCoordinator {
    */
   setThemes(currentTheme, codeTheme, themeSystem) {
     this.context.setThemes(currentTheme, codeTheme, themeSystem);
+  }
+
+  /**
+   * 设置字体配置
+   * @param {Object} fontSettings - 字体设置对象
+   */
+  setFontSettings(fontSettings) {
+    this.context.setFontSettings(fontSettings);
   }
 
   /**
@@ -250,9 +476,17 @@ function _parseMarkdownInternal(markdownText, options = {}) {
     themeSystem: options.themeSystem
   });
 
+  // 获取字体设置
+  const fontSettings = options.fontSettings || null;
+
   // 创建协调器实例
   const coordinator = new FormatterCoordinator();
   coordinator.setThemes(colorTheme, codeStyle, themeSystem);
+
+  // 设置字体配置
+  if (fontSettings) {
+    coordinator.setFontSettings(fontSettings);
+  }
 
   if (options.isPreview) {
     coordinator.setOptions({
@@ -288,6 +522,11 @@ function _parseMarkdownInternal(markdownText, options = {}) {
   }
 
   result += coordinator.finalize(); // 处理任何未结束的块
+
+  // 如果不是预览模式且有字体设置，包装结果以应用字体样式
+  if (!options.isPreview && fontSettings) {
+    result = wrapWithFontStyles(result, fontSettings);
+  }
 
   return result;
 }

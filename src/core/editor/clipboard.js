@@ -41,17 +41,50 @@ import { ErrorHandler, ERROR_TYPES } from '../../shared/utils/error.js';
 /**
  * 创建一个用于富文本复制的临时 DOM 容器。
  * @param {string} html - 要放入容器的 HTML 内容。
+ * @param {Object} fontSettings - 字体设置对象（可选）
  * @returns {HTMLDivElement} - 创建的 div 元素。
  */
-function createRichTextContainer(html) {
+function createRichTextContainer(html, fontSettings = null) {
   const container = document.createElement('div');
+
+  // 获取字体设置 - 使用与 doocs/md 兼容的方案
+  let fontFamily = EDITOR_CONFIG.FONT_FAMILY;
+  let fontSize = EDITOR_CONFIG.FONT_SIZE;
+  let lineHeight = EDITOR_CONFIG.LINE_HEIGHT;
+
+  if (fontSettings) {
+    try {
+      // 使用微信公众号兼容的字体名称
+      const fontFamilyMap = {
+        'system-default': '-apple-system-font,BlinkMacSystemFont, Helvetica Neue, PingFang SC, Hiragino Sans GB, Microsoft YaHei UI, Microsoft YaHei, Arial, sans-serif',
+        'microsoft-yahei': 'Microsoft YaHei, 微软雅黑, Arial, sans-serif',
+        'pingfang-sc': 'PingFang SC, Microsoft YaHei, 微软雅黑, Arial, sans-serif',
+        'source-han-sans': 'Source Han Sans SC, Microsoft YaHei, 微软雅黑, Arial, sans-serif',
+        'helvetica-neue': 'Helvetica Neue, Arial, sans-serif',
+        'roboto': 'Roboto, Arial, sans-serif',
+        'inter': 'Inter, Arial, sans-serif'
+      };
+
+      if (fontSettings.fontFamily && fontFamilyMap[fontSettings.fontFamily]) {
+        fontFamily = fontFamilyMap[fontSettings.fontFamily];
+      }
+
+      if (fontSettings.fontSize && typeof fontSettings.fontSize === 'number') {
+        fontSize = `${fontSettings.fontSize}px`;
+        // 根据字号调整行高
+        lineHeight = fontSettings.fontSize <= 14 ? '1.75' : fontSettings.fontSize <= 18 ? '1.6' : '1.5';
+      }
+    } catch (error) {
+      console.warn('Failed to apply font settings to clipboard container:', error);
+    }
+  }
 
   // 这些样式旨在模拟一个干净的、标准的富文本环境，
   // 以提高在不同粘贴目标（特别是社交平台）中的兼容性。
   container.style.cssText = `
-    font-family: ${EDITOR_CONFIG.FONT_FAMILY};
-    font-size: ${EDITOR_CONFIG.FONT_SIZE};
-    line-height: ${EDITOR_CONFIG.LINE_HEIGHT};
+    font-family: ${fontFamily};
+    font-size: ${fontSize};
+    line-height: ${lineHeight};
     color: #333;
     background-color: #ffffff;
     padding: 0;
@@ -60,10 +93,17 @@ function createRichTextContainer(html) {
     text-align: left;
   `;
 
-  // 将其放置在屏幕外，用户不可见。
-  container.style.position = 'fixed';
+  // 将其放置在屏幕外，用户不可见，并优化性能
+  container.style.position = 'absolute';
   container.style.left = '-9999px';
-  container.style.top = '0';
+  container.style.top = '-9999px';
+  container.style.width = '1px';
+  container.style.height = '1px';
+  container.style.opacity = '0';
+  container.style.overflow = 'hidden';
+  container.style.pointerEvents = 'none';
+  container.style.zIndex = '-1';
+  container.style.visibility = 'hidden';
 
   container.innerHTML = html;
   return container;
@@ -73,10 +113,10 @@ function createRichTextContainer(html) {
  * 尝试使用现代 Clipboard API 进行复制。
  * @private
  */
-async function copyWithClipboardAPI(container) {
+async function copyWithClipboardAPI(html, plainText) {
   console.log('尝试使用 Clipboard API...');
-  const blobHtml = new Blob([container.outerHTML], { type: 'text/html' });
-  const blobText = new Blob([container.textContent], { type: 'text/plain' });
+  const blobHtml = new Blob([html], { type: 'text/html' });
+  const blobText = new Blob([plainText || html.replace(/<[^>]*>/g, '')], { type: 'text/plain' });
   await navigator.clipboard.write([new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })]);
   console.log('Clipboard API 复制成功');
 }
@@ -96,9 +136,10 @@ function copyWithExecCommand() {
 /**
  * 将 HTML 字符串作为富文本复制到剪贴板，并针对社交平台进行优化。
  * @param {string} html - 要复制的 HTML 内容。
+ * @param {Object} fontSettings - 字体设置对象（可选）
  * @returns {Promise<boolean>} - 复制成功时 resolve(true)，否则 reject(error)。
  */
-export async function copyToSocialClean(html) {
+export async function copyToSocialClean(html, fontSettings = null) {
   if (!html) {
     throw ErrorHandler.wrap(
       new Error(CLIPBOARD_ERRORS.NO_CONTENT),
@@ -110,9 +151,6 @@ export async function copyToSocialClean(html) {
   const sizeKB = (html.length / 1024).toFixed(1);
   console.log(`准备复制内容，大小: ${sizeKB}KB`);
 
-  const container = createRichTextContainer(html);
-  document.body.appendChild(container);
-
   try {
     // 使用 Promise.race 实现超时控制
     const timeoutPromise = new Promise((_, reject) => {
@@ -120,34 +158,64 @@ export async function copyToSocialClean(html) {
     });
 
     const copyPromise = async () => {
-      const range = document.createRange();
-      range.selectNodeContents(container);
-      const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(range);
+      // 优先尝试纯API方式，完全避免DOM操作
+      if (navigator.clipboard && navigator.clipboard.write) {
+        try {
+          console.log('使用纯API方式复制...');
+          const plainText = html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+          await copyWithClipboardAPI(html, plainText);
+          console.log('纯API复制成功');
+          return true;
+        } catch (apiError) {
+          console.warn('纯API复制失败，尝试DOM方式...', apiError.message);
+        }
+      }
+
+      // 如果纯API失败，才使用DOM方式
+      console.log('使用DOM方式复制...');
+      const container = createRichTextContainer(html, fontSettings);
+
+      // 使用最小化的DOM操作
+      container.style.cssText = `
+        position: fixed !important;
+        top: -9999px !important;
+        left: -9999px !important;
+        width: 1px !important;
+        height: 1px !important;
+        opacity: 0 !important;
+        overflow: hidden !important;
+        pointer-events: none !important;
+        z-index: -9999 !important;
+        visibility: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        outline: none !important;
+        transform: scale(0) !important;
+        display: block !important;
+      `;
+
+      document.body.appendChild(container);
 
       try {
-        // 优先尝试现代 API
+        // 尝试现代API
         if (navigator.clipboard && navigator.clipboard.write) {
-          await copyWithClipboardAPI(container);
+          await copyWithClipboardAPI(container.outerHTML, container.textContent);
         } else {
           // 降级到传统方法
+          const range = document.createRange();
+          range.selectNodeContents(container);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
           copyWithExecCommand();
+          selection.removeAllRanges();
         }
         return true;
-      } catch (error) {
-        console.warn('首选复制方法失败，尝试备用方法...', error.message);
-        // 如果首选方法失败，尝试另一种
-        try {
-          if (navigator.clipboard && navigator.clipboard.write) {
-            copyWithExecCommand();
-          } else {
-            await copyWithClipboardAPI(container);
-          }
-          return true;
-        } catch (fallbackError) {
-          console.error('所有复制方法都失败了:', fallbackError);
-          throw fallbackError;
+      } finally {
+        // 立即清理DOM
+        if (document.body.contains(container)) {
+          document.body.removeChild(container);
         }
       }
     };
@@ -158,13 +226,6 @@ export async function copyToSocialClean(html) {
     console.error('复制失败:', error);
     throw ErrorHandler.handleClipboardError(error, parseFloat(sizeKB));
   } finally {
-    if (document.body.contains(container)) {
-      document.body.removeChild(container);
-    }
-    const selection = window.getSelection();
-    if (selection) {
-      selection.removeAllRanges();
-    }
     console.log(`复制流程结束，内容大小: ${sizeKB}KB`);
   }
 }

@@ -15,6 +15,8 @@ export const STORAGE_KEYS = {
   COLOR_THEME: 'markdown-editor-color-theme',
   CODE_STYLE: 'markdown-editor-code-style',
   THEME_SYSTEM: 'markdown-editor-theme-system',
+  FONT_FAMILY: 'markdown-editor-font-family',
+  FONT_SIZE: 'markdown-editor-font-size',
 };
 
 /**
@@ -29,6 +31,10 @@ export const THEME_DEFAULTS = {
 
   // 布局主题
   THEME_SYSTEM_ID: 'default',
+
+  // 字体设置
+  FONT_FAMILY: 'system-default',
+  FONT_SIZE: 16,
 
   // 自动切换
   AUTO_SWITCH: true,

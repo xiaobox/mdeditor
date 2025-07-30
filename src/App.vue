@@ -7,6 +7,13 @@
         <span class="header-subtitle">现代化 Markdown 编辑器</span>
       </div>
       <div class="header-right">
+        <button class="btn btn-github" @click="openGithub" title="查看源码">
+          <svg viewBox="0 0 24 24" width="18" height="18">
+            <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"/>
+          </svg>
+          GitHub
+        </button>
+
         <button class="btn btn-settings" @click="showSettingsPanel = !showSettingsPanel" :class="{ 'active': showSettingsPanel }">
           <svg viewBox="0 0 24 24" width="18" height="18">
             <path fill="currentColor" d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
@@ -152,6 +159,7 @@ export default {
       currentCodeStyleId,
       currentCodeStyle,
       currentThemeSystemId: currentLayoutId,
+      currentFontSettings,
       setColorTheme,
       setCodeStyle,
       setThemeSystem: setLayout,
@@ -468,11 +476,15 @@ function greet(name) {
       }
 
       try {
+        // 使用 requestAnimationFrame 确保UI更新不会引起抖动
+        await new Promise(resolve => requestAnimationFrame(resolve))
+
         let result
         const copyOptions = {
           theme: getCurrentEffectiveTheme(), // 使用有效主题
           codeTheme: currentCodeStyle.value,
-          themeSystem: currentLayoutId.value
+          themeSystem: currentLayoutId.value,
+          fontSettings: currentFontSettings.value
         }
 
         // 如果没有指定格式，默认使用社交格式
@@ -489,10 +501,15 @@ function greet(name) {
             result = { success: false, message: '未知的复制格式' }
         }
 
-        showNotification(result.message, result.success ? 'success' : 'error')
+        // 延迟显示通知，避免与复制操作冲突
+        setTimeout(() => {
+          showNotification(result.message, result.success ? 'success' : 'error')
+        }, 50)
       } catch (err) {
         console.error('复制错误:', err)
-        showNotification('❌ 复制失败：' + err.message, 'error')
+        setTimeout(() => {
+          showNotification('❌ 复制失败：' + err.message, 'error')
+        }, 50)
       }
     }
 
@@ -521,6 +538,13 @@ function greet(name) {
       showNotification(`代码样式已更新为${styleName}`, 'success')
     }
 
+    // GitHub 链接处理方法
+    const openGithub = () => {
+      // 临时的 GitHub 地址，后续开发完成后可以修改
+      const githubUrl = 'https://github.com/your-username/mdeditor'
+      window.open(githubUrl, '_blank')
+    }
+
     // 初始化主题 - 立即初始化避免闪烁
     initialize()
 
@@ -541,6 +565,7 @@ function greet(name) {
       handleCopyFormatSelect,
       clearContent,
       loadSample,
+      openGithub,
       handleThemeSystemChanged,
       handleThemeChanged,
       handleCodeStyleChanged,
@@ -601,7 +626,44 @@ function greet(name) {
   opacity: 0;
 }
 
+/* GitHub 按钮样式 */
+.btn-github {
+  background: linear-gradient(135deg, #24292e 0%, #1a1e22 100%);
+  color: #ffffff;
+  border: 1px solid #24292e;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
 
+.btn-github::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.btn-github:hover::before {
+  opacity: 1;
+}
+
+.btn-github:hover {
+  background: linear-gradient(135deg, #2c3237 0%, #1f2327 100%);
+  border-color: #2c3237;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(36, 41, 46, 0.3);
+}
+
+.btn-github:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(36, 41, 46, 0.2);
+}
 
 
 </style>

@@ -16,9 +16,9 @@ export class ListProcessingStrategy extends LineProcessingStrategy {
 
   process(coordinator, line, trimmedLine, lines, index) {
     const listResult = coordinator.listProcessor.processListLine(
-      line, coordinator.context.currentTheme
+      line, coordinator.context.currentTheme, coordinator.context.fontSettings
     );
-    
+
     if (listResult.isListItem) {
       return {
         result: listResult.result,
@@ -26,7 +26,7 @@ export class ListProcessingStrategy extends LineProcessingStrategy {
         updateContext: {}
       };
     }
-    
+
     // 列表处理器不能处理，返回 null 继续下一个策略
     return null;
   }

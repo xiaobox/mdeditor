@@ -302,13 +302,63 @@ class CSSVariableManager {
   }
 
   /**
-   * 批量应用所有主题。
-   * @param {object} themes - 包含 `colorTheme`, `codeStyle`, `themeSystem` 的对象。
+   * 应用字体设置到 CSS 变量。
+   * @param {object} fontSettings - 字体设置对象
+   * @param {string} fontSettings.fontFamily - 字体族 ID
+   * @param {number} fontSettings.fontSize - 字号
    */
-  applyAllThemes({ colorTheme, codeStyle, themeSystem }) {
+  applyFontSettings(fontSettings) {
+    if (!fontSettings) return;
+
+    // 直接生成字体CSS变量，避免异步导入的延迟
+    const fontVariables = this._generateFontCSSVariables(fontSettings);
+    this._debouncedSetVariables(fontVariables);
+  }
+
+  /**
+   * 生成字体相关的 CSS 变量
+   * @private
+   * @param {object} fontSettings - 字体设置
+   * @returns {object} CSS 变量对象
+   */
+  _generateFontCSSVariables(fontSettings) {
+    // 字体族映射
+    const fontFamilyMap = {
+      'system-default': '-apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
+      'microsoft-yahei': '"Microsoft YaHei", "微软雅黑", Arial, sans-serif',
+      'pingfang-sc': '"PingFang SC", "苹方-简", "Hiragino Sans GB", "Microsoft YaHei", sans-serif',
+      'source-han-sans': '"Source Han Sans SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif',
+      'helvetica-neue': '"Helvetica Neue", Helvetica, Arial, sans-serif',
+      'roboto': 'Roboto, "Helvetica Neue", Arial, sans-serif',
+      'inter': 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+    };
+
+    const fontFamily = fontFamilyMap[fontSettings.fontFamily] || fontFamilyMap['system-default'];
+    const fontSize = Math.max(12, Math.min(24, fontSettings.fontSize || 16));
+    const lineHeight = fontSize <= 14 ? '1.7' : fontSize <= 18 ? '1.6' : '1.5';
+
+    return {
+      '--markdown-font-family': fontFamily,
+      '--markdown-font-size': `${fontSize}px`,
+      '--markdown-line-height': lineHeight,
+      // 同时更新主题字体变量，确保全局生效
+      '--theme-font-family': fontFamily,
+      '--theme-font-size': `${fontSize}px`,
+      '--theme-line-height': lineHeight
+    };
+  }
+
+  /**
+   * 批量应用所有主题。
+   * @param {object} themes - 包含 `colorTheme`, `codeStyle`, `themeSystem`, `fontSettings` 的对象。
+   */
+  applyAllThemes({ colorTheme, codeStyle, themeSystem, fontSettings }) {
     this.applyColorTheme(colorTheme);
     this.applyCodeStyle(codeStyle);
     this.applyThemeSystem(themeSystem);
+    if (fontSettings) {
+      this.applyFontSettings(fontSettings);
+    }
   }
 
   /**

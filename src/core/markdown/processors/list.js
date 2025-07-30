@@ -85,18 +85,19 @@ export class ListProcessor {
    * 格式化列表项
    * @param {Object} listItem - 列表项信息
    * @param {Object} theme - 主题对象
+   * @param {Object} fontSettings - 字体设置（可选）
    * @returns {string} 格式化后的 HTML
    */
-  formatListItem(listItem, theme) {
+  formatListItem(listItem, theme, fontSettings = null) {
     const { type, depth, marker, content, isChecked } = listItem;
 
     switch (type) {
       case LIST_TYPES.TASK:
-        return this.formatTaskListItem(listItem, theme);
+        return this.formatTaskListItem(listItem, theme, fontSettings);
       case LIST_TYPES.ORDERED:
-        return this.formatOrderedListItem(listItem, theme);
+        return this.formatOrderedListItem(listItem, theme, fontSettings);
       case LIST_TYPES.UNORDERED:
-        return this.formatUnorderedListItem(listItem, theme);
+        return this.formatUnorderedListItem(listItem, theme, fontSettings);
       default:
         return '';
     }
@@ -106,11 +107,17 @@ export class ListProcessor {
    * 格式化任务列表项
    * @param {Object} listItem - 任务列表项信息
    * @param {Object} theme - 主题对象
+   * @param {Object} fontSettings - 字体设置（可选）
    * @returns {string} 格式化后的 HTML
    */
-  formatTaskListItem(listItem, theme) {
+  formatTaskListItem(listItem, theme, fontSettings = null) {
     const { depth, content, isChecked } = listItem;
-    const formattedTaskText = formatInlineText(content, theme);
+
+    // 获取字体设置
+    const fontSize = fontSettings?.fontSize || 16;
+    const lineHeight = fontSettings?.fontSize <= 14 ? '1.7' : fontSettings?.fontSize <= 18 ? '1.6' : '1.5';
+
+    const formattedTaskText = formatInlineText(content, theme, fontSize);
     const marginLeft = depth * 20;
 
     // 创建复选框样式
@@ -127,7 +134,7 @@ export class ListProcessor {
       ? `text-decoration: line-through; color: ${theme.textSecondary || '#656d76'}; opacity: 0.8;`
       : `color: ${theme.textPrimary || '#24292f'};`;
 
-    return `<p style="margin-left: ${marginLeft}px; margin-top: 8px; margin-bottom: 8px; font-size: 16px; line-height: 1.6; display: flex; align-items: center;">${checkboxHtml}<span style="${textStyle}">${formattedTaskText}</span></p>`;
+    return `<p style="margin-left: ${marginLeft}px; margin-top: 8px; margin-bottom: 8px; font-size: ${fontSize}px; line-height: ${lineHeight}; display: flex; align-items: center;">${checkboxHtml}<span style="${textStyle}">${formattedTaskText}</span></p>`;
   }
 
   /**
@@ -196,57 +203,70 @@ export class ListProcessor {
    * 格式化有序列表项
    * @param {Object} listItem - 有序列表项信息
    * @param {Object} theme - 主题对象
+   * @param {Object} fontSettings - 字体设置（可选）
    * @returns {string} 格式化后的 HTML
    */
-  formatOrderedListItem(listItem, theme) {
+  formatOrderedListItem(listItem, theme, fontSettings = null) {
     const { depth, marker, content } = listItem;
-    const formattedContent = formatInlineText(content, theme);
-    
+
     const num = marker.replace('.', '');
     const displayMarker = this.getOrderedListMarker(num, depth);
-    
+
     // 改进颜色选择逻辑，确保跟随主题色
     const colors = this.getListColors(theme);
     const color = colors[Math.min(depth, colors.length - 1)];
     const marginLeft = depth * 20;
 
-    return `<p style="margin-left: ${marginLeft}px; margin-top: 8px; margin-bottom: 8px; font-size: 16px; line-height: 1.6;"><span style="color: ${color}; font-weight: 600;">${displayMarker}</span> ${formattedContent}</p>`;
+    // 获取字体设置
+    const fontSize = fontSettings?.fontSize || 16;
+    const lineHeight = fontSettings?.fontSize <= 14 ? '1.7' : fontSettings?.fontSize <= 18 ? '1.6' : '1.5';
+
+    const formattedContent = formatInlineText(content, theme, fontSize);
+
+    return `<p style="margin-left: ${marginLeft}px; margin-top: 8px; margin-bottom: 8px; font-size: ${fontSize}px; line-height: ${lineHeight};"><span style="color: ${color}; font-weight: 600;">${displayMarker}</span> ${formattedContent}</p>`;
   }
 
   /**
    * 格式化无序列表项
    * @param {Object} listItem - 无序列表项信息
    * @param {Object} theme - 主题对象
+   * @param {Object} fontSettings - 字体设置（可选）
    * @returns {string} 格式化后的 HTML
    */
-  formatUnorderedListItem(listItem, theme) {
+  formatUnorderedListItem(listItem, theme, fontSettings = null) {
     const { depth, content } = listItem;
-    const formattedContent = formatInlineText(content, theme);
-    
+
     const symbols = SOCIAL_FORMATTING.LIST_SYMBOLS.UNORDERED;
     const displayMarker = symbols[Math.min(depth, symbols.length - 1)];
-    
+
     // 改进颜色选择逻辑，确保跟随主题色
     const colors = this.getListColors(theme);
     const color = colors[Math.min(depth, colors.length - 1)];
     const marginLeft = depth * 20;
-    
+
+    // 获取字体设置
+    const baseFontSize = fontSettings?.fontSize || 16;
+    const lineHeight = fontSettings?.fontSize <= 14 ? '1.7' : fontSettings?.fontSize <= 18 ? '1.6' : '1.5';
+
+    const formattedContent = formatInlineText(content, theme, baseFontSize);
+
     // 针对不同深度的符号设置合适的字体大小
-    const fontSize = this.getSymbolFontSize(depth, displayMarker);
+    const symbolFontSize = this.getSymbolFontSize(depth, displayMarker, baseFontSize);
     const fontWeight = depth === 0 ? '600' : '500'; // 第一层稍微粗一点
 
-    return `<p style="margin-left: ${marginLeft}px; margin-top: 8px; margin-bottom: 8px; font-size: 16px; line-height: 1.6;"><span style="color: ${color}; font-weight: ${fontWeight}; font-size: ${fontSize}px;">${displayMarker}</span> ${formattedContent}</p>`;
+    return `<p style="margin-left: ${marginLeft}px; margin-top: 8px; margin-bottom: 8px; font-size: ${baseFontSize}px; line-height: ${lineHeight};"><span style="color: ${color}; font-weight: ${fontWeight}; font-size: ${symbolFontSize}px;">${displayMarker}</span> ${formattedContent}</p>`;
   }
 
   /**
    * 处理列表行
    * @param {string} line - 当前行
    * @param {Object} theme - 主题对象
+   * @param {Object} fontSettings - 字体设置（可选）
    * @returns {Object} 处理结果
    */
-  processListLine(line, theme) {
+  processListLine(line, theme, fontSettings = null) {
     const listItem = this.parseListItem(line);
-    
+
     if (!listItem) {
       return {
         isListItem: false,
@@ -255,7 +275,7 @@ export class ListProcessor {
       };
     }
 
-    const result = this.formatListItem(listItem, theme);
+    const result = this.formatListItem(listItem, theme, fontSettings);
     this.currentDepth = listItem.depth;
     this.lastListType = listItem.type;
 
@@ -362,11 +382,11 @@ export class ListProcessor {
    * 根据深度和符号获取合适的字体大小
    * @param {number} _depth - 嵌套深度（暂未使用，保留以备将来扩展）
    * @param {string} symbol - 符号字符
+   * @param {number} baseFontSize - 基础字体大小
    * @returns {number} 字体大小（像素）
    */
-  getSymbolFontSize(_depth, symbol) {
-    // 基础字体大小，不随深度变化，保持一致性
-    const baseFontSize = 16;
+  getSymbolFontSize(_depth, symbol, baseFontSize = 16) {
+    // 使用传入的基础字体大小
 
     // 根据符号类型调整大小，但保持合理的最小尺寸
     const symbolSizeMap = {

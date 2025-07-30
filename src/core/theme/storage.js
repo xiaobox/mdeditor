@@ -34,7 +34,9 @@ export { STORAGE_KEYS };
 export const STORAGE_DEFAULTS = {
   COLOR_THEME: THEME_DEFAULTS.COLOR_THEME_ID,
   CODE_STYLE: THEME_DEFAULTS.CODE_STYLE_ID,
-  THEME_SYSTEM: THEME_DEFAULTS.THEME_SYSTEM_ID
+  THEME_SYSTEM: THEME_DEFAULTS.THEME_SYSTEM_ID,
+  FONT_FAMILY: 'system-default',
+  FONT_SIZE: 16
 };
 
 /**
@@ -108,13 +110,15 @@ export class ThemeStorage {
 
   /**
    * 批量加载所有主题相关的设置。
-   * @returns {object} - 包含 `colorTheme`, `codeStyle`, `themeSystem` 的对象。
+   * @returns {object} - 包含 `colorTheme`, `codeStyle`, `themeSystem`, `fontFamily`, `fontSize` 的对象。
    */
   static loadAll() {
     return {
       colorTheme: this.load(STORAGE_KEYS.COLOR_THEME, STORAGE_DEFAULTS.COLOR_THEME),
       codeStyle: this.load(STORAGE_KEYS.CODE_STYLE, STORAGE_DEFAULTS.CODE_STYLE),
-      themeSystem: this.load(STORAGE_KEYS.THEME_SYSTEM, STORAGE_DEFAULTS.THEME_SYSTEM)
+      themeSystem: this.load(STORAGE_KEYS.THEME_SYSTEM, STORAGE_DEFAULTS.THEME_SYSTEM),
+      fontFamily: this.load(STORAGE_KEYS.FONT_FAMILY, STORAGE_DEFAULTS.FONT_FAMILY),
+      fontSize: parseInt(this.load(STORAGE_KEYS.FONT_SIZE, STORAGE_DEFAULTS.FONT_SIZE.toString()), 10)
     };
   }
 
@@ -127,6 +131,8 @@ export class ThemeStorage {
     allSuccess = allSuccess && this.remove(STORAGE_KEYS.COLOR_THEME);
     allSuccess = allSuccess && this.remove(STORAGE_KEYS.CODE_STYLE);
     allSuccess = allSuccess && this.remove(STORAGE_KEYS.THEME_SYSTEM);
+    allSuccess = allSuccess && this.remove(STORAGE_KEYS.FONT_FAMILY);
+    allSuccess = allSuccess && this.remove(STORAGE_KEYS.FONT_SIZE);
     return allSuccess;
   }
 }

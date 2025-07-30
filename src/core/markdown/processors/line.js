@@ -57,11 +57,14 @@ export class CodeBlockProcessor extends LineProcessor {
     } else {
       // 结束代码块
       const blockInfo = context.endCodeBlock();
+      const fontSize = context.fontSettings?.fontSize || 16;
       const result = formatCodeBlock(
-        blockInfo.content, 
-        blockInfo.language, 
-        context.currentTheme, 
-        context.codeTheme
+        blockInfo.content,
+        blockInfo.language,
+        context.currentTheme,
+        context.codeTheme,
+        false, // isPreview
+        fontSize
       );
       return {
         result,
@@ -104,7 +107,8 @@ export class HeadingProcessor extends LineProcessor {
     const { currentTheme } = context;
     const level = trimmedLine.match(/^#+/)[0].length;
     const text = trimmedLine.replace(/^#+\s*/, '');
-    const formattedText = formatInlineText(text, currentTheme);
+    const fontSize = context.fontSettings?.fontSize || 16;
+    const formattedText = formatInlineText(text, currentTheme, fontSize);
 
     let result = '';
     
@@ -113,7 +117,7 @@ export class HeadingProcessor extends LineProcessor {
     } else if (level === 2) {
       result = this.formatH2(formattedText, currentTheme, context);
     } else {
-      result = this.formatOtherHeading(level, formattedText, currentTheme);
+      result = this.formatOtherHeading(level, formattedText, currentTheme, context);
     }
 
     return {
@@ -124,17 +128,20 @@ export class HeadingProcessor extends LineProcessor {
   }
 
   formatH1(formattedText, currentTheme, context = {}) {
-    const { isPreview = false } = context.options || {};
+    const isPreview = context.options?.isPreview || false;
 
     if (isPreview) {
       // 预览模式：使用CSS类，样式由主题文件控制
       return `<h1>${formattedText}</h1>`;
     } else {
-      // 社交平台模式：保留内联样式以确保兼容性
+      // 社交平台模式：使用绝对像素值确保字号正确
+      const baseFontSize = context.fontSettings?.fontSize || 16;
+      const h1FontSize = Math.round(baseFontSize * 2.2);
+
       const h1Style = `
         margin: 1.8em 0 1.5em 0;
         font-weight: 700;
-        font-size: 2.2em;
+        font-size: ${h1FontSize}px;
         line-height: 1.3;
         text-align: center;
         position: relative;
@@ -165,19 +172,22 @@ export class HeadingProcessor extends LineProcessor {
   }
 
   formatH2(formattedText, currentTheme, context = {}) {
-    const { isPreview = false } = context.options || {};
+    const isPreview = context.options?.isPreview || false;
 
     if (isPreview) {
       // 预览模式：使用CSS类，样式由主题文件控制
       return `<h2>${formattedText}</h2>`;
     } else {
-      // 社交平台模式：保留装饰线
+      // 社交平台模式：使用绝对像素值确保字号正确
+      const baseFontSize = context.fontSettings?.fontSize || 16;
+      const h2FontSize = Math.round(baseFontSize * 1.5);
+
       const h2Style = `
         margin-top: 2rem;
         margin-bottom: 1.5rem;
         font-weight: 600;
         padding-left: 0.5em;
-        font-size: 1.5em;
+        font-size: ${h2FontSize}px;
         line-height: 1.4;
         color: ${currentTheme.textPrimary};
         position: relative;
@@ -201,17 +211,21 @@ export class HeadingProcessor extends LineProcessor {
     }
   }
 
-  formatOtherHeading(level, formattedText, currentTheme) {
-    const fontSizes = {
-      3: '1.1em',
-      4: '1.05em',
-      5: '1em',
-      6: '0.95em'
+  formatOtherHeading(level, formattedText, currentTheme, context = {}) {
+    const baseFontSize = context.fontSettings?.fontSize || 16;
+
+    // 使用与预览中相同的倍数
+    const fontMultipliers = {
+      3: 1.3,
+      4: 1.1,
+      5: 1.0,
+      6: 0.9
     };
-    const fontSize = fontSizes[level] || '1em';
+    const multiplier = fontMultipliers[level] || 1.0;
+    const fontSize = Math.round(baseFontSize * multiplier);
 
     const titleStyle = `
-      font-size: ${fontSize};
+      font-size: ${fontSize}px;
       color: ${currentTheme.textPrimary};
       font-weight: 600;
       margin-top: 1.5rem;

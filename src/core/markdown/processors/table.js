@@ -120,9 +120,10 @@ export class TableProcessor {
    * @param {Array} lines - 所有行
    * @param {number} currentIndex - 当前行索引
    * @param {Object} theme - 主题对象
+   * @param {Object} fontSettings - 字体设置（可选）
    * @returns {Object} 处理结果
    */
-  processTableRow(line, trimmedLine, lines, currentIndex, theme = {}) {
+  processTableRow(line, trimmedLine, lines, currentIndex, theme = {}, fontSettings = null) {
     const rowType = this.getRowType(line, trimmedLine, this.rows.length);
 
     switch (this.state) {
@@ -151,7 +152,7 @@ export class TableProcessor {
           return { shouldContinue: true, result: '', tableComplete: false };
         } else {
           // 表格结束
-          const result = this.formatTable(theme);
+          const result = this.formatTable(theme, fontSettings);
           this.reset();
           return { shouldContinue: false, result, tableComplete: true, reprocessLine: true };
         }
@@ -165,9 +166,10 @@ export class TableProcessor {
   /**
    * 格式化表格为 HTML
    * @param {Object} theme - 主题对象
+   * @param {Object} fontSettings - 字体设置（可选）
    * @returns {string} 格式化后的 HTML
    */
-  formatTable(theme = {}) {
+  formatTable(theme = {}, fontSettings = null) {
     if (this.rows.length < 2) {
       return '';
     }
@@ -179,14 +181,18 @@ export class TableProcessor {
     // 解析对齐方式
     const alignments = this.parseAlignments(alignmentRow);
 
-    let tableHtml = '<table style="border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 16px;">';
+    // 获取字体设置
+    const fontSize = fontSettings?.fontSize || 16;
+    const lineHeight = fontSettings?.fontSize <= 14 ? '1.7' : fontSettings?.fontSize <= 18 ? '1.6' : '1.5';
+
+    let tableHtml = `<table style="border-collapse: collapse; width: 100%; margin: 16px 0; font-size: ${fontSize}px; line-height: ${lineHeight};">`;
 
     // 格式化表头
-    tableHtml += this.formatTableHeader(headerRow, alignments, theme);
+    tableHtml += this.formatTableHeader(headerRow, alignments, theme, fontSettings);
 
     // 格式化表体
     if (bodyRows.length > 0) {
-      tableHtml += this.formatTableBody(bodyRows, alignments, theme);
+      tableHtml += this.formatTableBody(bodyRows, alignments, theme, fontSettings);
     }
 
     tableHtml += '</table>';
@@ -218,9 +224,10 @@ export class TableProcessor {
    * @param {string} headerRow - 表头行
    * @param {Array} alignments - 对齐方式
    * @param {Object} theme - 主题对象
+   * @param {Object} fontSettings - 字体设置（可选）
    * @returns {string} 格式化后的表头 HTML
    */
-  formatTableHeader(headerRow, alignments, theme) {
+  formatTableHeader(headerRow, alignments, theme, fontSettings = null) {
     const headerCells = headerRow.split(MARKDOWN_SYNTAX.TABLE_SEPARATOR)
       .map(cell => cell.trim())
       .slice(1, -1);
@@ -229,11 +236,14 @@ export class TableProcessor {
       return '';
     }
 
+    // 获取字体设置
+    const fontSize = fontSettings?.fontSize || 16;
+
     let html = '<thead><tr style="background-color: #f6f8fa;">';
     headerCells.forEach((cell, index) => {
       const align = alignments[index] || 'left';
-      const formattedCell = formatInlineText(cell, theme);
-      html += `<th style="border: 1px solid #d0d7de; padding: 8px 12px; text-align: ${align}; font-weight: 600; color: #24292e;">${formattedCell}</th>`;
+      const formattedCell = formatInlineText(cell, theme, fontSize);
+      html += `<th style="border: 1px solid #d0d7de; padding: 8px 12px; text-align: ${align}; font-weight: 600; color: #24292e; font-size: ${fontSize}px;">${formattedCell}</th>`;
     });
     html += '</tr></thead>';
     return html;
@@ -244,9 +254,13 @@ export class TableProcessor {
    * @param {Array} bodyRows - 表体行数组
    * @param {Array} alignments - 对齐方式
    * @param {Object} theme - 主题对象
+   * @param {Object} fontSettings - 字体设置（可选）
    * @returns {string} 格式化后的表体 HTML
    */
-  formatTableBody(bodyRows, alignments, theme) {
+  formatTableBody(bodyRows, alignments, theme, fontSettings = null) {
+    // 获取字体设置
+    const fontSize = fontSettings?.fontSize || 16;
+
     let html = '<tbody>';
     bodyRows.forEach(row => {
       const cells = row.split(MARKDOWN_SYNTAX.TABLE_SEPARATOR)
@@ -257,8 +271,8 @@ export class TableProcessor {
         html += '<tr>';
         cells.forEach((cell, index) => {
           const align = alignments[index] || 'left';
-          const formattedCell = formatInlineText(cell, theme);
-          html += `<td style="border: 1px solid #d0d7de; padding: 8px 12px; text-align: ${align}; color: #24292e;">${formattedCell}</td>`;
+          const formattedCell = formatInlineText(cell, theme, fontSize);
+          html += `<td style="border: 1px solid #d0d7de; padding: 8px 12px; text-align: ${align}; color: #24292e; font-size: ${fontSize}px;">${formattedCell}</td>`;
         });
         html += '</tr>';
       }
@@ -278,10 +292,11 @@ export class TableProcessor {
   /**
    * 完成当前表格处理并返回结果
    * @param {Object} theme - 主题对象
+   * @param {Object} fontSettings - 字体设置（可选）
    * @returns {string} 格式化后的表格 HTML
    */
-  completeTable(theme) {
-    const result = this.formatTable(theme);
+  completeTable(theme, fontSettings = null) {
+    const result = this.formatTable(theme, fontSettings);
     this.reset();
     return result;
   }

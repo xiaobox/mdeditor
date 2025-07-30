@@ -17,6 +17,9 @@
   white-space: normal;
   word-wrap: break-word;
   overflow: visible;
+  pointer-events: auto; /* 恢复通知本身的交互 */
+  will-change: transform, opacity; /* 优化动画性能 */
+  transform: translateZ(0); /* 启用硬件加速 */
 }
 
 .notification.success {
@@ -68,25 +71,25 @@
   border-color: rgba(59, 130, 246, 0.3);
 }
 
-/* 通知动画 */
+/* 通知动画 - 优化性能，减少抖动 */
 @keyframes slideDown {
   from {
-    transform: translateY(-20px);
+    transform: translateY(-20px) translateZ(0);
     opacity: 0;
   }
   to {
-    transform: translateY(0);
+    transform: translateY(0) translateZ(0);
     opacity: 1;
   }
 }
 
 @keyframes slideUp {
   from {
-    transform: translateY(0);
+    transform: translateY(0) translateZ(0);
     opacity: 1;
   }
   to {
-    transform: translateY(-20px);
+    transform: translateY(-20px) translateZ(0);
     opacity: 0;
   }
 }
@@ -132,6 +135,8 @@
   flex-direction: column;
   gap: 12px;
   max-width: 400px;
+  pointer-events: none; /* 防止影响页面交互 */
+  will-change: transform; /* 优化动画性能 */
 }
 
 /* 响应式通知 */

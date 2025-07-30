@@ -27,6 +27,7 @@ export class FormatterContext {
     const currentTheme = preserveOptions.currentTheme || this.currentTheme || null;
     const codeTheme = preserveOptions.codeTheme || this.codeTheme || null;
     const themeSystem = preserveOptions.themeSystem || this.themeSystem || 'default';
+    const fontSettings = preserveOptions.fontSettings || this.fontSettings || null;
     const options = preserveOptions.options || this.options || {};
 
     // 重置处理状态
@@ -40,6 +41,7 @@ export class FormatterContext {
     this.currentTheme = currentTheme;
     this.codeTheme = codeTheme;
     this.themeSystem = themeSystem;
+    this.fontSettings = fontSettings;
     this.options = options;
   }
 
@@ -53,6 +55,14 @@ export class FormatterContext {
     this.currentTheme = currentTheme;
     this.codeTheme = codeTheme;
     this.themeSystem = themeSystem;
+  }
+
+  /**
+   * 设置字体配置
+   * @param {Object} fontSettings - 字体设置对象
+   */
+  setFontSettings(fontSettings) {
+    this.fontSettings = fontSettings;
   }
 
   /**

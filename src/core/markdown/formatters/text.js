@@ -57,16 +57,19 @@ const CODE_PLACEHOLDERS = [];
  * 处理内联代码
  * @param {string} text - 包含内联代码的文本
  * @param {Object} theme - 主题对象
+ * @param {number} baseFontSize - 基础字号
  * @returns {string} - 处理后的文本
  */
-export function processInlineCode(text, theme) {
+export function processInlineCode(text, theme, baseFontSize = 16) {
   // 清空占位符数组
   CODE_PLACEHOLDERS.length = 0;
 
   return text.replace(REGEX_PATTERNS.CODE, (_, code) => {
     const escapedCode = escapeHtml(code);
+    // 内联代码字号通常比正文小一些
+    const codeFontSize = Math.max(12, Math.round(baseFontSize * 0.875)); // 约87.5%的正文字号
     // 使用主题色的社交平台兼容样式
-    const codeHtml = `<code style="background-color: ${theme.inlineCodeBg}; color: ${theme.inlineCodeText}; padding: 2px 4px; border-radius: 3px; font-family: Consolas, monospace; font-size: 14px; border: 1px solid ${theme.inlineCodeBorder};">${escapedCode}</code>`;
+    const codeHtml = `<code style="background-color: ${theme.inlineCodeBg}; color: ${theme.inlineCodeText}; padding: 2px 4px; border-radius: 3px; font-family: Consolas, monospace; font-size: ${codeFontSize}px; border: 1px solid ${theme.inlineCodeBorder};">${escapedCode}</code>`;
 
     // 创建安全的占位符（使用不会被格式化的字符）
     const placeholder = `〖CODE${CODE_PLACEHOLDERS.length}〗`;
@@ -125,62 +128,62 @@ export {
 const INLINE_FORMAT_PROCESSORS = [
   {
     name: 'escapes',
-    process: (text, theme, handleEscapes) => handleEscapes ? preprocessEscapes(text) : text,
+    process: (text, theme, handleEscapes, baseFontSize) => handleEscapes ? preprocessEscapes(text) : text,
     condition: (handleEscapes) => handleEscapes
   },
   {
     name: 'inlineCode',
-    process: (text, theme) => processInlineCode(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize) => processInlineCode(text, theme, baseFontSize),
     condition: () => true
   },
   {
     name: 'keyboard',
-    process: (text, theme) => processKeyboard(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize) => processKeyboard(text, theme),
     condition: () => true
   },
   {
     name: 'highlight',
-    process: (text, theme) => processHighlight(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize) => processHighlight(text, theme),
     condition: () => true
   },
   {
     name: 'boldAndItalic',
-    process: (text, theme) => processBoldAndItalic(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize) => processBoldAndItalic(text, theme),
     condition: () => true
   },
   {
     name: 'strikethrough',
-    process: (text, theme) => processStrikethrough(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize) => processStrikethrough(text, theme),
     condition: () => true
   },
   {
     name: 'superscript',
-    process: (text, theme) => processSuperscript(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize) => processSuperscript(text, theme),
     condition: () => true
   },
   {
     name: 'subscript',
-    process: (text, theme) => processSubscript(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize) => processSubscript(text, theme),
     condition: () => true
   },
   {
     name: 'links',
-    process: (text, theme) => processLinks(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize) => processLinks(text, theme),
     condition: () => true
   },
   {
     name: 'images',
-    process: (text, theme) => processImages(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize) => processImages(text, theme),
     condition: () => true
   },
   {
     name: 'restoreCode',
-    process: (text) => restoreCodePlaceholders(text),
+    process: (text, theme, handleEscapes, baseFontSize) => restoreCodePlaceholders(text),
     condition: () => true
   },
   {
     name: 'postprocessEscapes',
-    process: (text, theme, handleEscapes) => handleEscapes ? postprocessEscapes(text) : text,
+    process: (text, theme, handleEscapes, baseFontSize) => handleEscapes ? postprocessEscapes(text) : text,
     condition: (handleEscapes) => handleEscapes
   }
 ];
@@ -190,14 +193,15 @@ const INLINE_FORMAT_PROCESSORS = [
  * @param {string} text - 原始文本
  * @param {Object} theme - 主题对象
  * @param {boolean} handleEscapes - 是否处理转义字符
+ * @param {number} baseFontSize - 基础字号
  * @returns {string} - 处理后的文本
  */
-function executeFormattingPipeline(text, theme, handleEscapes) {
+function executeFormattingPipeline(text, theme, handleEscapes, baseFontSize = 16) {
   let result = text;
 
   for (const processor of INLINE_FORMAT_PROCESSORS) {
     if (processor.condition(handleEscapes)) {
-      result = processor.process(result, theme, handleEscapes);
+      result = processor.process(result, theme, handleEscapes, baseFontSize);
     }
   }
 
@@ -209,20 +213,22 @@ function executeFormattingPipeline(text, theme, handleEscapes) {
  * @param {string} text - 原始文本
  * @param {Object} theme - 主题对象
  * @param {boolean} handleEscapes - 是否处理转义字符（默认true）
+ * @param {number} baseFontSize - 基础字号
  * @returns {string} - 处理后的文本
  */
-export function processAllInlineFormats(text, theme, handleEscapes = true) {
-  return executeFormattingPipeline(text, theme, handleEscapes);
+export function processAllInlineFormats(text, theme, handleEscapes = true, baseFontSize = 16) {
+  return executeFormattingPipeline(text, theme, handleEscapes, baseFontSize);
 }
 
 /**
  * 处理内联格式但不处理转义字符（用于嵌套调用）
  * @param {string} text - 原始文本
  * @param {Object} theme - 主题对象
+ * @param {number} baseFontSize - 基础字号
  * @returns {string} - 处理后的文本
  */
-export function processInlineFormatsWithoutEscapes(text, theme) {
-  return processAllInlineFormats(text, theme, false);
+export function processInlineFormatsWithoutEscapes(text, theme, baseFontSize = 16) {
+  return processAllInlineFormats(text, theme, false, baseFontSize);
 }
 
 /**
