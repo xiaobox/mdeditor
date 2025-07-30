@@ -21,4 +21,4 @@ export * from './theme-systems.js';
 export { cssManager } from '../manager.js';
 
 // 存储相关
-export * from './storage.js'; 
+export * from '../storage.js';

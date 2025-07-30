@@ -107,6 +107,7 @@
       @theme-system-changed="handleThemeSystemChanged"
       @theme-changed="handleThemeChanged"
       @code-style-changed="handleCodeStyleChanged"
+      @show-notification="showNotification"
     />
 
     <!-- Markdown 语法指南 -->
@@ -542,7 +543,8 @@ function greet(name) {
       loadSample,
       handleThemeSystemChanged,
       handleThemeChanged,
-      handleCodeStyleChanged
+      handleCodeStyleChanged,
+      showNotification
     }
   }
 }

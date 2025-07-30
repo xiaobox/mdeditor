@@ -265,7 +265,7 @@ const props = defineProps({
 })
 
 // Emits
-const emit = defineEmits(['close', 'theme-system-changed', 'theme-changed', 'code-style-changed'])
+const emit = defineEmits(['close', 'theme-system-changed', 'theme-changed', 'code-style-changed', 'show-notification'])
 
 // 使用统一主题管理器
 const themeManager = useGlobalThemeManager()
@@ -377,11 +377,19 @@ const applySettings = () => {
     delay += 100 // 每个通知间隔100ms
   }
 
-  // 应用颜色主题
+  // 应用颜色主题（内置主题）
   if (!isUsingCustomColor.value && selectedThemeId.value !== currentColorThemeId.value) {
     setColorTheme(selectedThemeId.value)
     setTimeout(() => {
       emit('theme-changed', selectedThemeId.value)
+    }, delay)
+    delay += 100
+  }
+
+  // 应用自定义颜色主题
+  if (isUsingCustomColor.value && currentCustomColor.value) {
+    setTimeout(() => {
+      emit('show-notification', `自定义颜色主题已应用 (${currentCustomColor.value})`, 'success')
     }, delay)
     delay += 100
   }
@@ -392,6 +400,7 @@ const applySettings = () => {
     setTimeout(() => {
       emit('code-style-changed', selectedCodeStyleId.value)
     }, delay)
+    delay += 100 // 增加延迟，确保通知不重叠
   }
 
   // 如果使用自定义颜色，在所有设置应用后重新应用自定义主题
@@ -402,9 +411,10 @@ const applySettings = () => {
         themeManager.themeState.hasTemporaryCustomTheme = true
       }
 
+      // 重新应用自定义主题（只应用颜色，不触发额外事件）
       themeManager.cssManager.forceApplyColorTheme(currentCustomTheme.value)
 
-      // 触发自定义主题变化事件
+      // 触发自定义主题变化事件，通知PreviewPane等组件更新
       window.dispatchEvent(new CustomEvent('custom-theme-changed', {
         detail: { theme: currentCustomTheme.value, color: currentCustomColor.value }
       }))
@@ -444,55 +454,53 @@ const onColorChange = (color) => {
   selectedCustomColor.value = color
 }
 
-const onColorConfirm = (color) => {
+const onColorConfirm = async (color) => {
   try {
     // 导入颜色生成器来创建临时主题
-    import('../core/theme/presets/color-themes.js').then(({ ColorThemeGenerator }) => {
-      const tempTheme = ColorThemeGenerator.generateThemeColors(color)
+    const { ColorThemeGenerator } = await import('../core/theme/presets/color-themes.js')
+    const tempTheme = ColorThemeGenerator.generateThemeColors(color)
 
-      // 创建完整的主题对象
-      const customTheme = {
-        id: 'temp-custom',
-        name: '自定义颜色',
-        description: '临时自定义颜色',
-        ...tempTheme
-      }
+    // 创建完整的主题对象
+    const customTheme = {
+      id: 'temp-custom',
+      name: '自定义颜色',
+      description: '临时自定义颜色',
+      ...tempTheme
+    }
 
+    // 设置状态
+    currentCustomColor.value = color
+    currentCustomTheme.value = customTheme // 保存自定义主题引用
+    isUsingCustomColor.value = true
+    selectedThemeId.value = null // 清除选中的内置主题
+    showColorPicker.value = false
 
+    // 保存到localStorage以便刷新后恢复
+    try {
+      localStorage.setItem('temp-custom-color', color)
+      localStorage.setItem('temp-custom-theme', JSON.stringify(customTheme))
+    } catch (error) {
+      console.warn('Failed to save custom color to localStorage:', error)
+    }
 
-      // 设置状态
-      currentCustomColor.value = color
-      currentCustomTheme.value = customTheme // 保存自定义主题引用
-      isUsingCustomColor.value = true
-      selectedThemeId.value = null // 清除选中的内置主题
-      showColorPicker.value = false
+    // 设置临时主题标记
+    if (themeManager.themeState) {
+      themeManager.themeState.hasTemporaryCustomTheme = true
+    }
 
-      // 保存到localStorage以便刷新后恢复
-      try {
-        localStorage.setItem('temp-custom-color', color)
-        localStorage.setItem('temp-custom-theme', JSON.stringify(customTheme))
-      } catch (error) {
-        console.warn('Failed to save custom color to localStorage:', error)
-      }
+    // 立即应用自定义主题
+    themeManager.cssManager.forceApplyColorTheme(customTheme)
 
-      // 设置临时主题标记
-      if (themeManager.themeState) {
-        themeManager.themeState.hasTemporaryCustomTheme = true
-      }
+    // 触发自定义主题变化事件，通知其他组件
+    window.dispatchEvent(new CustomEvent('custom-theme-changed', {
+      detail: { theme: customTheme, color }
+    }))
 
-      // 立即应用自定义主题
-      themeManager.cssManager.forceApplyColorTheme(customTheme)
+    // 不在这里发送通知，而是在applySettings中统一发送
 
-      // 触发自定义主题变化事件，通知其他组件
-      window.dispatchEvent(new CustomEvent('custom-theme-changed', {
-        detail: { theme: customTheme, color }
-      }))
-
-
-    })
   } catch (error) {
     console.error('Failed to apply custom color:', error)
-    alert('应用自定义颜色失败，请重试')
+    emit('show-notification', '应用自定义颜色失败，请重试', 'error')
   }
 }
 

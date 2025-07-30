@@ -25,7 +25,7 @@
  * 设计思想:
  * - **封装复杂性**: 将与剪贴板交互的底层、繁琐且充满兼容性问题的代码封装起来，
  *   对外提供一个简单的 `copyToSocialClean(html)` 接口。
- * - **用户体验优先**: 尽管实现复杂，但目标是为用户提供一个“一键复制”的无缝体验。
+ * - **用户体验优先**: 尽管实现复杂，但目标是为用户提供一个"一键复制"的无缝体验。
  *   超时和明确的错误提示都是为了改善用户体验。
  * - **面向未来，兼容过去**: 优先使用现代 API，但保留了对旧 API 的支持，
  *   确保了在更广泛的浏览器环境中可用。
@@ -69,11 +69,6 @@ function createRichTextContainer(html) {
   return container;
 }
 
-/**
- * 将 HTML 字符串作为富文本复制到剪贴板，并针对社交平台进行优化。
- * @param {string} html - 要复制的 HTML 内容。
- * @returns {Promise<boolean>} - 复制成功时 resolve(true)，否则 reject(error)。
- */
 /**
  * 尝试使用现代 Clipboard API 进行复制。
  * @private

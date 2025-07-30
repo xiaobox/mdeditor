@@ -70,20 +70,3 @@ export function debounce(fn, delay) {
   };
 }
 
-/**
- * 节流函数
- * @param {Function} fn - 要节流的函数
- * @param {number} interval - 间隔时间（毫秒）
- * @returns {Function} 节流函数
- */
-export function throttle(fn, interval) {
-  let lastTime = 0;
-  
-  return function throttled(...args) {
-    const now = Date.now();
-    if (now - lastTime >= interval) {
-      lastTime = now;
-      return fn.apply(this, args);
-    }
-  };
-} 
