@@ -155,12 +155,6 @@ export class ErrorHandler {
 }
 
 /**
- * 便捷的错误处理函数
+ * 便捷的错误处理函数 - 只导出实际使用的函数
  */
-export const handleError = ErrorHandler.wrap;
 export const handleClipboardError = ErrorHandler.handleClipboardError;
-export const handleNetworkError = ErrorHandler.handleNetworkError;
-export const retryExecute = ErrorHandler.retry;
-export const safeExecute = ErrorHandler.safeExecute;
-export const getUserErrorMessage = ErrorHandler.getUserMessage;
-export const logError = ErrorHandler.log;

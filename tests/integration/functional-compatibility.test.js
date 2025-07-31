@@ -236,18 +236,7 @@ console.log('Hello World');
       expect(cleaned).toBe('https://example.com/');
     });
 
-    it('should validate emails correctly', () => {
-      expect(TextUtils.isValidEmail('test@example.com')).toBe(true);
-      expect(TextUtils.isValidEmail('invalid-email')).toBe(false);
-    });
 
-    it('should truncate text correctly', () => {
-      const longText = 'This is a very long text that should be truncated';
-      const truncated = TextUtils.truncate(longText, 20);
-      
-      expect(truncated).toBe('This is a very lo...');
-      expect(truncated.length).toBe(20);
-    });
   });
 
   describe('Performance and Memory', () => {
@@ -307,11 +296,11 @@ console.log('Hello World');
 
     it('should handle extremely long strings', () => {
       const longString = 'a'.repeat(100000);
-      
+
       expect(() => {
         TextUtils.escapeHtml(longString);
-        TextUtils.truncate(longString, 100);
-        TextUtils.isEmpty(longString);
+        TextUtils.cleanUrl(longString);
+        TextUtils.sanitizeAttribute(longString);
       }).not.toThrow();
     });
   });

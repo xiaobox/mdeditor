@@ -4,13 +4,11 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { 
-  ErrorHandler, 
-  AppError, 
+import {
+  ErrorHandler,
+  AppError,
   ERROR_TYPES,
-  handleError,
-  safeExecute,
-  retryExecute 
+  handleClipboardError
 } from '../../../src/shared/utils/error.js';
 
 describe('ErrorHandler', () => {
@@ -208,14 +206,7 @@ describe('ErrorHandler', () => {
 
   describe('convenience functions', () => {
     it('should export convenience functions', () => {
-      expect(typeof handleError).toBe('function');
-      expect(typeof safeExecute).toBe('function');
-      expect(typeof retryExecute).toBe('function');
-    });
-
-    it('should work as aliases', () => {
-      const error = handleError('Test error');
-      expect(error).toBeInstanceOf(AppError);
+      expect(typeof handleClipboardError).toBe('function');
     });
   });
 });

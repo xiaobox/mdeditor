@@ -17,7 +17,7 @@ import {
   getThemeSystem, 
   defaultThemeSystem 
 } from '../../core/theme/presets/theme-systems.js';
-import { TextUtils } from './text.js';
+
 
 /**
  * 主题类型枚举
@@ -191,27 +191,7 @@ export class ThemeUtils {
     return variables;
   }
 
-  /**
-   * 应用CSS变量到元素
-   * @param {HTMLElement} element - 目标元素
-   * @param {Object} variables - CSS变量对象
-   */
-  static applyCSSVariables(element, variables) {
-    Object.entries(variables).forEach(([key, value]) => {
-      element.style.setProperty(key, value);
-    });
-  }
 
-  /**
-   * 移除CSS变量
-   * @param {HTMLElement} element - 目标元素
-   * @param {Array<string>} variableNames - 要移除的变量名数组
-   */
-  static removeCSSVariables(element, variableNames) {
-    variableNames.forEach(name => {
-      element.style.removeProperty(name);
-    });
-  }
 
   /**
    * 将驼峰命名转换为kebab-case
@@ -219,7 +199,10 @@ export class ThemeUtils {
    * @returns {string} kebab-case字符串
    */
   static kebabCase(str) {
-    return TextUtils.kebabCase(str);
+    if (!str) return '';
+    return String(str)
+      .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+      .toLowerCase();
   }
 
   /**
@@ -271,74 +254,10 @@ export class ThemeUtils {
     });
   }
 
-  /**
-   * 创建主题预览样式
-   * @param {Object} themes - 主题配置
-   * @returns {Object} 预览样式对象
-   */
-  static createPreviewStyles(themes) {
-    const { colorTheme, codeStyle } = ThemeUtils.getThemesSafe(themes);
-    
-    return {
-      backgroundColor: colorTheme.background,
-      color: colorTheme.textPrimary,
-      borderColor: colorTheme.borderLight,
-      fontFamily: codeStyle.fontFamily,
-      fontSize: codeStyle.fontSize,
-      lineHeight: codeStyle.lineHeight
-    };
-  }
 
-  /**
-   * 获取对比色
-   * @param {string} color - 原始颜色
-   * @returns {string} 对比色
-   */
-  static getContrastColor(color) {
-    if (!color) return '#000000';
-    
-    // 简单的对比色计算
-    if (color.toLowerCase().includes('white') || color === '#fff' || color === '#ffffff') {
-      return '#000000';
-    }
-    
-    if (color.toLowerCase().includes('black') || color === '#000' || color === '#000000') {
-      return '#ffffff';
-    }
-    
-    // 对于其他颜色，使用简单的亮度检测
-    if (color.startsWith('#')) {
-      const hex = color.slice(1);
-      let r, g, b;
-      
-      if (hex.length === 3) {
-        r = parseInt(hex[0] + hex[0], 16);
-        g = parseInt(hex[1] + hex[1], 16);
-        b = parseInt(hex[2] + hex[2], 16);
-      } else if (hex.length === 6) {
-        r = parseInt(hex.slice(0, 2), 16);
-        g = parseInt(hex.slice(2, 4), 16);
-        b = parseInt(hex.slice(4, 6), 16);
-      } else {
-        return '#000000';
-      }
-      
-      // 计算亮度
-      const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-      return brightness > 128 ? '#000000' : '#ffffff';
-    }
-    
-    return '#000000';
-  }
 }
 
 /**
- * 便捷函数导出
+ * 便捷函数导出 - 只导出实际使用的函数
  */
-export const getThemeSafe = ThemeUtils.getColorThemeSafe;
-export const getCodeStyleSafe = ThemeUtils.getCodeStyleSafe;
-export const getThemeSystemSafe = ThemeUtils.getThemeSystemSafe;
 export const getThemesSafe = ThemeUtils.getThemesSafe;
-export const isDarkTheme = ThemeUtils.isDarkTheme;
-export const mergeThemes = ThemeUtils.mergeThemes;
-export const validateTheme = ThemeUtils.validateTheme;

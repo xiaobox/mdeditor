@@ -6,13 +6,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   ThemeUtils,
-  getThemeSafe,
-  getCodeStyleSafe,
-  getThemeSystemSafe,
-  getThemesSafe,
-  isDarkTheme,
-  mergeThemes,
-  validateTheme
+  getThemesSafe
 } from '../../../src/shared/utils/theme.js';
 
 
@@ -227,40 +221,11 @@ describe('ThemeUtils', () => {
     });
   });
 
-  describe('getContrastColor', () => {
-    it('should return black for white background', () => {
-      expect(ThemeUtils.getContrastColor('#ffffff')).toBe('#000000');
-      expect(ThemeUtils.getContrastColor('white')).toBe('#000000');
-    });
 
-    it('should return white for black background', () => {
-      expect(ThemeUtils.getContrastColor('#000000')).toBe('#ffffff');
-      expect(ThemeUtils.getContrastColor('black')).toBe('#ffffff');
-    });
-
-    it('should return white for dark colors', () => {
-      expect(ThemeUtils.getContrastColor('#1a1a1a')).toBe('#ffffff');
-    });
-
-    it('should return black for light colors', () => {
-      expect(ThemeUtils.getContrastColor('#f0f0f0')).toBe('#000000');
-    });
-
-    it('should handle empty input', () => {
-      expect(ThemeUtils.getContrastColor('')).toBe('#000000');
-      expect(ThemeUtils.getContrastColor(null)).toBe('#000000');
-    });
-  });
 
   describe('convenience functions', () => {
     it('should export convenience functions', () => {
-      expect(typeof getThemeSafe).toBe('function');
-      expect(typeof getCodeStyleSafe).toBe('function');
-      expect(typeof getThemeSystemSafe).toBe('function');
       expect(typeof getThemesSafe).toBe('function');
-      expect(typeof isDarkTheme).toBe('function');
-      expect(typeof mergeThemes).toBe('function');
-      expect(typeof validateTheme).toBe('function');
     });
   });
 });
