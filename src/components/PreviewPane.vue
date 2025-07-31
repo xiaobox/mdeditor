@@ -69,6 +69,7 @@ export default {
       currentThemeSystemId: currentLayoutId,
       currentColorTheme,
       currentCodeStyle,
+      currentFontSettings,
       initialize
     } = themeManager
 
@@ -215,7 +216,8 @@ export default {
         const socialFormatted = parseMarkdown(props.markdown, {
           theme: effectiveTheme,
           codeTheme: currentCodeStyle.value,
-          themeSystem: currentLayoutId.value
+          themeSystem: currentLayoutId.value,
+          fontSettings: currentFontSettings.value
         })
         socialHtml.value = socialFormatted
 
@@ -224,6 +226,7 @@ export default {
           theme: effectiveTheme,
           codeTheme: currentCodeStyle.value,
           themeSystem: currentLayoutId.value,
+          fontSettings: currentFontSettings.value,
           isPreview: true
         })
         renderedHtml.value = previewFormatted
@@ -268,10 +271,10 @@ export default {
       processMarkdown()
     })
 
-    // 暂时禁用字体设置监听器，避免与设置面板冲突
-    // watch(currentFontSettings, () => {
-    //   processMarkdown()
-    // }, { deep: true })
+    // 监听字体设置变化
+    watch(currentFontSettings, () => {
+      processMarkdown()
+    }, { deep: true })
 
     // 监听临时自定义主题变化
     const handleCustomThemeChange = () => {

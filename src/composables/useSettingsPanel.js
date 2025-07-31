@@ -125,6 +125,12 @@ export function useSettingsPanel(props, emit) {
 
   // 自定义颜色相关方法
   const toggleColorPicker = () => {
+    if (!showColorPicker.value) {
+      // 打开颜色选择器时，如果当前有自定义颜色，则设置为选中的颜色
+      if (isUsingCustomColor.value && currentCustomColor.value) {
+        selectedCustomColor.value = currentCustomColor.value
+      }
+    }
     showColorPicker.value = !showColorPicker.value
   }
 
@@ -207,6 +213,7 @@ export function useSettingsPanel(props, emit) {
         // 有自定义主题，设置自定义状态
         currentCustomTheme.value = JSON.parse(tempTheme)
         currentCustomColor.value = tempColor
+        selectedCustomColor.value = tempColor // 同步选中的自定义颜色
         isUsingCustomColor.value = true
         selectedThemeId.value = null // 清除内置主题选择
         // 记录初始自定义颜色状态

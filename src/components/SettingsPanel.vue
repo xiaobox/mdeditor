@@ -53,7 +53,7 @@
     <div v-if="showColorPicker" class="color-picker-overlay" @click="closeColorPicker">
       <div class="color-picker-modal" @click.stop>
         <ColorPicker
-          :color="selectedCustomColor"
+          :initial-color="currentCustomColor"
           @change="onColorChange"
           @confirm="onColorConfirm"
           @cancel="closeColorPicker"

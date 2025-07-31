@@ -322,15 +322,13 @@ class CSSVariableManager {
    * @returns {object} CSS 变量对象
    */
   _generateFontCSSVariables(fontSettings) {
-    // 字体族映射
+    // 字体族映射 - 微信公众号兼容版本
     const fontFamilyMap = {
-      'system-default': '-apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
       'microsoft-yahei': '"Microsoft YaHei", "微软雅黑", Arial, sans-serif',
-      'pingfang-sc': '"PingFang SC", "苹方-简", "Hiragino Sans GB", "Microsoft YaHei", sans-serif',
-      'source-han-sans': '"Source Han Sans SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif',
-      'helvetica-neue': '"Helvetica Neue", Helvetica, Arial, sans-serif',
-      'roboto': 'Roboto, "Helvetica Neue", Arial, sans-serif',
-      'inter': 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+      'pingfang-sc': '"PingFang SC", "苹方-简", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
+      'hiragino-sans': '"Hiragino Sans GB", "冬青黑体简体中文", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
+      'arial': 'Arial, sans-serif',
+      'system-safe': '"Microsoft YaHei", "微软雅黑", "PingFang SC", "Hiragino Sans GB", Arial, sans-serif'
     };
 
     const fontFamily = fontFamilyMap[fontSettings.fontFamily] || fontFamilyMap['system-default'];

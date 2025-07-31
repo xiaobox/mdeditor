@@ -6,57 +6,44 @@
  */
 
 /**
- * 可用的字体族选项
+ * 可用的字体族选项 - 微信公众号兼容版本
+ * 只包含微信公众号真正支持的字体，确保预览和复制效果一致
  */
 export const fontFamilyOptions = [
   {
-    id: 'system-default',
-    name: '系统默认',
-    description: '使用系统默认字体',
-    value: '-apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
-    category: 'system'
-  },
-  {
     id: 'microsoft-yahei',
     name: '微软雅黑',
-    description: '经典的中文显示字体',
+    description: '微信公众号推荐字体，兼容性最佳',
     value: '"Microsoft YaHei", "微软雅黑", Arial, sans-serif',
-    category: 'chinese'
+    category: 'recommended'
   },
   {
     id: 'pingfang-sc',
     name: '苹方',
-    description: 'Apple 设计的中文字体',
-    value: '"PingFang SC", "苹方-简", "Hiragino Sans GB", "Microsoft YaHei", sans-serif',
-    category: 'chinese'
+    description: 'Apple 设备优选，微信支持',
+    value: '"PingFang SC", "苹方-简", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
+    category: 'recommended'
   },
   {
-    id: 'source-han-sans',
-    name: '思源黑体',
-    description: 'Adobe 和 Google 联合开发',
-    value: '"Source Han Sans SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif',
-    category: 'chinese'
+    id: 'hiragino-sans',
+    name: '冬青黑体',
+    description: 'Mac 系统经典字体，微信支持',
+    value: '"Hiragino Sans GB", "冬青黑体简体中文", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
+    category: 'recommended'
   },
   {
-    id: 'helvetica-neue',
-    name: 'Helvetica Neue',
-    description: '经典的西文字体',
-    value: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-    category: 'western'
+    id: 'arial',
+    name: 'Arial',
+    description: '通用西文字体，全平台支持',
+    value: 'Arial, sans-serif',
+    category: 'basic'
   },
   {
-    id: 'roboto',
-    name: 'Roboto',
-    description: 'Google 设计的现代字体',
-    value: 'Roboto, "Helvetica Neue", Arial, sans-serif',
-    category: 'western'
-  },
-  {
-    id: 'inter',
-    name: 'Inter',
-    description: '专为屏幕显示优化',
-    value: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-    category: 'western'
+    id: 'system-safe',
+    name: '系统安全字体',
+    description: '微信公众号安全字体组合',
+    value: '"Microsoft YaHei", "微软雅黑", "PingFang SC", "Hiragino Sans GB", Arial, sans-serif',
+    category: 'basic'
   }
 ];
 
@@ -80,31 +67,26 @@ export const fontSizeOptions = {
 };
 
 /**
- * 字体族分组
+ * 字体族分组 - 微信公众号兼容版本
  */
 export const fontFamilyGroups = {
-  system: {
-    name: '系统字体',
-    description: '使用系统默认字体族',
-    options: fontFamilyOptions.filter(font => font.category === 'system')
+  recommended: {
+    name: '推荐字体',
+    description: '微信公众号兼容性最佳的字体',
+    options: fontFamilyOptions.filter(font => font.category === 'recommended')
   },
-  chinese: {
-    name: '中文字体',
-    description: '专为中文显示优化的字体',
-    options: fontFamilyOptions.filter(font => font.category === 'chinese')
-  },
-  western: {
-    name: '西文字体',
-    description: '经典的西文字体族',
-    options: fontFamilyOptions.filter(font => font.category === 'western')
+  basic: {
+    name: '基础字体',
+    description: '通用安全字体选择',
+    options: fontFamilyOptions.filter(font => font.category === 'basic')
   }
 };
 
 /**
- * 默认字体设置
+ * 默认字体设置 - 微信公众号优化
  */
 export const defaultFontSettings = {
-  fontFamily: 'system-default',
+  fontFamily: 'microsoft-yahei', // 使用微信公众号兼容性最佳的字体
   fontSize: 16
 };
 

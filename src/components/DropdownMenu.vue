@@ -30,7 +30,7 @@
           @click="selectOption(option)"
         >
           <div class="dropdown-item-content">
-            <svg v-if="option.icon" class="dropdown-item-icon" viewBox="0 0 24 24" width="16" height="16">
+            <svg v-if="option.icon" class="dropdown-item-icon" :viewBox="option.viewBox || '0 0 24 24'" width="16" height="16">
               <path fill="currentColor" :d="option.icon"/>
             </svg>
             <span class="dropdown-item-text">{{ option.label }}</span>

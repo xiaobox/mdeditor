@@ -120,14 +120,17 @@ export class ListProcessor {
     const formattedTaskText = formatInlineText(content, theme, fontSize);
     const marginLeft = depth * 20;
 
-    // 创建复选框样式
+    // 创建复选框样式 - 根据字号动态调整大小
+    const checkboxSize = Math.max(14, Math.round(fontSize * 0.9)); // 最小14px，约为字号的90%
+    const checkboxFontSize = Math.max(10, Math.round(checkboxSize * 0.7)); // checkbox内字符大小
+
     let checkboxHtml;
     if (isChecked) {
-      // 已完成任务
-      checkboxHtml = `<span style="display: inline-block; width: 18px; height: 18px; background-color: ${theme.primary}; border-radius: 3px; margin-right: 8px; text-align: center; line-height: 18px; color: white; font-size: 12px; font-weight: bold; vertical-align: middle;">${SOCIAL_FORMATTING.LIST_SYMBOLS.TASK_CHECKED}</span>`;
+      // 已完成任务 - 使用 flex 布局确保对勾完美居中
+      checkboxHtml = `<span style="display: inline-flex; align-items: center; justify-content: center; width: ${checkboxSize}px; height: ${checkboxSize}px; background-color: ${theme.primary}; border-radius: 3px; margin-right: 8px; color: white; font-size: ${checkboxFontSize}px; font-weight: bold; vertical-align: middle; flex-shrink: 0;">${SOCIAL_FORMATTING.LIST_SYMBOLS.TASK_CHECKED}</span>`;
     } else {
       // 未完成任务
-      checkboxHtml = `<span style="display: inline-block; width: 18px; height: 18px; background-color: ${theme.bgPrimary || '#ffffff'}; border: 2px solid ${theme.borderMedium || '#8b949e'}; border-radius: 3px; margin-right: 8px; vertical-align: middle;"></span>`;
+      checkboxHtml = `<span style="display: inline-block; width: ${checkboxSize}px; height: ${checkboxSize}px; background-color: ${theme.bgPrimary || '#ffffff'}; border: 2px solid ${theme.borderMedium || '#8b949e'}; border-radius: 3px; margin-right: 8px; vertical-align: middle; flex-shrink: 0;"></span>`;
     }
 
     const textStyle = isChecked
@@ -386,19 +389,21 @@ export class ListProcessor {
    * @returns {number} 字体大小（像素）
    */
   getSymbolFontSize(_depth, symbol, baseFontSize = 16) {
-    // 使用传入的基础字体大小
-
-    // 根据符号类型调整大小，但保持合理的最小尺寸
-    const symbolSizeMap = {
-      '●': 16,   // 实心圆，保持标准大小
-      '○': 16,   // 空心圆，保持标准大小
-      '▪': 16,   // 小方块，保持标准大小
-      '▫': 16,   // 空心方块，保持标准大小
-      '‣': 16,   // 三角形，保持标准大小
-      '⁃': 16    // 短横线，保持标准大小
+    // 根据符号类型调整大小比例，让图标跟随字号变化
+    const symbolSizeRatioMap = {
+      '●': 0.8,   // 实心圆，约为字号的80%
+      '○': 0.8,   // 空心圆，约为字号的80%
+      '▪': 0.7,   // 小方块，约为字号的70%
+      '▫': 0.7,   // 空心方块，约为字号的70%
+      '‣': 0.9,   // 三角形，约为字号的90%
+      '⁃': 0.8    // 短横线，约为字号的80%
     };
 
-    // 返回统一的字体大小，确保深层嵌套时图标仍然清晰可见
-    return symbolSizeMap[symbol] || baseFontSize;
+    // 计算符号大小，确保最小12px，最大不超过基础字号
+    const ratio = symbolSizeRatioMap[symbol] || 0.8;
+    const calculatedSize = Math.round(baseFontSize * ratio);
+
+    // 设置合理的范围：最小12px，最大为基础字号
+    return Math.max(12, Math.min(calculatedSize, baseFontSize));
   }
 }

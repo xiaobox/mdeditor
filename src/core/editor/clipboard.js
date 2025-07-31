@@ -47,32 +47,31 @@ import { ErrorHandler, ERROR_TYPES } from '../../shared/utils/error.js';
 function createRichTextContainer(html, fontSettings = null) {
   const container = document.createElement('div');
 
-  // 获取字体设置 - 使用与 doocs/md 兼容的方案
-  let fontFamily = EDITOR_CONFIG.FONT_FAMILY;
-  let fontSize = EDITOR_CONFIG.FONT_SIZE;
+  // 获取字体设置 - 使用默认的微信兼容字体
+  let fontFamily = '"Microsoft YaHei", "微软雅黑", Arial, sans-serif'; // 默认使用微信兼容字体
+  let fontSize = `${EDITOR_CONFIG.FONT_SIZE}px`;
   let lineHeight = EDITOR_CONFIG.LINE_HEIGHT;
 
   if (fontSettings) {
     try {
-      // 使用微信公众号兼容的字体名称
+      // 使用与coordinator.js一致的字体映射，微信公众号兼容版本
       const fontFamilyMap = {
-        'system-default': '-apple-system-font,BlinkMacSystemFont, Helvetica Neue, PingFang SC, Hiragino Sans GB, Microsoft YaHei UI, Microsoft YaHei, Arial, sans-serif',
-        'microsoft-yahei': 'Microsoft YaHei, 微软雅黑, Arial, sans-serif',
-        'pingfang-sc': 'PingFang SC, Microsoft YaHei, 微软雅黑, Arial, sans-serif',
-        'source-han-sans': 'Source Han Sans SC, Microsoft YaHei, 微软雅黑, Arial, sans-serif',
-        'helvetica-neue': 'Helvetica Neue, Arial, sans-serif',
-        'roboto': 'Roboto, Arial, sans-serif',
-        'inter': 'Inter, Arial, sans-serif'
+        'microsoft-yahei': '"Microsoft YaHei", "微软雅黑", Arial, sans-serif',
+        'pingfang-sc': '"PingFang SC", "苹方-简", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
+        'hiragino-sans': '"Hiragino Sans GB", "冬青黑体简体中文", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
+        'arial': 'Arial, sans-serif',
+        'system-safe': '"Microsoft YaHei", "微软雅黑", "PingFang SC", "Hiragino Sans GB", Arial, sans-serif'
       };
 
       if (fontSettings.fontFamily && fontFamilyMap[fontSettings.fontFamily]) {
         fontFamily = fontFamilyMap[fontSettings.fontFamily];
       }
+      // 如果没有匹配的字体，保持默认的微信兼容字体
 
       if (fontSettings.fontSize && typeof fontSettings.fontSize === 'number') {
         fontSize = `${fontSettings.fontSize}px`;
-        // 根据字号调整行高
-        lineHeight = fontSettings.fontSize <= 14 ? '1.75' : fontSettings.fontSize <= 18 ? '1.6' : '1.5';
+        // 根据字号调整行高，与coordinator.js保持一致
+        lineHeight = fontSettings.fontSize <= 14 ? '1.7' : fontSettings.fontSize <= 18 ? '1.6' : '1.5';
       }
     } catch (error) {
       console.warn('Failed to apply font settings to clipboard container:', error);
@@ -85,6 +84,7 @@ function createRichTextContainer(html, fontSettings = null) {
     font-family: ${fontFamily};
     font-size: ${fontSize};
     line-height: ${lineHeight};
+    font-weight: 400;
     color: #333;
     background-color: #ffffff;
     padding: 0;

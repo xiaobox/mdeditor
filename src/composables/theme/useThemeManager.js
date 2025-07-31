@@ -226,6 +226,13 @@ export function useThemeManager() {
     if (fontId && fontSettingsUtils.isFontAvailable(fontId)) {
       themeState.fontFamily = fontId
       ThemeStorage.save(STORAGE_KEYS.FONT_FAMILY, fontId)
+
+      // 立即应用字体设置，不受其他条件限制
+      cssManager.applyFontSettings({
+        fontFamily: fontId,
+        fontSize: themeState.fontSize
+      })
+
       return true
     }
     return false
@@ -242,10 +249,11 @@ export function useThemeManager() {
       themeState.fontSize = validSize
       ThemeStorage.save(STORAGE_KEYS.FONT_SIZE, validSize.toString())
 
-      // 强制更新CSS以确保字号变化立即生效
-      if (themeState.isInitialized) {
-        updateAllCSS()
-      }
+      // 立即应用字体设置，不受其他条件限制
+      cssManager.applyFontSettings({
+        fontFamily: themeState.fontFamily,
+        fontSize: validSize
+      })
 
       return true
     }
@@ -435,6 +443,8 @@ export function useThemeManager() {
           // 没有自定义颜色，清除标记并应用正常主题
           themeState.hasTemporaryCustomTheme = false
           updateAllCSS()
+          // 确保字体设置也被应用
+          cssManager.applyFontSettings(currentFontSettings.value)
         }
       } catch (error) {
         console.warn('Failed to restore custom color on init:', error)
@@ -443,6 +453,8 @@ export function useThemeManager() {
         localStorage.removeItem('temp-custom-theme')
         themeState.hasTemporaryCustomTheme = false
         updateAllCSS()
+        // 确保字体设置也被应用
+        cssManager.applyFontSettings(currentFontSettings.value)
       }
 
       themeState.isInitialized = true

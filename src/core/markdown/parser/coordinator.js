@@ -22,204 +22,57 @@ import { memoize } from '../../../shared/utils/performance.js';
  * @param {Object} fontSettings - 字体设置对象
  * @returns {string} - 包装后的 HTML
  */
+// 微信公众号专用：为HTML添加内联样式，精确控制字体粗细
+function addWeChatInlineStyles(html, fontFamily, fontSize, lineHeight) {
+  const baseStyle = `font-family: ${fontFamily}; color: #333;`;
+
+  // 精确控制字体粗细，使用数值而不是关键词
+  const normalWeight = '400';  // 明确的正常粗细
+  const boldWeight = '700';    // 明确的粗体粗细
+  const semiBoldWeight = '600'; // 半粗体
+
+  // 替换各种HTML标签，添加内联样式，强制指定font-weight
+  return html
+    .replace(/<p(?![^>]*style=)/g, `<p style="${baseStyle} font-size: ${fontSize}px; line-height: ${lineHeight}; margin: 1.5em 8px; font-weight: ${normalWeight};"`)
+    .replace(/<h1(?![^>]*style=)/g, `<h1 style="${baseStyle} font-size: ${Math.round(fontSize * 2.2)}px; line-height: 1.3; font-weight: ${boldWeight}; margin: 1.8em 0 1.5em; text-align: center;"`)
+    .replace(/<h2(?![^>]*style=)/g, `<h2 style="${baseStyle} font-size: ${Math.round(fontSize * 1.5)}px; line-height: 1.4; font-weight: ${semiBoldWeight}; margin: 2em 0 1.5em;"`)
+    .replace(/<h3(?![^>]*style=)/g, `<h3 style="${baseStyle} font-size: ${Math.round(fontSize * 1.3)}px; line-height: ${lineHeight}; font-weight: ${semiBoldWeight}; margin: 1.5em 0 1em;"`)
+    .replace(/<li(?![^>]*style=)/g, `<li style="${baseStyle} font-size: ${fontSize}px; line-height: ${lineHeight}; font-weight: ${normalWeight}; margin: 0.5em 0;"`)
+    .replace(/<blockquote(?![^>]*style=)/g, `<blockquote style="${baseStyle} font-size: ${fontSize}px; line-height: ${lineHeight}; margin: 1.5em 8px; padding: 1em 1em 1em 2em; border-left: 3px solid #dbdbdb; background-color: #f8f8f8; font-weight: ${normalWeight};"`)
+    .replace(/<ul(?![^>]*style=)/g, `<ul style="${baseStyle} font-size: ${fontSize}px; line-height: ${lineHeight}; margin: 1.5em 8px; padding-left: 25px; font-weight: ${normalWeight};"`)
+    .replace(/<ol(?![^>]*style=)/g, `<ol style="${baseStyle} font-size: ${fontSize}px; line-height: ${lineHeight}; margin: 1.5em 8px; padding-left: 25px; font-weight: ${normalWeight};"`)
+    .replace(/<strong(?![^>]*style=)/g, `<strong style="${baseStyle} font-weight: ${boldWeight};"`)
+    .replace(/<b(?![^>]*style=)/g, `<b style="${baseStyle} font-weight: ${boldWeight};"`)
+    .replace(/<em(?![^>]*style=)/g, `<em style="${baseStyle} font-weight: ${normalWeight}; font-style: italic;"`)
+    .replace(/<i(?![^>]*style=)/g, `<i style="${baseStyle} font-weight: ${normalWeight}; font-style: italic;"`);
+}
+
 function wrapWithFontStyles(html, fontSettings) {
   if (!fontSettings || !html) return html;
 
-  // 字体族映射 - 使用微信公众号兼容的字体名称
+  // 字体族映射 - 微信公众号极简兼容版本，使用最安全的字体设置
   const fontFamilyMap = {
-    'system-default': '-apple-system-font,BlinkMacSystemFont, Helvetica Neue, PingFang SC, Hiragino Sans GB, Microsoft YaHei UI, Microsoft YaHei, Arial, sans-serif',
-    'microsoft-yahei': 'Microsoft YaHei, 微软雅黑, Arial, sans-serif',
-    'pingfang-sc': 'PingFang SC, Microsoft YaHei, 微软雅黑, Arial, sans-serif',
-    'source-han-sans': 'Source Han Sans SC, Microsoft YaHei, 微软雅黑, Arial, sans-serif',
-    'helvetica-neue': 'Helvetica Neue, Arial, sans-serif',
-    'roboto': 'Roboto, Arial, sans-serif',
-    'inter': 'Inter, Arial, sans-serif'
+    'microsoft-yahei': 'Microsoft YaHei, Arial, sans-serif',
+    'pingfang-sc': 'PingFang SC, Microsoft YaHei, Arial, sans-serif',
+    'hiragino-sans': 'Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif',
+    'arial': 'Arial, sans-serif',
+    'system-safe': 'Microsoft YaHei, Arial, sans-serif'
   };
 
-  const fontFamily = fontFamilyMap[fontSettings.fontFamily] || fontFamilyMap['system-default'];
+  const fontFamily = fontFamilyMap[fontSettings.fontFamily] || fontFamilyMap['microsoft-yahei'];
   const fontSize = fontSettings.fontSize || 16;
-  const lineHeight = fontSize <= 14 ? '1.75' : fontSize <= 18 ? '1.6' : '1.5';
+  const lineHeight = fontSize <= 14 ? '1.7' : fontSize <= 18 ? '1.6' : '1.5';
 
-  // 关键：使用更强的 CSS 选择器，确保微信公众号识别
-  const cssStyles = `
-<style>
-/* 微信公众号兼容的字体设置 - 使用更强的选择器 */
-section[data-role="outer"] {
-  font-family: ${fontFamily} !important;
-  font-size: ${fontSize}px !important;
-  line-height: ${lineHeight} !important;
-}
+  // 微信公众号不支持<style>标签，改用内联样式
 
-section[data-role="outer"] * {
-  font-family: ${fontFamily} !important;
-}
+  // 微信公众号兼容：移除<style>标签，使用纯内联样式
+  // 为HTML内容添加内联样式
+  const styledHtml = addWeChatInlineStyles(html, fontFamily, fontSize, lineHeight);
 
-/* 基础元素样式 - 使用更具体的选择器 */
-section[data-role="outer"] p,
-section p,
-.rich_media_content p,
-div p {
-  font-family: ${fontFamily} !important;
-  font-size: ${fontSize}px !important;
-  line-height: ${lineHeight} !important;
-  margin: 1.5em 8px !important;
-  color: #333 !important;
-}
-
-/* 标题样式 - 多重选择器确保生效 */
-section[data-role="outer"] h1, section h1, .rich_media_content h1, div h1 {
-  font-family: ${fontFamily} !important;
-  font-size: ${Math.round(fontSize * 2.2)}px !important;
-  line-height: 1.3 !important;
-  font-weight: bold !important;
-  margin: 1.8em 0 1.5em !important;
-  color: #333 !important;
-  text-align: center !important;
-}
-
-section[data-role="outer"] h2, section h2, .rich_media_content h2, div h2 {
-  font-family: ${fontFamily} !important;
-  font-size: ${Math.round(fontSize * 1.5)}px !important;
-  line-height: 1.4 !important;
-  font-weight: 600 !important;
-  margin: 2em 0 1.5em !important;
-  color: #333 !important;
-}
-
-section[data-role="outer"] h3, section h3, .rich_media_content h3, div h3 {
-  font-family: ${fontFamily} !important;
-  font-size: ${Math.round(fontSize * 1.3)}px !important;
-  line-height: ${lineHeight} !important;
-  font-weight: 600 !important;
-  margin: 1.5em 0 1em !important;
-  color: #333 !important;
-}
-
-section[data-role="outer"] h4, section h4, .rich_media_content h4, div h4 {
-  font-family: ${fontFamily} !important;
-  font-size: ${Math.round(fontSize * 1.1)}px !important;
-  line-height: ${lineHeight} !important;
-  font-weight: 600 !important;
-  margin: 1.3em 0 1em !important;
-  color: #333 !important;
-}
-
-section[data-role="outer"] h5, section h5, .rich_media_content h5, div h5 {
-  font-family: ${fontFamily} !important;
-  font-size: ${Math.round(fontSize * 1.0)}px !important;
-  line-height: ${lineHeight} !important;
-  font-weight: 600 !important;
-  margin: 1.2em 0 1em !important;
-  color: #333 !important;
-}
-
-section[data-role="outer"] h6, section h6, .rich_media_content h6, div h6 {
-  font-family: ${fontFamily} !important;
-  font-size: ${Math.round(fontSize * 0.9)}px !important;
-  line-height: ${lineHeight} !important;
-  font-weight: 600 !important;
-  margin: 1.2em 0 1em !important;
-  color: #333 !important;
-}
-
-/* 列表样式 */
-section[data-role="outer"] ul, section ul, .rich_media_content ul, div ul,
-section[data-role="outer"] ol, section ol, .rich_media_content ol, div ol {
-  font-family: ${fontFamily} !important;
-  font-size: ${fontSize}px !important;
-  line-height: ${lineHeight} !important;
-  margin: 1.5em 8px !important;
-  padding-left: 25px !important;
-  color: #333 !important;
-}
-
-section[data-role="outer"] li, section li, .rich_media_content li, div li {
-  font-family: ${fontFamily} !important;
-  font-size: ${fontSize}px !important;
-  line-height: ${lineHeight} !important;
-  margin-bottom: 0.5em !important;
-  color: #333 !important;
-}
-
-/* 引用块样式 */
-section[data-role="outer"] blockquote, section blockquote, .rich_media_content blockquote, div blockquote {
-  font-family: ${fontFamily} !important;
-  font-size: ${fontSize}px !important;
-  line-height: ${lineHeight} !important;
-  margin: 1.5em 8px !important;
-  padding: 1em 1em 1em 2em !important;
-  border-left: 3px solid #dbdbdb !important;
-  background-color: #f8f8f8 !important;
-  color: #333 !important;
-}
-
-/* 表格样式 */
-section[data-role="outer"] table, section table, .rich_media_content table, div table {
-  font-family: ${fontFamily} !important;
-  font-size: ${fontSize}px !important;
-  line-height: ${lineHeight} !important;
-  margin: 1.5em 8px !important;
-  border-collapse: collapse !important;
-}
-
-section[data-role="outer"] th, section th, .rich_media_content th, div th,
-section[data-role="outer"] td, section td, .rich_media_content td, div td {
-  font-family: ${fontFamily} !important;
-  font-size: ${fontSize}px !important;
-  line-height: ${lineHeight} !important;
-  padding: 8px 12px !important;
-  border: 1px solid #ddd !important;
-  color: #333 !important;
-}
-
-/* 强调样式 */
-section[data-role="outer"] strong, section strong, .rich_media_content strong, div strong,
-section[data-role="outer"] b, section b, .rich_media_content b, div b {
-  font-family: ${fontFamily} !important;
-  font-size: ${fontSize}px !important;
-  font-weight: bold !important;
-  color: #333 !important;
-}
-
-section[data-role="outer"] em, section em, .rich_media_content em, div em,
-section[data-role="outer"] i, section i, .rich_media_content i, div i {
-  font-family: ${fontFamily} !important;
-  font-size: ${fontSize}px !important;
-  font-style: italic !important;
-  color: #333 !important;
-}
-
-/* 行内代码 */
-section[data-role="outer"] code, section code, .rich_media_content code, div code {
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace !important;
-  background: #f5f5f5 !important;
-  padding: 2px 4px !important;
-  border-radius: 3px !important;
-  color: #333 !important;
-}
-
-/* 代码块 */
-section[data-role="outer"] pre, section pre, .rich_media_content pre, div pre {
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace !important;
-  line-height: 1.4 !important;
-  margin: 1.5em 8px !important;
-  padding: 1em !important;
-  background: #f5f5f5 !important;
-  border-radius: 5px !important;
-  overflow-x: auto !important;
-}
-
-section[data-role="outer"] pre code, section pre code, .rich_media_content pre code, div pre code {
-  background: none !important;
-  padding: 0 !important;
-}
-</style>`;
-
-  // 使用微信公众号标准的 HTML 结构
-  return `${cssStyles}
-<section data-role="outer" class="rich_media_content" style="font-family: ${fontFamily}; font-size: ${fontSize}px; line-height: ${lineHeight};">
-<section data-role="inner" style="font-family: ${fontFamily}; font-size: ${fontSize}px; line-height: ${lineHeight};">
-${html}
+  // 使用微信公众号标准的 HTML 结构，所有样式内联，明确控制字体粗细
+  return `<section data-role="outer" class="rich_media_content" style="font-family: ${fontFamily}; font-size: ${fontSize}px; line-height: ${lineHeight}; font-weight: 400; color: #333; margin: 0; padding: 0;">
+<section data-role="inner" style="font-family: ${fontFamily}; font-size: ${fontSize}px; line-height: ${lineHeight}; font-weight: 400; color: #333;">
+${styledHtml}
 </section>
 </section>`;
 }
@@ -394,7 +247,7 @@ export class FormatterCoordinator {
 
     const formattedText = processInlineFormatsWithoutEscapes(trimmedLine, this.context.currentTheme, fontSize);
 
-    const result = `<p style="margin: 12px 0; line-height: ${lineHeight}; font-size: ${fontSize}px;">${formattedText}</p>`;
+    const result = `<p style="margin: 12px 0; line-height: ${lineHeight}; font-size: ${fontSize}px; font-weight: normal;">${formattedText}</p>`;
 
     return {
       result,

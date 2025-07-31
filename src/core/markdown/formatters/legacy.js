@@ -87,13 +87,26 @@ export function formatCodeBlock(content, language, theme = defaultColorTheme, co
 
   let decorations = '';
   if (safeCodeTheme.hasTrafficLights) {
-    // 统一使用相同的HTML结构，通过CSS来处理预览模式和社交平台模式的差异
-    const trafficLightsStyle = `position: absolute; top: 14px; left: 12px; font-size: 16px; line-height: 1; z-index: 2; letter-spacing: 5px;`;
-    decorations += `
-      <span class="mac-traffic-lights" style="${trafficLightsStyle}">
-        <span style="color: #ff5f56;">●</span><span style="color: #ffbd2e;">●</span><span style="color: #27ca3f;">●</span>
-      </span>
-    `.replace(/\s+/g, ' ').trim();
+    if (isPreview) {
+      // 预览环境：使用真正的圆形元素，确保在所有字体下都一致
+      // 使用绝对定位而不是flex，避免微信兼容性问题
+      const containerStyle = `position: absolute; top: 14px; left: 12px; z-index: 2; width: 54px; height: 12px;`;
+      const lightStyle = `width: 12px; height: 12px; border-radius: 50%; position: absolute; top: 0;`;
+      decorations += `
+        <div class="mac-traffic-lights" style="${containerStyle}">
+          <div style="${lightStyle} left: 0; background-color: #ff5f56;"></div>
+          <div style="${lightStyle} left: 18px; background-color: #ffbd2e;"></div>
+          <div style="${lightStyle} left: 36px; background-color: #27ca3f;"></div>
+        </div>
+      `.replace(/\s+/g, ' ').trim();
+    } else {
+      // 微信环境：使用字符实现，简单且兼容性好
+      decorations += `
+        <span class="mac-traffic-lights" style="position: absolute; top: 19px; left: 19px; font-size: 16px; line-height: 1; z-index: 2; letter-spacing: 5px;">
+          <span style="color: #ff5f56;">●</span><span style="color: #ffbd2e;">●</span><span style="color: #27ca3f;">●</span>
+        </span>
+      `.replace(/\s+/g, ' ').trim();
+    }
   }
 
   if (safeCodeTheme.hasHeader) {

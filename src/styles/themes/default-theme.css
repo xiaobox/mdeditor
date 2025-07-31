@@ -10,6 +10,11 @@
   --theme-font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   --theme-code-font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
 
+  /* Markdown字体设置 - 初始值，会被主题管理器动态覆盖 */
+  --markdown-font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  --markdown-font-size: 16px;
+  --markdown-line-height: 1.6;
+
   /* 主色调 - 时尚高级绿色系（默认值，会被主题管理器动态覆盖） */
   --theme-primary: #00A86B;
   --theme-primary-hover: #008B5A;
@@ -185,6 +190,7 @@
   margin: 1rem 0;
   font-size: var(--markdown-font-size, 16px);
   line-height: var(--markdown-line-height, 1.7);
+  font-weight: normal;
   color: var(--theme-text-primary);
   font-family: var(--markdown-font-family, var(--theme-font-family));
 }
