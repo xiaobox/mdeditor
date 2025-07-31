@@ -268,4 +268,72 @@ onUnmounted(() => {
   cursor: not-allowed;
   transform: none;
 }
+
+/* 支持 header-btn 类的简洁 Neumorphism 样式 - 跟随主题色 */
+.dropdown-trigger.header-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 12px;
+  background: #f0f0f3;
+  color: var(--primary-color);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  user-select: none;
+  position: relative;
+  box-shadow:
+    6px 6px 12px rgba(163, 177, 198, 0.6),
+    -6px -6px 12px rgba(255, 255, 255, 0.8);
+}
+
+.dropdown-trigger.header-btn:hover:not(:disabled) {
+  color: var(--primary-hover);
+  font-weight: 700;
+  box-shadow:
+    inset 3px 3px 6px rgba(163, 177, 198, 0.4),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.8),
+    0 0 20px rgba(var(--primary-rgb), 0.2);
+}
+
+.dropdown-trigger.header-btn:active:not(:disabled) {
+  color: var(--primary-dark);
+  box-shadow:
+    inset 4px 4px 8px rgba(163, 177, 198, 0.5),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+}
+
+.dropdown-trigger.header-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: #9ca3af;
+  box-shadow:
+    2px 2px 4px rgba(163, 177, 198, 0.3),
+    -2px -2px 4px rgba(255, 255, 255, 0.5);
+}
+
+.dropdown-trigger.header-btn svg {
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  opacity: 0.9;
+  color: var(--primary-color);
+}
+
+.dropdown-trigger.header-btn:hover svg {
+  opacity: 1;
+  color: var(--primary-hover);
+  transform: scale(1.05);
+}
+
+.dropdown-trigger.header-btn:active svg {
+  color: var(--primary-dark);
+}
+
+
 </style>

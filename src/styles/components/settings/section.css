@@ -1,0 +1,177 @@
+/* 设置区域通用样式 */
+.settings-section {
+  background: var(--theme-bg-primary);
+  border: 1px solid var(--theme-border-light);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.settings-section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--theme-border-light);
+}
+
+.section-icon {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.section-icon::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: rotate(45deg);
+  animation: shimmer 3s infinite;
+}
+
+.section-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--theme-text-primary);
+  letter-spacing: -0.5px;
+}
+
+/* 通用卡片样式 */
+.card-base {
+  position: relative;
+  background: var(--theme-bg-secondary);
+  border: 1px solid var(--theme-border-light);
+  border-radius: 16px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.card-base:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
+}
+
+.card-base.active {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color), 0 8px 32px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  background: linear-gradient(135deg, var(--theme-bg-secondary), var(--theme-bg-primary));
+}
+
+/* 通用选中状态指示器 */
+.check-indicator {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  background: var(--theme-bg-primary);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border: 2px solid var(--primary-color);
+}
+
+.check-indicator.small {
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  border: none;
+}
+
+/* 网格布局 */
+.grid-auto-fit-240 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.grid-auto-fit-280 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.grid-auto-fit-320 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* 文本样式 */
+.title-primary {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--theme-text-primary);
+  transition: all 0.3s ease;
+  letter-spacing: -0.3px;
+}
+
+.title-secondary {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 6px;
+  transition: all 0.3s ease;
+  letter-spacing: -0.3px;
+}
+
+.description-text {
+  font-size: 14px;
+  color: var(--theme-text-secondary);
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.description-small {
+  font-size: 13px;
+  color: var(--theme-text-secondary);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* 悬停效果 */
+.hover-primary:hover .title-primary {
+  color: var(--primary-color);
+}
+
+.hover-translate:hover .title-secondary {
+  transform: translateX(3px);
+}
+
+.hover-scale:hover {
+  transform: scale(1.1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-1px);
+}

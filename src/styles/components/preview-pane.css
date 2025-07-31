@@ -34,48 +34,141 @@
   margin: 0;
 }
 
+/* Tab 标签页按钮组容器 - 参考图片风格 */
 .mode-buttons {
   display: flex;
-  gap: 4px;
-  background: var(--theme-bg-primary);
-  border-radius: var(--radius-md);
-  padding: 2px;
-  border: 1px solid var(--theme-border-light);
+  background: #e8e8eb;
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow:
+    /* 容器内凹效果 */
+    inset 4px 4px 8px rgba(163, 177, 198, 0.6),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+  position: relative;
+  gap: 0;
 }
 
+/* Tab 按钮 - 拟物化标签页风格 */
 .mode-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
+  justify-content: center;
+  gap: 0;
+  padding: 10px 12px;
   border: none;
-  border-radius: var(--radius-sm);
   background: transparent;
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
-  color: var(--theme-text-secondary);
-  transition: all var(--transition-fast);
+  color: #9ca3af;
+  transition: all 0.2s ease;
   white-space: nowrap;
+  position: relative;
+  border-radius: 8px;
+  margin: 0;
+  min-width: 44px;
+  flex: 1;
 }
 
-.mode-btn:hover {
-  background: var(--gray-100);
-  color: var(--theme-text-primary);
+/* 第一个按钮 */
+.mode-btn:first-child {
+  border-radius: 8px 4px 4px 8px;
 }
 
+/* 最后一个按钮 */
+.mode-btn:last-child {
+  border-radius: 4px 8px 8px 4px;
+}
+
+/* 中间按钮 */
+.mode-btn:not(:first-child):not(:last-child) {
+  border-radius: 4px;
+}
+
+.mode-btn:hover:not(.active) {
+  color: var(--primary-color);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 激活状态 - 凸起的标签页 */
 .mode-btn.active {
-  background: var(--primary-color);
-  color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  color: var(--primary-color);
+  font-weight: 600;
+  /* 凸起效果 - 从容器中突出 */
+  box-shadow:
+    3px 3px 6px rgba(163, 177, 198, 0.5),
+    -3px -3px 6px rgba(255, 255, 255, 0.9),
+    /* 内部高光 */
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
 }
 
+.mode-btn.active:hover {
+  color: var(--primary-hover);
+  background: linear-gradient(145deg, #ffffff, #fafbfc);
+  box-shadow:
+    4px 4px 8px rgba(163, 177, 198, 0.6),
+    -4px -4px 8px rgba(255, 255, 255, 0.95),
+    inset 0 1px 0 rgba(255, 255, 255, 0.98),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Tab 图标样式 */
 .mode-icon {
   flex-shrink: 0;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+  width: 18px;
+  height: 18px;
 }
 
-.mode-text {
-  font-size: 12px;
+.mode-btn:hover .mode-icon {
+  opacity: 0.9;
+}
+
+.mode-btn.active .mode-icon {
+  opacity: 1;
+  color: var(--primary-color);
+}
+
+/* Tab 文字样式 - 已移除，现在只使用图标 */
+
+/* Tab 按钮的微妙高光效果 */
+.mode-btn.active::before {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 2px;
+  right: 2px;
+  height: 50%;
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%);
+  border-radius: 6px 6px 12px 12px;
+  pointer-events: none;
+}
+
+/* 连接效果 - 让按钮看起来是连在一起的 */
+.mode-btn:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 20%;
+  right: 0;
+  width: 1px;
+  height: 60%;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    rgba(163, 177, 198, 0.3) 20%,
+    rgba(163, 177, 198, 0.3) 80%,
+    transparent 100%);
+}
+
+.mode-btn.active::after,
+.mode-btn.active + .mode-btn::after {
+  display: none;
 }
 
 .viewport-info {
@@ -122,10 +215,37 @@
 
 .viewport-tablet .preview-rendered {
   max-width: 768px;
-  margin: 0 auto;
-  border-left: 1px solid var(--theme-border-light);
-  border-right: 1px solid var(--theme-border-light);
-  box-shadow: var(--shadow-sm);
+  margin: 20px auto;
+  border: 1px solid var(--theme-border-light);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  padding: 32px;
+  background: var(--theme-bg-primary);
+  position: relative;
+}
+
+.viewport-tablet .preview-rendered::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 4px;
+  background: var(--theme-border-light);
+  border-radius: 2px;
+}
+
+.viewport-tablet .preview-rendered::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: var(--theme-border-light);
+  border-radius: 2px;
 }
 
 .viewport-mobile .preview-rendered {

@@ -12,8 +12,18 @@
             :class="['mode-btn', { active: currentViewportMode === mode.key }]"
             :title="mode.description"
           >
-            <component :is="mode.icon" class="mode-icon" />
-            <span class="mode-text">{{ mode.label }}</span>
+            <!-- 桌面端图标 -->
+            <svg v-if="mode.key === 'desktop'" class="mode-icon" viewBox="0 0 24 24" width="18" height="18">
+              <path fill="currentColor" d="M21,16H3V4H21M21,2H3C1.89,2 1,2.89 1,4V16A2,2 0 0,0 3,18H10V20H8V22H16V20H14V18H21A2,2 0 0,0 23,16V4C23,2.89 22.1,2 21,2Z"/>
+            </svg>
+            <!-- 平板图标 -->
+            <svg v-else-if="mode.key === 'tablet'" class="mode-icon" viewBox="0 0 24 24" width="18" height="18">
+              <path fill="currentColor" d="M19,18H5V6H19M21,4H3C1.89,4 1,4.89 1,6V18A2,2 0 0,0 3,20H21A2,2 0 0,0 23,18V6C23,4.89 22.1,4 21,4Z"/>
+            </svg>
+            <!-- 手机图标 -->
+            <svg v-else-if="mode.key === 'mobile'" class="mode-icon" viewBox="0 0 24 24" width="18" height="18">
+              <path fill="currentColor" d="M17,19H7V5H17M17,1H7C5.89,1 5,1.89 5,3V21A2,2 0 0,0 7,23H17A2,2 0 0,0 19,21V3C19,1.89 18.1,1 17,1Z"/>
+            </svg>
           </button>
         </div>
       </div>
@@ -41,26 +51,8 @@ import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { parseMarkdown } from '../core/markdown/parser/coordinator.js'
 import { useGlobalThemeManager } from '../composables/index.js'
 
-// 图标组件
-const DesktopIcon = {
-  template: `<svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M21,16H3V4H21M21,2H3C1.89,2 1,2.89 1,4V16A2,2 0 0,0 3,18H10V20H8V22H16V20H14V18H21A2,2 0 0,0 23,16V4C23,2.89 22.1,2 21,2Z"/></svg>`
-}
-
-const TabletIcon = {
-  template: `<svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M19,18H5V6H19M21,4H3C1.89,4 1,4.89 1,6V18A2,2 0 0,0 3,20H21A2,2 0 0,0 23,18V6C23,4.89 22.1,4 21,4Z"/></svg>`
-}
-
-const MobileIcon = {
-  template: `<svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M17,19H7V5H17M17,1H7C5.89,1 5,1.89 5,3V21A2,2 0 0,0 7,23H17A2,2 0 0,0 19,21V3C19,1.89 18.1,1 17,1Z"/></svg>`
-}
-
 export default {
   name: 'PreviewPane',
-  components: {
-    DesktopIcon,
-    TabletIcon,
-    MobileIcon
-  },
   props: {
     markdown: {
       type: String,
@@ -92,7 +84,6 @@ export default {
       {
         key: 'desktop',
         label: '桌面端',
-        icon: 'DesktopIcon',
         size: '100%',
         maxWidth: 'none',
         description: '桌面端预览 - 宽屏显示'
@@ -100,7 +91,6 @@ export default {
       {
         key: 'tablet',
         label: '平板',
-        icon: 'TabletIcon',
         size: '768px',
         maxWidth: '768px',
         description: '平板端预览 - 中等屏幕'
@@ -108,7 +98,6 @@ export default {
       {
         key: 'mobile',
         label: '手机',
-        icon: 'MobileIcon',
         size: '375px',
         maxWidth: '375px',
         description: '移动端预览 - 手机屏幕'

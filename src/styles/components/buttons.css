@@ -1,6 +1,6 @@
 /* 通用按钮样式 */
 
-/* 基础按钮 */
+/* 基础按钮 - Neumorphism 风格 */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -8,77 +8,102 @@
   gap: 8px;
   padding: 12px 20px;
   border-radius: 12px;
-  border: 1px solid var(--theme-border-light);
+  border: none;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   text-decoration: none;
   white-space: nowrap;
-  background: var(--theme-bg-tertiary);
-  color: var(--theme-text-secondary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: #e8e8eb;
+  color: var(--primary-color);
+  box-shadow:
+    7px 7px 14px rgba(163, 177, 198, 0.7),
+    -7px -7px 14px rgba(255, 255, 255, 0.9);
   position: relative;
-  overflow: hidden;
 }
 
 .btn:hover:not(:disabled) {
-  background: var(--theme-bg-secondary);
-  color: var(--theme-text-primary);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  border-color: var(--primary-color);
+  color: var(--primary-hover);
+  font-weight: 700;
+  box-shadow:
+    inset 3px 3px 6px rgba(163, 177, 198, 0.4),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.8),
+    0 0 20px rgba(var(--primary-rgb), 0.2);
 }
 
 .btn:active:not(:disabled) {
-  transform: translateY(0);
+  color: var(--primary-dark);
+  box-shadow:
+    inset 4px 4px 8px rgba(163, 177, 198, 0.5),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.9);
 }
 
 .btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
+  color: #9ca3af;
+  box-shadow:
+    2px 2px 4px rgba(163, 177, 198, 0.3),
+    -2px -2px 4px rgba(255, 255, 255, 0.5);
 }
 
-/* 小按钮 */
+/* 小按钮 - Neumorphism 风格 */
 .btn-small {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 36px;
   height: 36px;
-  border: 1px solid var(--theme-border-light);
+  border: none;
   border-radius: 10px;
-  background: var(--theme-bg-tertiary);
+  background: #e8e8eb;
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.3s ease;
-  color: var(--theme-text-secondary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  color: var(--primary-color);
+  box-shadow:
+    5px 5px 10px rgba(163, 177, 198, 0.7),
+    -5px -5px 10px rgba(255, 255, 255, 0.9);
 }
 
 .btn-small:hover {
-  background: var(--theme-bg-secondary);
-  color: var(--theme-text-primary);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  border-color: var(--primary-color);
+  color: var(--primary-hover);
+  box-shadow:
+    inset 2px 2px 4px rgba(163, 177, 198, 0.3),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.7);
 }
 
 .btn-small:active {
-  transform: translateY(0);
+  color: var(--primary-dark);
+  box-shadow:
+    inset 3px 3px 6px rgba(163, 177, 198, 0.4),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.8);
 }
 
 /* 按钮变体 */
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: var(--primary-color);
   color: white;
-  border: none;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  font-weight: 700;
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.2),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.1),
+    0 0 15px rgba(var(--primary-rgb), 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  background: var(--primary-hover);
+  box-shadow:
+    inset 1px 1px 2px rgba(0, 0, 0, 0.15),
+    inset -1px -1px 2px rgba(255, 255, 255, 0.05),
+    0 0 20px rgba(var(--primary-rgb), 0.4);
+}
+
+.btn-primary:active:not(:disabled) {
+  box-shadow:
+    inset 4px 4px 8px rgba(0, 0, 0, 0.3),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.1);
 }
 
 .btn-secondary {

@@ -1,0 +1,123 @@
+/* 设置面板基础样式 */
+.settings-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.settings-content {
+  position: relative;
+  background: var(--theme-bg-primary);
+  border-radius: 20px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.25);
+  width: 95%;
+  max-width: 1000px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--theme-border-light);
+}
+
+.settings-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 40px;
+  background: linear-gradient(135deg, var(--theme-bg-primary) 0%, var(--theme-bg-secondary) 100%);
+}
+
+.settings-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* 通用动画 */
+@keyframes shimmer {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+/* 禁用hover效果的类 - 当颜色选择器打开时 */
+.settings-panel.disable-hover .close-btn:hover,
+.settings-panel.disable-hover .settings-section:hover,
+.settings-panel.disable-hover .theme-system-card:hover,
+.settings-panel.disable-hover .theme-card:hover,
+.settings-panel.disable-hover .code-style-card:hover,
+.settings-panel.disable-hover .custom-color-card:hover,
+.settings-panel.disable-hover .apply-button:hover {
+  transform: none !important;
+  box-shadow: inherit !important;
+  border-color: inherit !important;
+  background: inherit !important;
+  color: inherit !important;
+}
+
+.settings-panel.disable-hover .theme-system-card:hover .theme-system-title,
+.settings-panel.disable-hover .theme-card:hover .theme-title,
+.settings-panel.disable-hover .code-style-card:hover .code-style-name {
+  transform: none !important;
+  color: inherit !important;
+}
+
+.settings-panel.disable-hover .theme-system-card:hover .color-dot,
+.settings-panel.disable-hover .theme-card:hover .theme-color-bar {
+  transform: none !important;
+  height: inherit !important;
+}
+
+.settings-panel.disable-hover .custom-color-card:hover .custom-gradient-bg {
+  animation: none !important;
+  opacity: inherit !important;
+}
+
+.settings-panel.disable-hover .custom-color-card:hover .custom-icon {
+  background: inherit !important;
+  transform: none !important;
+}
+
+.settings-panel.disable-hover .apply-button:hover::before {
+  opacity: 0 !important;
+  animation: none !important;
+}
+
+/* 颜色选择器弹窗样式 */
+.color-picker-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  /* 禁用底层的指针事件，防止hover效果穿透 */
+  backdrop-filter: blur(2px);
+}
+
+.color-picker-modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+}

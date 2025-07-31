@@ -14,16 +14,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
+  padding: 10px 16px;
   background-color: var(--bg-secondary);
   border-bottom: 1px solid var(--border-light);
-  min-height: 48px;
+  height: 56px;
+  box-sizing: border-box;
 }
 
 .toolbar-left {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   flex: 1;
   overflow-x: auto;
 }
@@ -37,7 +38,7 @@
 .toolbar-group {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
 }
 
 .toolbar-divider {
@@ -47,7 +48,7 @@
   margin: 0 8px;
 }
 
-/* 工具栏按钮 - 简化版 */
+/* 工具栏按钮 - Neumorphism 风格 */
 .toolbar-btn {
   display: flex;
   align-items: center;
@@ -55,35 +56,65 @@
   width: 36px;
   height: 36px;
   border: none;
-  border-radius: var(--radius-md);
-  background-color: transparent;
-  color: var(--text-secondary);
+  border-radius: 10px;
+  background: #e8e8eb;
+  color: var(--primary-color);
   cursor: pointer;
-  transition: all var(--transition-normal);
+  transition: all 0.2s ease;
+  margin: 10px 0;
+  box-shadow:
+    5px 5px 10px rgba(163, 177, 198, 0.7),
+    -5px -5px 10px rgba(255, 255, 255, 0.9);
 }
 
 .toolbar-btn:hover {
-  background-color: var(--bg-tertiary);
-  color: var(--text-primary);
+  color: var(--primary-hover);
+  box-shadow:
+    inset 3px 3px 6px rgba(163, 177, 198, 0.5),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+}
+
+.toolbar-btn:active {
+  color: var(--primary-dark);
+  box-shadow:
+    inset 4px 4px 8px rgba(163, 177, 198, 0.6),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.9);
 }
 
 .toolbar-btn:disabled {
-  opacity: 0.4;
+  opacity: 0.5;
   cursor: not-allowed;
+  color: #9ca3af;
+  box-shadow:
+    2px 2px 4px rgba(163, 177, 198, 0.3),
+    -2px -2px 4px rgba(255, 255, 255, 0.5);
 }
 
 .toolbar-btn svg {
   width: 20px;
   height: 20px;
+  transition: all 0.2s ease;
+}
+
+.toolbar-btn:hover svg {
+  transform: scale(1.05);
 }
 
 .toolbar-btn-guide {
-  background-color: var(--primary-color);
+  background: var(--primary-color);
   color: white;
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.2),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.1),
+    0 0 15px rgba(var(--primary-rgb), 0.3);
 }
 
 .toolbar-btn-guide:hover {
-  background-color: var(--primary-hover);
+  background: var(--primary-hover);
+  box-shadow:
+    inset 1px 1px 2px rgba(0, 0, 0, 0.15),
+    inset -1px -1px 2px rgba(255, 255, 255, 0.05),
+    0 0 20px rgba(var(--primary-rgb), 0.4);
 }
 
 /* 字数统计 */

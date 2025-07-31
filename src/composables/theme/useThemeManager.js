@@ -69,7 +69,8 @@ const themeState = reactive({
   fontFamily: ThemeStorage.load(STORAGE_KEYS.FONT_FAMILY, STORAGE_DEFAULTS.FONT_FAMILY),
   fontSize: parseInt(ThemeStorage.load(STORAGE_KEYS.FONT_SIZE, STORAGE_DEFAULTS.FONT_SIZE.toString()), 10),
   isInitialized: false,
-  hasTemporaryCustomTheme: false // 标记是否有临时自定义主题
+  hasTemporaryCustomTheme: false, // 标记是否有临时自定义主题
+  customThemeUpdateTrigger: 0 // 用于触发自定义主题列表的响应式更新
 })
 
 /**
@@ -82,6 +83,9 @@ export function useThemeManager() {
 
   /** 当前激活的颜色主题对象 */
   const currentColorTheme = computed(() => {
+    // 依赖触发器以响应自定义主题的变化
+    themeState.customThemeUpdateTrigger
+
     // 先尝试获取内置主题
     const builtinTheme = getColorTheme(themeState.colorThemeId)
     if (builtinTheme) return builtinTheme
@@ -96,6 +100,27 @@ export function useThemeManager() {
     }
 
     return defaultColorTheme
+  })
+
+  /** 当前实际应用的颜色主题对象（包括临时自定义主题） */
+  const currentAppliedColorTheme = computed(() => {
+    // 依赖触发器以响应自定义主题的变化
+    themeState.customThemeUpdateTrigger
+
+    // 如果有临时自定义主题，优先返回临时主题
+    if (themeState.hasTemporaryCustomTheme) {
+      try {
+        const tempTheme = localStorage.getItem('temp-custom-theme')
+        if (tempTheme) {
+          return JSON.parse(tempTheme)
+        }
+      } catch (error) {
+        console.error('Failed to load temporary custom theme:', error)
+      }
+    }
+
+    // 否则返回正常的当前主题
+    return currentColorTheme.value
   })
   /** 当前激活的代码高亮样式对象 */
   const currentCodeStyle = computed(() => getCodeStyle(themeState.codeStyleId))
@@ -452,6 +477,7 @@ export function useThemeManager() {
 
     // 当前主题对象
     currentColorTheme,
+    currentAppliedColorTheme,
     currentCodeStyle,
     currentThemeSystem,
     currentFontSettings,
@@ -536,6 +562,10 @@ export function useThemeManager() {
 
       try {
         localStorage.setItem(CUSTOM_THEME_STORAGE_KEY, JSON.stringify(customThemes))
+
+        // 触发自定义主题列表的响应式更新
+        themeState.customThemeUpdateTrigger++
+
         return customTheme
       } catch (error) {
         console.error('Failed to save custom theme:', error)
