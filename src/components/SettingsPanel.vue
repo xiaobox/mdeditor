@@ -1945,18 +1945,7 @@ defineExpose({
   box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15);
 }
 
-.font-size-mark::before {
-  content: '';
-  position: absolute;
-  top: -16px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 6px;
-  background: var(--theme-text-tertiary);
-  opacity: 0.4;
-  border-radius: 1px;
-}
+
 
 /* 响应式设计 */
 @media (max-width: 1024px) {
