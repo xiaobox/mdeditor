@@ -18,8 +18,13 @@
   word-wrap: break-word;
   overflow: visible;
   pointer-events: auto; /* 恢复通知本身的交互 */
-  will-change: transform, opacity; /* 优化动画性能 */
-  transform: translateZ(0); /* 启用硬件加速 */
+  /* 高性能动画优化 */
+  will-change: transform, opacity, max-height;
+  transform: translateZ(0);
+  /* 创建独立的合成层，避免影响其他元素 */
+  isolation: isolate;
+  /* 优化渲染性能 */
+  contain: layout style paint;
 }
 
 .notification.success {
@@ -84,18 +89,31 @@
 }
 
 @keyframes slideUp {
-  from {
-    transform: translateY(0) translateZ(0);
+  0% {
+    transform: translateY(0) translateZ(0) scale(1);
     opacity: 1;
+    max-height: 100px;
+    margin-bottom: 8px;
   }
-  to {
-    transform: translateY(-20px) translateZ(0);
+  50% {
+    transform: translateY(-10px) translateZ(0) scale(0.98);
+    opacity: 0.7;
+    max-height: 80px;
+    margin-bottom: 6px;
+  }
+  100% {
+    transform: translateY(-20px) translateZ(0) scale(0.95);
     opacity: 0;
+    max-height: 0;
+    margin-bottom: 0;
   }
 }
 
 .notification.slide-out {
-  animation: slideUp 0.3s ease forwards;
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  overflow: hidden;
+  /* 确保动画在独立层执行 */
+  transform-origin: center top;
 }
 
 /* 通知图标 */

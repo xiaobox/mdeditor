@@ -101,7 +101,7 @@
       <div
         v-for="notification in notifications"
         :key="notification.id"
-        :class="['notification', notification.type]"
+        :class="['notification', notification.type, { 'slide-out': notification.isRemoving }]"
       >
         {{ notification.message }}
       </div>
@@ -111,9 +111,6 @@
     <SettingsPanel
       :visible="showSettingsPanel"
       @close="showSettingsPanel = false"
-      @theme-system-changed="handleThemeSystemChanged"
-      @theme-changed="handleThemeChanged"
-      @code-style-changed="handleCodeStyleChanged"
       @show-notification="showNotification"
     />
 
@@ -160,9 +157,6 @@ export default {
       currentCodeStyle,
       currentThemeSystemId: currentLayoutId,
       currentFontSettings,
-      setColorTheme,
-      setCodeStyle,
-      setThemeSystem: setLayout,
       initialize
     } = themeManager
     // 响应式数据
@@ -435,20 +429,49 @@ function greet(name) {
       }
     }
 
+    // 通知计数器，确保ID唯一
+    let notificationCounter = 0
+
+    // 移除通知的函数
+    const removeNotification = (id) => {
+      const index = notifications.value.findIndex(n => n.id === id)
+      if (index > -1) {
+        // 添加退出动画类
+        const notification = notifications.value[index]
+        notification.isRemoving = true
+
+        // 使用requestAnimationFrame确保动画流畅
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            const finalIndex = notifications.value.findIndex(n => n.id === id)
+            if (finalIndex > -1) {
+              notifications.value.splice(finalIndex, 1)
+            }
+          }, 420) // 匹配CSS动画时长(400ms) + 缓冲时间
+        })
+      }
+    }
+
     // 显示通知
     const showNotification = (message, type = 'info') => {
-      const id = Date.now() + Math.random() // 生成唯一ID
-      const newNotification = { id, message, type }
+      // 如果通知数量过多，移除最旧的通知
+      if (notifications.value.length >= 5) {
+        const oldestNotification = notifications.value[0]
+        if (oldestNotification && !oldestNotification.isRemoving) {
+          removeNotification(oldestNotification.id)
+        }
+      }
+
+      // 生成真正唯一的ID
+      const id = `notification-${Date.now()}-${++notificationCounter}`
+      const newNotification = { id, message, type, isRemoving: false }
 
       // 添加到通知数组
       notifications.value.push(newNotification)
 
-      // 3秒后自动移除该通知
+      // 3秒后开始移除动画
       setTimeout(() => {
-        const index = notifications.value.findIndex(n => n.id === id)
-        if (index > -1) {
-          notifications.value.splice(index, 1)
-        }
+        removeNotification(id)
       }, 3000)
     }
 
@@ -513,30 +536,7 @@ function greet(name) {
       }
     }
 
-    // 布局主题系统处理方法
-    const handleThemeSystemChanged = (systemId) => {
-      setLayout(systemId)
-      // 重新应用当前颜色主题，确保颜色变量也被更新
-      setColorTheme(currentColorThemeId.value)
-      const systemName = currentLayoutId.value === 'default' ? '默认主题' : '主题系统'
-      showNotification(`主题风格已更新为${systemName}`, 'success')
-    }
-
-    // 颜色主题处理方法
-    const handleThemeChanged = (themeId) => {
-      setColorTheme(themeId)
-      showNotification('主题色已更新', 'success')
-    }
-
-    // 代码样式处理方法
-    const handleCodeStyleChanged = (styleId) => {
-      setCodeStyle(styleId)
-      const styleName = currentCodeStyleId.value === 'mac' ? 'Mac 风格' :
-                       currentCodeStyleId.value === 'github' ? 'GitHub 风格' :
-                       currentCodeStyleId.value === 'vscode' ? 'VS Code 风格' :
-                       currentCodeStyleId.value === 'terminal' ? '终端风格' : '代码样式'
-      showNotification(`代码样式已更新为${styleName}`, 'success')
-    }
+    // 事件处理函数已移至设置面板内部，避免重复通知
 
     // GitHub 链接处理方法
     const openGithub = () => {
@@ -566,9 +566,6 @@ function greet(name) {
       clearContent,
       loadSample,
       openGithub,
-      handleThemeSystemChanged,
-      handleThemeChanged,
-      handleCodeStyleChanged,
       showNotification
     }
   }
@@ -665,5 +662,24 @@ function greet(name) {
   box-shadow: 0 2px 6px rgba(36, 41, 46, 0.2);
 }
 
+/* 通知容器优化 - 提升多通知时的性能 */
+.notification-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateZ(0);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 400px;
+  pointer-events: none;
+  /* 启用硬件加速和性能优化 */
+  will-change: transform;
+  /* 优化渲染性能，减少重排重绘 */
+  contain: layout style paint;
+  /* 使用GPU合成层 */
+  isolation: isolate;
+}
 
 </style>

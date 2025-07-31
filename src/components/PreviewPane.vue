@@ -77,7 +77,6 @@ export default {
       currentThemeSystemId: currentLayoutId,
       currentColorTheme,
       currentCodeStyle,
-      currentFontSettings,
       initialize
     } = themeManager
 
@@ -280,10 +279,10 @@ export default {
       processMarkdown()
     })
 
-    // 监听字体设置变化
-    watch(currentFontSettings, () => {
-      processMarkdown()
-    }, { deep: true })
+    // 暂时禁用字体设置监听器，避免与设置面板冲突
+    // watch(currentFontSettings, () => {
+    //   processMarkdown()
+    // }, { deep: true })
 
     // 监听临时自定义主题变化
     const handleCustomThemeChange = () => {

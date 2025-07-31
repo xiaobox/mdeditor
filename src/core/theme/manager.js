@@ -338,13 +338,10 @@ class CSSVariableManager {
     const lineHeight = fontSize <= 14 ? '1.7' : fontSize <= 18 ? '1.6' : '1.5';
 
     return {
+      // 只更新预览区域的字体变量，不影响全局主题字体
       '--markdown-font-family': fontFamily,
       '--markdown-font-size': `${fontSize}px`,
-      '--markdown-line-height': lineHeight,
-      // 同时更新主题字体变量，确保全局生效
-      '--theme-font-family': fontFamily,
-      '--theme-font-size': `${fontSize}px`,
-      '--theme-line-height': lineHeight
+      '--markdown-line-height': lineHeight
     };
   }
 

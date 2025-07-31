@@ -358,7 +358,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useGlobalThemeManager } from '../composables/index.js'
 import { getCodeStyle } from '../core/theme/presets/code-styles.js'
 import { getColorThemeList } from '../core/theme/presets/color-themes.js'
@@ -374,7 +374,7 @@ const props = defineProps({
 })
 
 // Emits
-const emit = defineEmits(['close', 'theme-system-changed', 'theme-changed', 'code-style-changed', 'show-notification'])
+const emit = defineEmits(['close', 'show-notification'])
 
 // 使用统一主题管理器
 const themeManager = useGlobalThemeManager()
@@ -392,6 +392,7 @@ const {
   setCodeStyle,
   currentFontFamily,
   currentFontSize,
+  currentFontSettings,
   fontFamilyList,
   setFontFamily,
   setFontSize
@@ -425,9 +426,11 @@ const currentCustomColor = ref('#3b82f6')
 const isUsingCustomColor = ref(false)
 const currentCustomTheme = ref(null)
 
-// 保存面板打开时的初始字体设置，用于应用设置时的比较
+// 保存面板打开时的初始设置，用于应用设置时的比较
 const initialFontFamily = ref(currentFontFamily.value)
 const initialFontSize = ref(currentFontSize.value)
+const initialCustomColor = ref('#3b82f6')
+const initialIsUsingCustomColor = ref(false)
 
 // 字体相关的计算属性和数据
 const fontSizeRange = computed(() => ({
@@ -526,11 +529,15 @@ const getColorPreview = (colorId) => {
 const applySettings = () => {
   let delay = 0
 
+  // 设置标志位，防止watch监听器重复应用字体设置
+  isApplyingSettings.value = true
+
   // 应用布局主题系统
   if (selectedThemeSystemId.value !== currentLayoutId.value) {
     setLayout(selectedThemeSystemId.value)
     setTimeout(() => {
-      emit('theme-system-changed', selectedThemeSystemId.value)
+      const systemName = selectedThemeSystemId.value === 'default' ? '默认主题' : '主题系统'
+      emit('show-notification', `主题风格已更新为${systemName}`, 'success')
     }, delay)
     delay += 100 // 每个通知间隔100ms
   }
@@ -539,13 +546,18 @@ const applySettings = () => {
   if (!isUsingCustomColor.value && selectedThemeId.value !== currentColorThemeId.value) {
     setColorTheme(selectedThemeId.value)
     setTimeout(() => {
-      emit('theme-changed', selectedThemeId.value)
+      emit('show-notification', '主题色已更新', 'success')
     }, delay)
     delay += 100
   }
 
-  // 应用自定义颜色主题
-  if (isUsingCustomColor.value && currentCustomColor.value) {
+  // 应用自定义颜色主题 - 只在实际发生变化时显示通知
+  const customColorChanged = (
+    (isUsingCustomColor.value !== initialIsUsingCustomColor.value) ||
+    (isUsingCustomColor.value && currentCustomColor.value !== initialCustomColor.value)
+  )
+
+  if (customColorChanged && isUsingCustomColor.value && currentCustomColor.value) {
     setTimeout(() => {
       emit('show-notification', `自定义颜色主题已应用 (${currentCustomColor.value})`, 'success')
     }, delay)
@@ -556,7 +568,11 @@ const applySettings = () => {
   if (selectedCodeStyleId.value !== currentCodeStyleId.value) {
     setCodeStyle(selectedCodeStyleId.value)
     setTimeout(() => {
-      emit('code-style-changed', selectedCodeStyleId.value)
+      const styleName = selectedCodeStyleId.value === 'mac' ? 'Mac 风格' :
+                       selectedCodeStyleId.value === 'github' ? 'GitHub 风格' :
+                       selectedCodeStyleId.value === 'vscode' ? 'VS Code 风格' :
+                       selectedCodeStyleId.value === 'terminal' ? '终端风格' : '代码样式'
+      emit('show-notification', `代码样式已更新为${styleName}`, 'success')
     }, delay)
     delay += 100 // 增加延迟，确保通知不重叠
   }
@@ -589,6 +605,11 @@ const applySettings = () => {
     }, delay)
     delay += 100
   }
+
+  // 重置标志位
+  setTimeout(() => {
+    isApplyingSettings.value = false
+  }, delay + 100)
 
   // 如果使用自定义颜色，在所有设置应用后重新应用自定义主题
   if (isUsingCustomColor.value && currentCustomTheme.value) {
@@ -695,12 +716,13 @@ const onColorConfirm = async (color) => {
 const resetSelections = () => {
   selectedThemeSystemId.value = currentLayoutId.value
   selectedCodeStyleId.value = currentCodeStyleId.value
-  selectedFontFamily.value = currentFontFamily.value
-  selectedFontSize.value = currentFontSize.value
+  // 使用字体设置的ID而不是对象
+  selectedFontFamily.value = currentFontSettings.value.fontFamily
+  selectedFontSize.value = currentFontSettings.value.fontSize
 
-  // 更新初始字体设置值
-  initialFontFamily.value = currentFontFamily.value
-  initialFontSize.value = currentFontSize.value
+  // 更新初始设置值
+  initialFontFamily.value = currentFontSettings.value.fontFamily
+  initialFontSize.value = currentFontSettings.value.fontSize
 
   showColorPicker.value = false
 
@@ -715,11 +737,16 @@ const resetSelections = () => {
       currentCustomColor.value = tempColor
       isUsingCustomColor.value = true
       selectedThemeId.value = null // 清除内置主题选择
+      // 记录初始自定义颜色状态
+      initialCustomColor.value = tempColor
+      initialIsUsingCustomColor.value = true
     } else {
       // 没有自定义主题，使用内置主题
       selectedThemeId.value = currentColorThemeId.value
       isUsingCustomColor.value = false
       currentCustomTheme.value = null
+      // 记录初始状态
+      initialIsUsingCustomColor.value = false
     }
   } catch (error) {
     console.warn('Failed to restore custom theme state:', error)
@@ -727,6 +754,7 @@ const resetSelections = () => {
     selectedThemeId.value = currentColorThemeId.value
     isUsingCustomColor.value = false
     currentCustomTheme.value = null
+    initialIsUsingCustomColor.value = false
   }
 
   // 只有在没有临时自定义主题时才恢复CSS变量
@@ -741,26 +769,15 @@ onMounted(() => {
 })
 
 // 监听字体设置变化，实时应用到预览（不显示通知）
-watch([selectedFontFamily, selectedFontSize], ([newFamily, newSize], [oldFamily, oldSize]) => {
-  if (props.visible && (newFamily !== oldFamily || newSize !== oldSize)) {
-    // 实时应用字体设置到预览，但不显示通知
-    if (newFamily !== oldFamily) {
-      setFontFamily(newFamily)
-    }
-    if (newSize !== oldSize) {
-      setFontSize(newSize)
-    }
+// 添加标志位防止重复应用
+const isApplyingSettings = ref(false)
 
-    // 强制更新预览面板
-    nextTick(() => {
-      // 触发预览更新
-      const previewEvent = new CustomEvent('font-settings-changed', {
-        detail: { fontFamily: newFamily, fontSize: newSize }
-      })
-      window.dispatchEvent(previewEvent)
-    })
-  }
-}, { immediate: false })
+// 暂时禁用实时预览的watch监听器，避免与applySettings冲突
+// watch([selectedFontFamily, selectedFontSize], ([newFamily, newSize], [oldFamily, oldSize]) => {
+//   if (props.visible && !isApplyingSettings.value && (newFamily !== oldFamily || newSize !== oldSize)) {
+//     // 实时预览逻辑已暂时禁用
+//   }
+// }, { immediate: false })
 
 // 监听visible变化，当面板打开时重置选择，关闭时恢复主题
 watch(() => props.visible, (newVisible, oldVisible) => {
