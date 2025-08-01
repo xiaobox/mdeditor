@@ -1,7 +1,7 @@
 /**
- * @file src/utils/formatters/list-processor.js
+ * @file src/core/markdown/processors/list.js
  * @description 列表处理器
- * 
+ *
  * 专门处理 Markdown 列表的复杂逻辑，包括有序列表、无序列表和任务列表。
  * 支持嵌套列表和不同的列表符号。
  */

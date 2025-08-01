@@ -205,8 +205,8 @@ ___
   const notifications = ref([])
 
   // 复制格式相关
-  const selectedCopyFormat = ref(null)
   const copyFormatOptions = ref(getCopyFormatOptions())
+  const selectedCopyFormat = ref(copyFormatOptions.value[0]) // 默认选择第一个选项
 
   // 计算属性
   const hasContent = computed(() => markdownContent.value.trim().length > 0)
@@ -387,7 +387,6 @@ greet(user);
         showNotification(result.message, result.success ? 'success' : 'error')
       }, 50)
     } catch (error) {
-      console.error('复制错误:', error)
       setTimeout(() => {
         showNotification('❌ 复制失败：' + error.message, 'error')
       }, 50)

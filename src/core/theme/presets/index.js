@@ -17,8 +17,3 @@ export * from './code-styles.js';
 // 主题系统预设
 export * from './theme-systems.js';
 
-// CSS管理器
-export { cssManager } from '../manager.js';
-
-// 存储相关
-export * from '../storage.js';

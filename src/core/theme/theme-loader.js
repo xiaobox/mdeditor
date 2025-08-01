@@ -17,17 +17,19 @@
 (function () {
   // 预设颜色主题的最小化版本，确保脚本独立性
   const colorThemePresets = {
-    green: { primary: '#00A86B', primaryHover: '#008B5A', primaryLight: 'rgba(0, 168, 107, 0.08)', primaryDark: '#006B47', inlineCodeBg: 'rgba(0, 168, 107, 0.08)', inlineCodeText: '#006B47', inlineCodeBorder: 'rgba(0, 168, 107, 0.15)' },
-    blue: { primary: '#0066CC', primaryHover: '#0052A3', primaryLight: 'rgba(0, 102, 204, 0.08)', primaryDark: '#003D7A', inlineCodeBg: 'rgba(0, 102, 204, 0.08)', inlineCodeText: '#003D7A', inlineCodeBorder: 'rgba(0, 102, 204, 0.15)' },
-    red: { primary: '#E53E3E', primaryHover: '#C53030', primaryLight: 'rgba(229, 62, 62, 0.08)', primaryDark: '#9B2C2C', inlineCodeBg: 'rgba(229, 62, 62, 0.08)', inlineCodeText: '#9B2C2C', inlineCodeBorder: 'rgba(229, 62, 62, 0.15)' },
-    purple: { primary: '#805AD5', primaryHover: '#6B46C1', primaryLight: 'rgba(128, 90, 213, 0.08)', primaryDark: '#553C9A', inlineCodeBg: 'rgba(128, 90, 213, 0.08)', inlineCodeText: '#553C9A', inlineCodeBorder: 'rgba(128, 90, 213, 0.15)' },
-    orange: { primary: '#FF8C00', primaryHover: '#E67E00', primaryLight: 'rgba(255, 140, 0, 0.08)', primaryDark: '#CC7000', inlineCodeBg: 'rgba(255, 140, 0, 0.08)', inlineCodeText: '#CC7000', inlineCodeBorder: 'rgba(255, 140, 0, 0.15)' },
-    pink: { primary: '#FF69B4', primaryHover: '#FF1493', primaryLight: 'rgba(255, 105, 180, 0.08)', primaryDark: '#DC143C', inlineCodeBg: 'rgba(255, 105, 180, 0.08)', inlineCodeText: '#DC143C', inlineCodeBorder: 'rgba(255, 105, 180, 0.15)' },
+    chijin: { primary: '#FF0097', primaryHover: '#E60087', primaryLight: 'rgba(255, 0, 151, 0.08)', primaryDark: '#CC0077', inlineCodeBg: 'rgba(255, 0, 151, 0.08)', inlineCodeText: '#CC0077', inlineCodeBorder: 'rgba(255, 0, 151, 0.15)' },
+    dianlan: { primary: '#56004F', primaryHover: '#4A0043', primaryLight: 'rgba(86, 0, 79, 0.08)', primaryDark: '#3E0037', inlineCodeBg: 'rgba(86, 0, 79, 0.08)', inlineCodeText: '#3E0037', inlineCodeBorder: 'rgba(86, 0, 79, 0.15)' },
+    ehuang: { primary: '#FFA631', primaryHover: '#E6952C', primaryLight: 'rgba(255, 166, 49, 0.08)', primaryDark: '#CC8427', inlineCodeBg: 'rgba(255, 166, 49, 0.08)', inlineCodeText: '#CC8427', inlineCodeBorder: 'rgba(255, 166, 49, 0.15)' },
+    conglv: { primary: '#0AA344', primaryHover: '#09923C', primaryLight: 'rgba(10, 163, 68, 0.08)', primaryDark: '#088234', inlineCodeBg: 'rgba(10, 163, 68, 0.08)', inlineCodeText: '#088234', inlineCodeBorder: 'rgba(10, 163, 68, 0.15)' },
+    shiliuhong: { primary: '#F20C00', primaryHover: '#DA0B00', primaryLight: 'rgba(242, 12, 0, 0.08)', primaryDark: '#C20A00', inlineCodeBg: 'rgba(242, 12, 0, 0.08)', inlineCodeText: '#C20A00', inlineCodeBorder: 'rgba(242, 12, 0, 0.15)' },
+    meihei: { primary: '#312C20', primaryHover: '#2A251B', primaryLight: 'rgba(49, 44, 32, 0.08)', primaryDark: '#231E16', inlineCodeBg: 'rgba(49, 44, 32, 0.08)', inlineCodeText: '#231E16', inlineCodeBorder: 'rgba(49, 44, 32, 0.15)' },
+    ganziqing: { primary: '#003371', primaryHover: '#002D64', primaryLight: 'rgba(0, 51, 113, 0.08)', primaryDark: '#002757', inlineCodeBg: 'rgba(0, 51, 113, 0.08)', inlineCodeText: '#002757', inlineCodeBorder: 'rgba(0, 51, 113, 0.15)' },
+    xuanse: { primary: '#622A1D', primaryHover: '#552419', primaryLight: 'rgba(98, 42, 29, 0.08)', primaryDark: '#481E15', inlineCodeBg: 'rgba(98, 42, 29, 0.08)', inlineCodeText: '#481E15', inlineCodeBorder: 'rgba(98, 42, 29, 0.15)' }
   };
 
   // localStorage 的键
   const STORAGE_KEY = 'markdown-editor-color-theme';
-  const DEFAULT_THEME_ID = 'green';
+  const DEFAULT_THEME_ID = 'meihei';
 
   /**
    * 将十六进制颜色转换为 RGB 对象
@@ -66,9 +68,12 @@
       '--theme-inline-code-border': theme.inlineCodeBorder,
     };
 
+
+
     // 生成透明度变体
     const primaryRgb = hexToRgb(theme.primary);
     if (primaryRgb) {
+      styles['--primary-rgb'] = `${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}`;
       styles['--theme-primary-15'] = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.15)`;
       styles['--theme-primary-20'] = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.20)`;
       styles['--theme-primary-25'] = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.25)`;

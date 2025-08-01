@@ -30,93 +30,121 @@ import { createTheme } from './base.js';
  * 包含所有预定义颜色主题的对象。
  */
 export const colorThemes = {
-  // 翡翠绿 (默认)
-  green: createTheme({
-    id: 'green',
-    name: '翡翠绿',
-    description: '清新自然的翡翠绿，如春日新芽般生机盎然',
-    primary: '#00A86B',
-    primaryHover: '#008B5A',
-    primaryLight: 'rgba(0, 168, 107, 0.08)',
-    primaryDark: '#006B47',
-    inlineCodeBg: 'rgba(0, 168, 107, 0.08)',
-    inlineCodeText: '#006B47',
-    inlineCodeBorder: 'rgba(0, 168, 107, 0.15)',
+  // 洋红
+  chijin: createTheme({
+    id: 'chijin',
+    name: '洋红',
+    description: '色橘红，鲜艳明亮如玫瑰般绚烂夺目',
+    primary: '#FF0097',
+    primaryHover: '#E60087',
+    primaryLight: 'rgba(255, 0, 151, 0.08)',
+    primaryDark: '#CC0077',
+    inlineCodeBg: 'rgba(255, 0, 151, 0.08)',
+    inlineCodeText: '#CC0077',
+    inlineCodeBorder: 'rgba(255, 0, 151, 0.15)',
   }),
 
-  // 深海蓝
-  blue: createTheme({
-    id: 'blue',
-    name: '深海蓝',
-    description: '沉稳专业的深海蓝，如深邃海洋般宁静致远',
-    primary: '#0066CC',
-    primaryHover: '#0052A3',
-    primaryLight: 'rgba(0, 102, 204, 0.08)',
-    primaryDark: '#003D7A',
-    inlineCodeBg: 'rgba(0, 102, 204, 0.08)',
-    inlineCodeText: '#003D7A',
-    inlineCodeBorder: 'rgba(0, 102, 204, 0.15)',
+  // 紫棠
+  dianlan: createTheme({
+    id: 'dianlan',
+    name: '紫棠',
+    description: '黑红色，深沉神秘如紫檀般高贵典雅',
+    primary: '#56004F',
+    primaryHover: '#4A0043',
+    primaryLight: 'rgba(86, 0, 79, 0.08)',
+    primaryDark: '#3E0037',
+    inlineCodeBg: 'rgba(86, 0, 79, 0.08)',
+    inlineCodeText: '#3E0037',
+    inlineCodeBorder: 'rgba(86, 0, 79, 0.15)',
   }),
 
-  // 朱砂红
-  red: createTheme({
-    id: 'red',
-    name: '朱砂红',
-    description: '热情醒目的朱砂红，如晚霞般绚烂夺目',
-    primary: '#E53E3E',
-    primaryHover: '#C53030',
-    primaryLight: 'rgba(229, 62, 62, 0.08)',
-    primaryDark: '#9B2C2C',
-    inlineCodeBg: 'rgba(229, 62, 62, 0.08)',
-    inlineCodeText: '#9B2C2C',
-    inlineCodeBorder: 'rgba(229, 62, 62, 0.15)',
+  // 杏黄
+  ehuang: createTheme({
+    id: 'ehuang',
+    name: '杏黄',
+    description: '成熟杏子的黄色，温润典雅如秋日暖阳般温馨',
+    primary: '#FFA631',
+    primaryHover: '#E6952C',
+    primaryLight: 'rgba(255, 166, 49, 0.08)',
+    primaryDark: '#CC8427',
+    inlineCodeBg: 'rgba(255, 166, 49, 0.08)',
+    inlineCodeText: '#CC8427',
+    inlineCodeBorder: 'rgba(255, 166, 49, 0.15)',
   }),
 
-  // 薰衣草紫
-  purple: createTheme({
-    id: 'purple',
-    name: '薰衣草紫',
-    description: '优雅神秘的薰衣草紫，如梦境般浪漫迷人',
-    primary: '#805AD5',
-    primaryHover: '#6B46C1',
-    primaryLight: 'rgba(128, 90, 213, 0.08)',
-    primaryDark: '#553C9A',
-    inlineCodeBg: 'rgba(128, 90, 213, 0.08)',
-    inlineCodeText: '#553C9A',
-    inlineCodeBorder: 'rgba(128, 90, 213, 0.15)',
+  // 葱绿
+  conglv: createTheme({
+    id: 'conglv',
+    name: '葱绿',
+    description: '葱叶的绿色，清新自然如春草般生机盎然',
+    primary: '#0AA344',
+    primaryHover: '#09923C',
+    primaryLight: 'rgba(10, 163, 68, 0.08)',
+    primaryDark: '#088234',
+    inlineCodeBg: 'rgba(10, 163, 68, 0.08)',
+    inlineCodeText: '#088234',
+    inlineCodeBorder: 'rgba(10, 163, 68, 0.15)',
   }),
 
-  // 琥珀橙
-  orange: createTheme({
-    id: 'orange',
-    name: '琥珀橙',
-    description: '温暖活力的琥珀橙，如秋日暖阳般温馨明亮',
-    primary: '#FF8C00',
-    primaryHover: '#E67E00',
-    primaryLight: 'rgba(255, 140, 0, 0.08)',
-    primaryDark: '#CC7000',
-    inlineCodeBg: 'rgba(255, 140, 0, 0.08)',
-    inlineCodeText: '#CC7000',
-    inlineCodeBorder: 'rgba(255, 140, 0, 0.15)',
+  // 石榴红
+  shiliuhong: createTheme({
+    id: 'shiliuhong',
+    name: '石榴红',
+    description: '石榴花的颜色，热情醒目如火焰般绚烂',
+    primary: '#F20C00',
+    primaryHover: '#DA0B00',
+    primaryLight: 'rgba(242, 12, 0, 0.08)',
+    primaryDark: '#C20A00',
+    inlineCodeBg: 'rgba(242, 12, 0, 0.08)',
+    inlineCodeText: '#C20A00',
+    inlineCodeBorder: 'rgba(242, 12, 0, 0.15)',
   }),
 
-  // 樱花粉
-  pink: createTheme({
-    id: 'pink',
-    name: '樱花粉',
-    description: '温馨浪漫的樱花粉，如春日樱花般柔美动人',
-    primary: '#FF69B4',
-    primaryHover: '#FF1493',
-    primaryLight: 'rgba(255, 105, 180, 0.08)',
-    primaryDark: '#DC143C',
-    inlineCodeBg: 'rgba(255, 105, 180, 0.08)',
-    inlineCodeText: '#DC143C',
-    inlineCodeBorder: 'rgba(255, 105, 180, 0.15)',
+  // 煤黑
+  meihei: createTheme({
+    id: 'meihei',
+    name: '煤黑',
+    description: '煤炭的黑色，深沉稳重如墨玉般典雅',
+    primary: '#312C20',
+    primaryHover: '#2A251B',
+    primaryLight: 'rgba(49, 44, 32, 0.08)',
+    primaryDark: '#231E16',
+    inlineCodeBg: 'rgba(49, 44, 32, 0.08)',
+    inlineCodeText: '#231E16',
+    inlineCodeBorder: 'rgba(49, 44, 32, 0.15)',
+  }),
+
+  // 绀青绀紫
+  ganziqing: createTheme({
+    id: 'ganziqing',
+    name: '绀青绀紫',
+    description: '纯度较低的深紫色，神秘优雅如紫檀般高贵',
+    primary: '#003371',
+    primaryHover: '#002D64',
+    primaryLight: 'rgba(0, 51, 113, 0.08)',
+    primaryDark: '#002757',
+    inlineCodeBg: 'rgba(0, 51, 113, 0.08)',
+    inlineCodeText: '#002757',
+    inlineCodeBorder: 'rgba(0, 51, 113, 0.15)',
+  }),
+
+  // 玄色
+  xuanse: createTheme({
+    id: 'xuanse',
+    name: '玄色',
+    description: '赤黑色，黑中带红的颜色，深邃神秘如古韵般幽远',
+    primary: '#622A1D',
+    primaryHover: '#552419',
+    primaryLight: 'rgba(98, 42, 29, 0.08)',
+    primaryDark: '#481E15',
+    inlineCodeBg: 'rgba(98, 42, 29, 0.08)',
+    inlineCodeText: '#481E15',
+    inlineCodeBorder: 'rgba(98, 42, 29, 0.15)',
   }),
 };
 
 /** 默认的颜色主题 */
-export const defaultColorTheme = colorThemes.green;
+export const defaultColorTheme = colorThemes.meihei;
 
 /**
  * 根据 ID 获取颜色主题对象。
@@ -148,14 +176,17 @@ export const colorThemePresets = {
   // 所有主题 ID
   all: Object.keys(colorThemes),
 
-  // 商务风格主题
-  business: ['blue', 'purple'],
+  // 中国传统色
+  traditional: ['chijin', 'dianlan', 'ehuang', 'conglv', 'shiliuhong', 'meihei', 'ganziqing', 'xuanse'],
 
-  // 自然风格主题
-  nature: ['green', 'orange'],
+  // 暖色系
+  warm: ['chijin', 'ehuang', 'shiliuhong'],
 
-  // 热情风格主题
-  warm: ['red', 'pink'],
+  // 冷色系
+  cool: ['dianlan', 'ganziqing', 'conglv'],
+
+  // 深色系
+  dark: ['meihei', 'xuanse', 'dianlan', 'ganziqing'],
 };
 
 /**

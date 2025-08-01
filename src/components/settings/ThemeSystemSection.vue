@@ -63,14 +63,16 @@ defineEmits(['select'])
 // 获取颜色预览
 const getColorPreview = (colorId) => {
   const colorMap = {
-    green: '#10b981',
-    blue: '#3b82f6',
-    red: '#ef4444',
-    purple: '#8b5cf6',
-    orange: '#f97316',
-    pink: '#ec4899'
+    chijin: '#FF0097',
+    dianlan: '#56004F',
+    ehuang: '#FFA631',
+    conglv: '#0AA344',
+    shiliuhong: '#F20C00',
+    meihei: '#312C20',
+    ganziqing: '#003371',
+    xuanse: '#622A1D'
   }
-  return colorMap[colorId] || '#10b981'
+  return colorMap[colorId] || '#312C20'
 }
 </script>
 

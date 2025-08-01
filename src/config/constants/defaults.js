@@ -23,8 +23,8 @@ export const STORAGE_KEYS = {
  * 主题默认配置 - 简化为统一默认主题
  */
 export const THEME_DEFAULTS = {
-  // 颜色主题
-  COLOR_THEME_ID: 'green',
+  // 颜色主题 - 改为煤黑主题
+  COLOR_THEME_ID: 'meihei',
 
   // 代码样式
   CODE_STYLE_ID: 'mac',

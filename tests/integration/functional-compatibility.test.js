@@ -13,7 +13,7 @@ import { TextUtils } from '../../src/shared/utils/text.js';
 import { colorThemes } from '../../src/core/theme/presets/color-themes.js';
 
 // Mock 主题数据
-const mockTheme = colorThemes.green; // 使用有效的主题对象
+const mockTheme = colorThemes.conglv; // 使用有效的主题对象（葱绿）
 
 // Helper function to replace formatForSocial
 function formatForSocial(markdownText, theme, codeTheme = null, themeSystem = 'default', options = {}) {

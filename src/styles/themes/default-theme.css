@@ -15,19 +15,19 @@
   --markdown-font-size: 16px;
   --markdown-line-height: 1.6;
 
-  /* 主色调 - 时尚高级绿色系（默认值，会被主题管理器动态覆盖） */
-  --theme-primary: #00A86B;
-  --theme-primary-hover: #008B5A;
-  --theme-primary-light: rgba(0, 168, 107, 0.08);
-  --theme-primary-lighter: rgba(0, 168, 107, 0.04);
-  --theme-primary-dark: #006B47;
+  /* 主色调 - 煤黑主题（默认值，会被主题管理器动态覆盖） */
+  --theme-primary: #312C20;
+  --theme-primary-hover: #2A251B;
+  --theme-primary-light: rgba(49, 44, 32, 0.08);
+  --theme-primary-lighter: rgba(49, 44, 32, 0.04);
+  --theme-primary-dark: #231E16;
 
   /* 主题色透明度变体 - 由主题管理器动态生成 */
-  --theme-primary-15: rgba(0, 168, 107, 0.15);
-  --theme-primary-20: rgba(0, 168, 107, 0.20);
-  --theme-primary-25: rgba(0, 168, 107, 0.25);
-  --theme-primary-40: rgba(0, 168, 107, 0.40);
-  --theme-primary-60: rgba(0, 168, 107, 0.60);
+  --theme-primary-15: rgba(49, 44, 32, 0.15);
+  --theme-primary-20: rgba(49, 44, 32, 0.20);
+  --theme-primary-25: rgba(49, 44, 32, 0.25);
+  --theme-primary-40: rgba(49, 44, 32, 0.40);
+  --theme-primary-60: rgba(49, 44, 32, 0.60);
 
   /* 基础颜色 */
   --theme-bg-primary: #FEFEFE;        /* 纯白主背景 */

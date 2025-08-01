@@ -114,11 +114,9 @@ function createRichTextContainer(html, fontSettings = null) {
  * @private
  */
 async function copyWithClipboardAPI(html, plainText) {
-  console.log('尝试使用 Clipboard API...');
   const blobHtml = new Blob([html], { type: 'text/html' });
   const blobText = new Blob([plainText || html.replace(/<[^>]*>/g, '')], { type: 'text/plain' });
   await navigator.clipboard.write([new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })]);
-  console.log('Clipboard API 复制成功');
 }
 
 /**
@@ -126,11 +124,9 @@ async function copyWithClipboardAPI(html, plainText) {
  * @private
  */
 function copyWithExecCommand() {
-  console.log('尝试使用 execCommand...');
   if (!document.execCommand('copy')) {
     throw new Error('execCommand returned false.');
   }
-  console.log('execCommand 复制成功');
 }
 
 /**
@@ -149,7 +145,6 @@ export async function copyToSocialClean(html, fontSettings = null) {
   }
 
   const sizeKB = (html.length / 1024).toFixed(1);
-  console.log(`准备复制内容，大小: ${sizeKB}KB`);
 
   try {
     // 使用 Promise.race 实现超时控制
@@ -161,18 +156,15 @@ export async function copyToSocialClean(html, fontSettings = null) {
       // 优先尝试纯API方式，完全避免DOM操作
       if (navigator.clipboard && navigator.clipboard.write) {
         try {
-          console.log('使用纯API方式复制...');
           const plainText = html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
           await copyWithClipboardAPI(html, plainText);
-          console.log('纯API复制成功');
           return true;
         } catch (apiError) {
-          console.warn('纯API复制失败，尝试DOM方式...', apiError.message);
+          // 如果纯API失败，继续尝试DOM方式
         }
       }
 
       // 如果纯API失败，才使用DOM方式
-      console.log('使用DOM方式复制...');
       const container = createRichTextContainer(html, fontSettings);
 
       // 使用最小化的DOM操作
@@ -223,10 +215,7 @@ export async function copyToSocialClean(html, fontSettings = null) {
     return await Promise.race([copyPromise(), timeoutPromise]);
 
   } catch (error) {
-    console.error('复制失败:', error);
     throw ErrorHandler.handleClipboardError(error, parseFloat(sizeKB));
-  } finally {
-    console.log(`复制流程结束，内容大小: ${sizeKB}KB`);
   }
 }
 

@@ -1,7 +1,7 @@
 /**
- * @file src/utils/shared/performance-utils.js
+ * @file src/shared/utils/performance.js
  * @description 简化的性能优化工具
- * 
+ *
  * 只保留实际有用的功能：防抖、节流和简单缓存
  */
 

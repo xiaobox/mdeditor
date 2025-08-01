@@ -42,7 +42,7 @@ export const themeSystems = {
     id: 'default',
     name: '默认主题',
     description: '现代化Markdown编辑器统一主题，简洁优雅',
-    supportedColors: ['green'],
+    supportedColors: ['chijin', 'dianlan', 'ehuang', 'conglv', 'shiliuhong', 'meihei', 'ganziqing', 'xuanse'],
     layout: {
       padding: '16px',
       lineHeight: '1.75',

@@ -49,7 +49,6 @@ async function copyTextToClipboard(text) {
       return successful;
     }
   } catch (error) {
-    console.error('文本复制失败:', error);
     return false;
   }
 }
@@ -77,7 +76,6 @@ export async function copySocialFormat(markdownText, options = {}) {
       message: success ? '🎉 公众号格式已复制！可以粘贴到社交平台编辑器' : '❌ 复制失败，请重试'
     };
   } catch (error) {
-    console.error('复制公众号格式失败:', error);
     return {
       success: false,
       message: `❌ 复制失败：${error.message}`
@@ -106,7 +104,6 @@ export async function copyMarkdownFormat(markdownText) {
       message: success ? '📝 Markdown格式已复制到剪贴板' : '❌ 复制失败，请重试'
     };
   } catch (error) {
-    console.error('复制Markdown格式失败:', error);
     return {
       success: false,
       message: `❌ 复制失败：${error.message}`

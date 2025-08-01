@@ -1,7 +1,7 @@
 /**
- * @file src/utils/formatters/text-processors.js
+ * @file src/core/markdown/formatters/text.js
  * @description 文本处理工具函数
- * 
+ *
  * 包含各种文本处理和格式化的工具函数，从主格式化器中提取出来
  * 以提高代码的模块化和可维护性。
  */

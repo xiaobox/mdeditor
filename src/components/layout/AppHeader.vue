@@ -105,24 +105,20 @@ defineEmits([
 .header-left h1 {
   font-size: 26px;
   font-weight: 800;
-  color: var(--primary-color);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--primary-color); /* 降级支持 */
   margin: 0;
   letter-spacing: -0.8px;
   position: relative;
-  text-shadow:
-    /* 拟物化文字效果 */
-    2px 2px 4px rgba(163, 177, 198, 0.6),
-    -1px -1px 2px rgba(255, 255, 255, 0.8),
-    0 0 8px rgba(var(--primary-rgb), 0.3);
   transition: all 0.3s ease;
 }
 
 .header-left h1:hover {
-  color: var(--primary-hover);
-  text-shadow:
-    3px 3px 6px rgba(163, 177, 198, 0.7),
-    -2px -2px 4px rgba(255, 255, 255, 0.9),
-    0 0 12px rgba(var(--primary-rgb), 0.5);
+  transform: translateY(-1px);
+  filter: brightness(1.1);
 }
 
 .header-left h1::after {
@@ -135,27 +131,27 @@ defineEmits([
   background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
   border-radius: 2px;
   opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.header-left h1:hover::after {
+  opacity: 0.8;
+  width: 80px;
 }
 
 .header-subtitle {
   font-size: 14px;
   color: var(--primary-color);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.2px;
-  opacity: 0.8;
-  text-shadow:
-    /* 轻微的拟物化效果 */
-    1px 1px 2px rgba(163, 177, 198, 0.4),
-    -0.5px -0.5px 1px rgba(255, 255, 255, 0.6);
+  opacity: 0.95;
   transition: all 0.3s ease;
 }
 
 .header-subtitle:hover {
   opacity: 1;
   color: var(--primary-hover);
-  text-shadow:
-    1.5px 1.5px 3px rgba(163, 177, 198, 0.5),
-    -1px -1px 2px rgba(255, 255, 255, 0.7);
+  transform: translateY(-1px);
 }
 
 .header-right {

@@ -1,7 +1,7 @@
 /**
- * @file src/utils/formatters/escape-handlers.js
+ * @file src/core/markdown/formatters/escape.js
  * @description Markdown 转义字符处理工具
- * 
+ *
  * 专门处理 Markdown 中的转义字符，包括预处理和后处理转义序列。
  * 从 text-processors.js 中提取出来，提高代码的模块化程度。
  */

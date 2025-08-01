@@ -1,7 +1,7 @@
 /**
- * @file src/utils/formatters/formatter-coordinator.js
+ * @file src/core/markdown/parser/coordinator.js
  * @description 格式化协调器
- * 
+ *
  * 协调各种格式化处理器，实现复杂的 Markdown 到 HTML 转换逻辑。
  * 使用策略模式和状态机模式来简化原本复杂的条件逻辑。
  */
@@ -14,7 +14,6 @@ import { processInlineFormatsWithoutEscapes } from '../formatters/text.js';
 import { getThemesSafe } from '../../../shared/utils/theme.js';
 import { cleanReferenceLinks } from '../formatters/text.js';
 import { FormatterContext } from './context.js';
-import { memoize } from '../../../shared/utils/performance.js';
 
 /**
  * 使用字体设置包装 HTML 内容 - 采用 doocs/md 的成功方案

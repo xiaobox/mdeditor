@@ -1,7 +1,7 @@
 /**
- * @file src/utils/shared/error-handler.js
+ * @file src/shared/utils/error.js
  * @description 简化的统一错误处理工具
- * 
+ *
  * 回归简单实用的设计，移除过度复杂的抽象层
  */
 

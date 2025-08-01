@@ -1,7 +1,7 @@
 /**
- * @file src/utils/shared/text-utils.js
+ * @file src/shared/utils/text.js
  * @description 共享文本处理工具
- * 
+ *
  * 提供统一的文本处理、验证和格式化功能，消除代码中重复的文本处理逻辑。
  */
 

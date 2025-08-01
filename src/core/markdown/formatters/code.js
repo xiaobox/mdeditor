@@ -1,7 +1,7 @@
 /**
- * @file src/utils/formatters/code-highlighter.js
+ * @file src/core/markdown/formatters/code.js
  * @description 代码高亮处理器
- * 
+ *
  * 专门处理代码块的语法高亮，支持多种编程语言和主题。
  * 从主格式化器中提取出来以提高模块化。
  */
@@ -68,6 +68,10 @@ export function isSupportedLanguage(language) {
  */
 export function highlightCode(code, language, codeTheme) {
   if (!code) return '';
+
+  // 注意：当前实现使用通用的语法高亮规则，未来可以根据language参数进行语言特定的高亮
+  // 暂时保留language参数以保持API兼容性
+  void language; // 明确标记参数暂未使用
 
   const highlight = codeTheme?.syntaxHighlight;
 

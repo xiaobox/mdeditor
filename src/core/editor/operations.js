@@ -1,5 +1,5 @@
 /**
- * @file src/utils/editor-operations.js
+ * @file src/core/editor/operations.js
  * @description Markdown 编辑器原子操作集合
  *
  * 本文件定义了一系列用于操作 CodeMirror 编辑器内容的底层函数。

@@ -1,7 +1,7 @@
 /**
- * @file src/utils/shared/theme-utils.js
+ * @file src/shared/utils/theme.js
  * @description 共享主题工具函数
- * 
+ *
  * 提供统一的主题获取、应用和处理逻辑，消除代码中重复的主题处理模式。
  */
 

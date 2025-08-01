@@ -125,9 +125,9 @@ themeManager.initialize()
   right: 0;
   bottom: 0;
   background: linear-gradient(135deg,
-    var(--theme-primary, #00A86B)08 0%,
-    var(--theme-primary, #00A86B)04 50%,
-    var(--theme-primary, #00A86B)08 100%);
+    var(--theme-primary-light) 0%,
+    var(--theme-primary-lighter) 50%,
+    var(--theme-primary-light) 100%);
   opacity: 0;
   transition: opacity 0.2s ease;
 }
@@ -137,7 +137,7 @@ themeManager.initialize()
 }
 
 .btn-settings:hover {
-  border-color: var(--theme-primary, #00A86B);
+  border-color: var(--theme-primary);
   color: var(--theme-primary, #00A86B);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);

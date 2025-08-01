@@ -1,5 +1,5 @@
 /**
- * @file src/utils/formatters/processing-strategies/index.js
+ * @file src/core/markdown/parser/strategies/index.js
  * @description 行处理策略统一导出
  */
 

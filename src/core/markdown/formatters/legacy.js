@@ -1,5 +1,5 @@
 /**
- * @file src/utils/formatters/style-formatters.js
+ * @file src/core/markdown/formatters/legacy.js
  * @description 可复用的样式格式化函数
  *
  * 本模块包含为特定 Markdown 元素（如代码块、引用块、表格）生成样式化 HTML 的函数。
