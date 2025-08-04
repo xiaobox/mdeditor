@@ -58,12 +58,13 @@ export class CodeBlockProcessor extends LineProcessor {
       // 结束代码块
       const blockInfo = context.endCodeBlock();
       const fontSize = context.fontSettings?.fontSize || 16;
+
       const result = formatCodeBlock(
         blockInfo.content,
         blockInfo.language,
         context.currentTheme,
         context.codeTheme,
-        false, // isPreview
+        context.options?.isPreview || false, // 使用上下文中的isPreview设置
         fontSize
       );
       return {
@@ -138,36 +139,36 @@ export class HeadingProcessor extends LineProcessor {
       const baseFontSize = context.fontSettings?.fontSize || 16;
       const h1FontSize = Math.round(baseFontSize * 2.2);
 
+      // 修复微信公众号编辑器兼容性：使用flexbox布局和居中对齐
       const h1Style = `
         margin: 1.8em 0 1.5em 0;
         font-weight: 700;
         font-size: ${h1FontSize}px;
         line-height: 1.3;
         text-align: center;
-        position: relative;
-        padding-bottom: 0.8rem;
         background: linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.primaryDark || currentTheme.primary} 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         color: ${currentTheme.textPrimary};
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
       `.replace(/\s+/g, ' ').trim();
 
+      // 下划线样式：使用简单的块级元素，避免绝对定位
       const underlineStyle = `
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
         width: 60px;
         height: 3px;
         background: linear-gradient(90deg, transparent 0%, ${currentTheme.primary} 20%, ${currentTheme.primary} 80%, transparent 100%);
         border-radius: 2px;
         box-shadow: 0 2px 8px ${currentTheme.primary}40;
         display: block;
+        margin: 0 auto;
       `.replace(/\s+/g, ' ').trim();
 
-      return `<h1 style="${h1Style}">${formattedText}<span style="${underlineStyle}"></span></h1>`;
+      return `<h1 style="${h1Style}"><span>${formattedText}</span><span style="${underlineStyle}"></span></h1>`;
     }
   }
 
@@ -182,32 +183,31 @@ export class HeadingProcessor extends LineProcessor {
       const baseFontSize = context.fontSettings?.fontSize || 16;
       const h2FontSize = Math.round(baseFontSize * 1.5);
 
+      // 修复微信公众号编辑器换行问题：使用flexbox布局确保装饰线条和文字在同一行
       const h2Style = `
         margin-top: 2rem;
         margin-bottom: 1.5rem;
         font-weight: 600;
-        padding-left: 0.5em;
         font-size: ${h2FontSize}px;
         line-height: 1.4;
         color: ${currentTheme.textPrimary};
-        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
       `.replace(/\s+/g, ' ').trim();
 
+      // 装饰线条样式：使用inline-block确保不换行
       const borderStyle = `
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
         width: 5px;
         height: 1.1em;
         background: linear-gradient(180deg, ${currentTheme.primary}20 0%, ${currentTheme.primary}60 15%, ${currentTheme.primary} 35%, ${currentTheme.primary} 65%, ${currentTheme.primary}60 85%, ${currentTheme.primary}20 100%);
         border-radius: 3px;
         box-shadow: 0 0 6px ${currentTheme.primary}25;
-        display: block;
+        display: inline-block;
+        flex-shrink: 0;
       `.replace(/\s+/g, ' ').trim();
 
-      return `<h2 style="${h2Style}"><span style="${borderStyle}"></span>${formattedText}</h2>`;
+      return `<h2 style="${h2Style}"><span style="${borderStyle}"></span><span>${formattedText}</span></h2>`;
     }
   }
 

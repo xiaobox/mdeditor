@@ -54,71 +54,117 @@ export function formatCodeBlock(content, language, theme = defaultColorTheme, co
   const codeFontSize = Math.max(12, Math.round(baseFontSize * 0.875)); // 约87.5%的正文字号
 
   const preStyle = `
-    background: ${safeCodeTheme.background};
-    border-radius: 12px;
-    padding: 24px;
-    overflow-x: auto;
-    font-size: ${codeFontSize}px;
-    line-height: 1.7;
-    border: none;
-    position: relative;
-    font-family: Consolas, monospace;
-    margin: 32px 0;
-    font-weight: 400;
-    color: ${safeCodeTheme.color};
-    box-sizing: content-box;
+    background: ${safeCodeTheme.background} ${!isPreview ? '!important' : ''};
+    border-radius: 12px ${!isPreview ? '!important' : ''};
+    ${safeCodeTheme.hasHeader ? `padding: 0 ${!isPreview ? '!important' : ''};` : `padding: 24px ${!isPreview ? '!important' : ''};`}
+    overflow-x: auto ${!isPreview ? '!important' : ''};
+    font-size: ${codeFontSize}px ${!isPreview ? '!important' : ''};
+    line-height: 1.3 ${!isPreview ? '!important' : ''};
+    border: none ${!isPreview ? '!important' : ''};
+    position: relative ${!isPreview ? '!important' : ''};
+    font-family: Consolas, monospace ${!isPreview ? '!important' : ''};
+    margin: 32px 0 ${!isPreview ? '!important' : ''};
+    font-weight: 400 ${!isPreview ? '!important' : ''};
+    color: ${safeCodeTheme.color} ${!isPreview ? '!important' : ''};
+    box-sizing: border-box ${!isPreview ? '!important' : ''};
+    display: block ${!isPreview ? '!important' : ''};
+    min-height: auto ${!isPreview ? '!important' : ''};
+    height: auto ${!isPreview ? '!important' : ''};
+    max-height: none ${!isPreview ? '!important' : ''};
+    ${!isPreview ? 'vertical-align: top !important;' : ''}
   `.replace(/\s+/g, ' ').trim();
 
   const codeStyle = `
-    background: transparent;
-    border: none;
-    font-family: Consolas, monospace;
-    font-size: ${codeFontSize}px;
-    line-height: 1.7;
-    color: ${safeCodeTheme.color} !important;
-    ${safeCodeTheme.hasHeader ? 'margin-top: 40px;' : ''}
-    ${safeCodeTheme.hasTrafficLights ? 'margin-top: 28px;' : ''}
-    display: block;
-    white-space: pre-wrap !important;
-    word-wrap: break-word;
-    word-spacing: normal !important;
-    letter-spacing: normal !important;
+    background: transparent ${!isPreview ? '!important' : ''};
+    border: none ${!isPreview ? '!important' : ''};
+    font-family: Consolas, monospace ${!isPreview ? '!important' : ''};
+    font-size: ${codeFontSize}px ${!isPreview ? '!important' : ''};
+    line-height: 1.3 ${!isPreview ? '!important' : ''};
+    color: ${safeCodeTheme.color} ${!isPreview ? '!important' : ''};
+    display: block ${!isPreview ? '!important' : ''};
+    white-space: pre-wrap ${!isPreview ? '!important' : ''};
+    word-wrap: break-word ${!isPreview ? '!important' : ''};
+    word-spacing: normal ${!isPreview ? '!important' : ''};
+    letter-spacing: normal ${!isPreview ? '!important' : ''};
+    margin: 0 ${!isPreview ? '!important' : ''};
+    ${safeCodeTheme.hasHeader ? `padding: 12px 24px 20px 24px ${!isPreview ? '!important' : ''};` : `padding: 24px ${!isPreview ? '!important' : ''};`}
+    box-sizing: border-box ${!isPreview ? '!important' : ''};
+    min-height: auto ${!isPreview ? '!important' : ''};
+    height: auto ${!isPreview ? '!important' : ''};
+    max-height: none ${!isPreview ? '!important' : ''};
+    ${!isPreview ? 'vertical-align: top !important;' : ''}
   `.replace(/\s+/g, ' ').trim();
 
   let decorations = '';
-  if (safeCodeTheme.hasTrafficLights) {
-    if (isPreview) {
-      // 预览环境：使用真正的圆形元素，确保在所有字体下都一致
-      // 使用绝对定位而不是flex，避免微信兼容性问题
-      const containerStyle = `position: absolute; top: 14px; left: 12px; z-index: 2; width: 54px; height: 12px;`;
-      const lightStyle = `width: 12px; height: 12px; border-radius: 50%; position: absolute; top: 0;`;
-      decorations += `
-        <div class="mac-traffic-lights" style="${containerStyle}">
-          <div style="${lightStyle} left: 0; background-color: #ff5f56;"></div>
-          <div style="${lightStyle} left: 18px; background-color: #ffbd2e;"></div>
-          <div style="${lightStyle} left: 36px; background-color: #27ca3f;"></div>
-        </div>
-      `.replace(/\s+/g, ' ').trim();
-    } else {
-      // 微信环境：使用字符实现，简单且兼容性好
-      decorations += `
-        <span class="mac-traffic-lights" style="position: absolute; top: 19px; left: 19px; font-size: 16px; line-height: 1; z-index: 2; letter-spacing: 5px;">
-          <span style="color: #ff5f56;">●</span><span style="color: #ffbd2e;">●</span><span style="color: #27ca3f;">●</span>
-        </span>
-      `.replace(/\s+/g, ' ').trim();
-    }
-  }
 
   if (safeCodeTheme.hasHeader) {
-    const headerContent = safeCodeTheme.headerContent.replace('代码', language || '代码');
+    let headerContent;
+
+    // Mac样式特殊处理：动态生成红绿灯
+    if (safeCodeTheme.id === 'mac') {
+      // 红绿灯使用固定大小，不跟随字体变化（模拟真实Mac窗口）
+      const trafficLightSize = 12; // 固定12px，接近真实Mac红绿灯大小
+      const labelSize = Math.max(11, Math.round(baseFontSize * 0.75)); // 标签稍微跟随字体，但保持相对较小
+      const spacing = 6; // 固定间距，保持一致性
+
+
+
+
+
+
+
+
+      headerContent = `<span class="mac-traffic-light-red" style="color: #ff5f56 !important; margin-right: ${spacing}px !important; font-size: ${trafficLightSize}px !important; line-height: 1 !important; display: inline !important; width: auto !important; height: auto !important;">●</span><span class="mac-traffic-light-yellow" style="color: #ffbd2e !important; margin-right: ${spacing}px !important; font-size: ${trafficLightSize}px !important; line-height: 1 !important; display: inline !important; width: auto !important; height: auto !important;">●</span><span class="mac-traffic-light-green" style="color: #27ca3f !important; margin-right: ${spacing * 2}px !important; font-size: ${trafficLightSize}px !important; line-height: 1 !important; display: inline !important; width: auto !important; height: auto !important;">●</span><span class="mac-code-label" style="font-size: ${labelSize}px !important; color: #8b949e !important; line-height: 1 !important; display: inline !important;">${language || 'code'}</span>`;
+    } else {
+      // 其他样式使用原有逻辑
+      headerContent = safeCodeTheme.headerContent.replace('代码', language || '代码');
+    }
+
+    // 为微信环境添加额外的样式保护，Mac样式动态调整padding
+    let protectedHeaderStyle = !isPreview
+      ? safeCodeTheme.headerStyle.replace(/line-height:\s*[\d.]+;?/g, 'line-height: 1.2 !important;') + ' min-height: auto !important; height: auto !important;'
+      : safeCodeTheme.headerStyle;
+
+    // Mac样式特殊处理：使用固定padding，保持一致的视觉效果
+    if (safeCodeTheme.id === 'mac') {
+      const headerPadding = 12; // 固定padding，不跟随字体变化
+      protectedHeaderStyle = protectedHeaderStyle.replace(/padding:\s*[^;]+;/g, `padding: ${headerPadding}px 20px;`);
+    }
+
     decorations += `
-      <div style="${safeCodeTheme.headerStyle}">
+      <div style="${protectedHeaderStyle}">
         ${headerContent}
       </div>
     `.replace(/\s+/g, ' ').trim();
   }
 
-  return `<pre style="${preStyle}">${decorations}<code style="${codeStyle}">${highlightedContent}</code></pre>`;
+  // 生成内联CSS来保护语法高亮颜色 - 多重选择器确保兼容性
+  const syntaxProtectionCSS = safeCodeTheme.syntaxHighlight ? `
+    <style>
+      /* 类名选择器 - 最稳定的方式 */
+      .syntax-keyword, .syntax-keyword font { color: ${safeCodeTheme.syntaxHighlight.keyword} !important; }
+      .syntax-string, .syntax-string font { color: ${safeCodeTheme.syntaxHighlight.string} !important; }
+      .syntax-comment, .syntax-comment font { color: ${safeCodeTheme.syntaxHighlight.comment} !important; }
+      .syntax-number, .syntax-number font { color: ${safeCodeTheme.syntaxHighlight.number} !important; }
+      .syntax-function, .syntax-function font { color: ${safeCodeTheme.syntaxHighlight.function} !important; }
+
+      /* 数据属性选择器 - 备用方案 */
+      [data-syntax="keyword"], [data-syntax="keyword"] font { color: ${safeCodeTheme.syntaxHighlight.keyword} !important; }
+      [data-syntax="string"], [data-syntax="string"] font { color: ${safeCodeTheme.syntaxHighlight.string} !important; }
+      [data-syntax="comment"], [data-syntax="comment"] font { color: ${safeCodeTheme.syntaxHighlight.comment} !important; }
+      [data-syntax="number"], [data-syntax="number"] font { color: ${safeCodeTheme.syntaxHighlight.number} !important; }
+      [data-syntax="function"], [data-syntax="function"] font { color: ${safeCodeTheme.syntaxHighlight.function} !important; }
+
+      /* 颜色属性选择器 - 最后的保护 */
+      [data-color="${safeCodeTheme.syntaxHighlight.keyword}"] { color: ${safeCodeTheme.syntaxHighlight.keyword} !important; }
+      [data-color="${safeCodeTheme.syntaxHighlight.string}"] { color: ${safeCodeTheme.syntaxHighlight.string} !important; }
+      [data-color="${safeCodeTheme.syntaxHighlight.comment}"] { color: ${safeCodeTheme.syntaxHighlight.comment} !important; }
+      [data-color="${safeCodeTheme.syntaxHighlight.number}"] { color: ${safeCodeTheme.syntaxHighlight.number} !important; }
+      [data-color="${safeCodeTheme.syntaxHighlight.function}"] { color: ${safeCodeTheme.syntaxHighlight.function} !important; }
+    </style>
+  ` : '';
+
+  return `${syntaxProtectionCSS}<pre style="${preStyle}">${decorations}<code style="${codeStyle}">${highlightedContent}</code></pre>`;
 }
 
 /**

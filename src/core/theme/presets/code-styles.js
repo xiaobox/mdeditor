@@ -40,8 +40,11 @@ export const codeStyles = {
     description: '经典的 macOS 终端风格，深色背景配红绿灯',
     background: '#1e1e1e',
     color: '#e6edf3',
-    hasTrafficLights: true,
-    trafficLightsStyle: `position: absolute; top: 14px; left: 12px; font-size: 16px; line-height: 1; z-index: 2; letter-spacing: 5px;`,
+    borderRadius: '12px',
+    padding: '16px',
+    hasHeader: true,
+    headerStyle: `background: #1e1e1e; border-bottom: none; padding: 8px 20px; border-radius: 11px 11px 0 0; font-size: 12px; color: #e6edf3; display: flex; align-items: center; width: 100%; box-sizing: border-box; margin: 0; line-height: 1.1 !important; min-height: auto !important; height: auto !important; position: relative;`,
+    headerContent: 'mac-dynamic', // 标记为动态生成
     syntaxHighlight: {
       keyword: '#ff7b72',  // 关键字 - 珊瑚红，更亮
       string: '#a5d6ff',   // 字符串 - 天空蓝，更亮
@@ -64,7 +67,7 @@ export const codeStyles = {
     borderRadius: '8px',
     padding: '16px',
     hasHeader: true,
-    headerStyle: `background: #f1f3f4; border-bottom: 1px solid #d0d7de; padding: 8px 16px; border-radius: 7px 7px 0 0; font-size: 12px; color: #656d76; position: absolute; top: 0; left: 0; right: 0; z-index: 1;`,
+    headerStyle: `background: #f1f3f4; border-bottom: 1px solid #d0d7de; padding: 8px 16px; border-radius: 7px 7px 0 0; font-size: 12px; color: #656d76; display: block; width: 100%; box-sizing: border-box; margin: 0; line-height: 1.2 !important; min-height: auto !important; height: auto !important;`,
     headerContent: '📄 代码',
     syntaxHighlight: {
       keyword: '#d73a49',  // 关键字 - GitHub 红
@@ -86,7 +89,7 @@ export const codeStyles = {
     padding: '20px',
     border: '1px solid #3c3c3c',
     hasHeader: true,
-    headerStyle: `background: linear-gradient(135deg, #2d2d30 0%, #3c3c3c 100%); border-bottom: 1px solid #3c3c3c; padding: 10px 20px; border-radius: 9px 9px 0 0; font-size: 13px; color: #cccccc; position: absolute; top: 0; left: 0; right: 0; z-index: 1;`,
+    headerStyle: `background: linear-gradient(135deg, #2d2d30 0%, #3c3c3c 100%); border-bottom: 1px solid #3c3c3c; padding: 10px 20px; border-radius: 9px 9px 0 0; font-size: 13px; color: #cccccc; display: block; width: 100%; box-sizing: border-box; margin: 0; line-height: 1.2 !important; min-height: auto !important; height: auto !important;`,
     headerContent: '⚡ 代码片段',
     syntaxHighlight: {
       keyword: '#569cd6',  // 关键字 - VS Code 蓝，更亮
@@ -111,7 +114,7 @@ export const codeStyles = {
     border: '2px solid #333333',
     fontFamily: `'Courier New', 'Monaco', monospace`,
     hasHeader: true,
-    headerStyle: `background: #1a1a1a; border-bottom: 1px solid #333333; padding: 8px 20px; border-radius: 4px 4px 0 0; font-size: 12px; color: #00ff00; font-family: 'Courier New', monospace; position: absolute; top: 0; left: 0; right: 0; z-index: 1;`,
+    headerStyle: `background: #1a1a1a; border-bottom: 1px solid #333333; padding: 8px 20px; border-radius: 4px 4px 0 0; font-size: 12px; color: #00ff00; font-family: 'Courier New', monospace; display: block; width: 100%; box-sizing: border-box; margin: 0; line-height: 1.2 !important; min-height: auto !important; height: auto !important;`,
     headerContent: '$ terminal',
     syntaxHighlight: {
       keyword: '#00ffff',  // 关键字 - 青色，更亮

@@ -411,15 +411,23 @@ pre[class*="language-"]::after {
   opacity: 0 !important;
 }
 
-/* 修正预览模式下红绿灯位置 - 支持双重实现 */
-.modern-markdown .mac-traffic-lights {
-  left: 19px !important;
-  top: 19px !important;
-}
-
-/* 确保预览模式下的圆形红绿灯正确显示 */
-.modern-markdown .mac-traffic-lights div {
-  display: block !important;
+/* Mac样式红绿灯保护 - 确保固定大小不被覆盖 */
+.mac-traffic-light-red,
+.mac-traffic-light-yellow,
+.mac-traffic-light-green,
+.mac-code-label {
+  font-size: inherit !important;
+  line-height: 1 !important;
+  display: inline !important;
+  width: auto !important;
+  height: auto !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  vertical-align: baseline !important;
 }
 
 /* 预览面板引用块样式 - 简化版 */

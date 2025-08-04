@@ -172,6 +172,7 @@ export class FormatterCoordinator {
       // 结束代码块
       const blockInfo = this.context.endCodeBlock();
       const fontSize = this.context.fontSettings?.fontSize || 16;
+
       const result = formatCodeBlock(
         blockInfo.content,
         blockInfo.language,

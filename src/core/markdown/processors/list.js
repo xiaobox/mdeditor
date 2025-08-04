@@ -7,7 +7,6 @@
  */
 
 import {
-  MARKDOWN_SYNTAX,
   SOCIAL_FORMATTING,
   EDITOR_OPERATIONS
 } from '../../../config/constants/index.js';
@@ -29,6 +28,12 @@ export const LIST_TYPES = {
 export class ListProcessor {
   constructor() {
     this.reset();
+    // 列表基础缩进常量
+    this.BASE_INDENT = 10; // 基础缩进10px
+    this.NESTED_INDENT = 20; // 嵌套层级缩进20px
+    // 列表样式常量
+    this.LIST_MARGIN_TOP = 8; // 列表项上边距
+    this.LIST_MARGIN_BOTTOM = 8; // 列表项下边距
   }
 
   /**
@@ -89,7 +94,7 @@ export class ListProcessor {
    * @returns {string} 格式化后的 HTML
    */
   formatListItem(listItem, theme, fontSettings = null) {
-    const { type, depth, marker, content, isChecked } = listItem;
+    const { type } = listItem;
 
     switch (type) {
       case LIST_TYPES.TASK:
@@ -114,11 +119,11 @@ export class ListProcessor {
     const { depth, content, isChecked } = listItem;
 
     // 获取字体设置
-    const fontSize = fontSettings?.fontSize || 16;
-    const lineHeight = fontSettings?.fontSize <= 14 ? '1.7' : fontSettings?.fontSize <= 18 ? '1.6' : '1.5';
+    const { fontSize, lineHeight } = this.getFontSettings(fontSettings);
 
     const formattedTaskText = formatInlineText(content, theme, fontSize);
-    const marginLeft = depth * 20;
+    // 使用类常量计算缩进
+    const marginLeft = this.BASE_INDENT + (depth * this.NESTED_INDENT);
 
     // 创建复选框样式 - 根据字号动态调整大小
     const checkboxSize = Math.max(14, Math.round(fontSize * 0.9)); // 最小14px，约为字号的90%
@@ -137,7 +142,7 @@ export class ListProcessor {
       ? `text-decoration: line-through; color: ${theme.textSecondary || '#656d76'}; opacity: 0.8;`
       : `color: ${theme.textPrimary || '#24292f'};`;
 
-    return `<p style="margin-left: ${marginLeft}px; margin-top: 8px; margin-bottom: 8px; font-size: ${fontSize}px; line-height: ${lineHeight}; display: flex; align-items: center;">${checkboxHtml}<span style="${textStyle}">${formattedTaskText}</span></p>`;
+    return `<p style="margin-left: ${marginLeft}px; margin-top: ${this.LIST_MARGIN_TOP}px; margin-bottom: ${this.LIST_MARGIN_BOTTOM}px; font-size: ${fontSize}px; line-height: ${lineHeight}; display: flex; align-items: center;">${checkboxHtml}<span style="${textStyle}">${formattedTaskText}</span></p>`;
   }
 
   /**
@@ -218,15 +223,15 @@ export class ListProcessor {
     // 改进颜色选择逻辑，确保跟随主题色
     const colors = this.getListColors(theme);
     const color = colors[Math.min(depth, colors.length - 1)];
-    const marginLeft = depth * 20;
+    // 使用类常量计算缩进
+    const marginLeft = this.BASE_INDENT + (depth * this.NESTED_INDENT);
 
     // 获取字体设置
-    const fontSize = fontSettings?.fontSize || 16;
-    const lineHeight = fontSettings?.fontSize <= 14 ? '1.7' : fontSettings?.fontSize <= 18 ? '1.6' : '1.5';
+    const { fontSize, lineHeight } = this.getFontSettings(fontSettings);
 
     const formattedContent = formatInlineText(content, theme, fontSize);
 
-    return `<p style="margin-left: ${marginLeft}px; margin-top: 8px; margin-bottom: 8px; font-size: ${fontSize}px; line-height: ${lineHeight};"><span style="color: ${color}; font-weight: 600;">${displayMarker}</span> ${formattedContent}</p>`;
+    return `<p style="margin-left: ${marginLeft}px; margin-top: ${this.LIST_MARGIN_TOP}px; margin-bottom: ${this.LIST_MARGIN_BOTTOM}px; font-size: ${fontSize}px; line-height: ${lineHeight};"><span style="color: ${color}; font-weight: 600; font-size: ${fontSize}px; margin-right: 8px; display: inline-block;">${displayMarker}</span>${formattedContent}</p>`;
   }
 
   /**
@@ -245,19 +250,20 @@ export class ListProcessor {
     // 改进颜色选择逻辑，确保跟随主题色
     const colors = this.getListColors(theme);
     const color = colors[Math.min(depth, colors.length - 1)];
-    const marginLeft = depth * 20;
+    // 使用类常量计算缩进
+    const marginLeft = this.BASE_INDENT + (depth * this.NESTED_INDENT);
 
     // 获取字体设置
-    const baseFontSize = fontSettings?.fontSize || 16;
-    const lineHeight = fontSettings?.fontSize <= 14 ? '1.7' : fontSettings?.fontSize <= 18 ? '1.6' : '1.5';
+    const { fontSize, lineHeight } = this.getFontSettings(fontSettings);
 
-    const formattedContent = formatInlineText(content, theme, baseFontSize);
+    const formattedContent = formatInlineText(content, theme, fontSize);
 
-    // 针对不同深度的符号设置合适的字体大小
-    const symbolFontSize = this.getSymbolFontSize(depth, displayMarker, baseFontSize);
+    // 获取符号的字体大小和缩放比例
+    const symbolFontSize = this.getSymbolFontSize(depth, displayMarker, fontSize);
+    const symbolScale = this.getSymbolScale(displayMarker);
     const fontWeight = depth === 0 ? '600' : '500'; // 第一层稍微粗一点
 
-    return `<p style="margin-left: ${marginLeft}px; margin-top: 8px; margin-bottom: 8px; font-size: ${baseFontSize}px; line-height: ${lineHeight};"><span style="color: ${color}; font-weight: ${fontWeight}; font-size: ${symbolFontSize}px;">${displayMarker}</span> ${formattedContent}</p>`;
+    return `<p style="margin-left: ${marginLeft}px; margin-top: ${this.LIST_MARGIN_TOP}px; margin-bottom: ${this.LIST_MARGIN_BOTTOM}px; font-size: ${fontSize}px; line-height: ${lineHeight};"><span style="color: ${color}; font-weight: ${fontWeight}; font-size: ${symbolFontSize}px; display: inline-block; transform: scale(${symbolScale}); transform-origin: center; margin-right: 8px;">${displayMarker}</span>${formattedContent}</p>`;
   }
 
   /**
@@ -382,28 +388,50 @@ export class ListProcessor {
   }
 
   /**
+   * 获取字体设置
+   * @param {Object} fontSettings - 字体设置对象
+   * @returns {Object} 包含fontSize和lineHeight的对象
+   */
+  getFontSettings(fontSettings = null) {
+    const fontSize = fontSettings?.fontSize || 16;
+    const lineHeight = fontSize <= 14 ? '1.7' : fontSize <= 18 ? '1.6' : '1.5';
+    return { fontSize, lineHeight };
+  }
+
+  /**
    * 根据深度和符号获取合适的字体大小
    * @param {number} _depth - 嵌套深度（暂未使用，保留以备将来扩展）
    * @param {string} symbol - 符号字符
    * @param {number} baseFontSize - 基础字体大小
    * @returns {number} 字体大小（像素）
    */
-  getSymbolFontSize(_depth, symbol, baseFontSize = 16) {
-    // 根据符号类型调整大小比例，让图标跟随字号变化
-    const symbolSizeRatioMap = {
-      '●': 0.8,   // 实心圆，约为字号的80%
-      '○': 0.8,   // 空心圆，约为字号的80%
-      '▪': 0.7,   // 小方块，约为字号的70%
-      '▫': 0.7,   // 空心方块，约为字号的70%
-      '‣': 0.9,   // 三角形，约为字号的90%
-      '⁃': 0.8    // 短横线，约为字号的80%
+  getSymbolFontSize(_depth, _symbol, baseFontSize = 16) {
+    // 统一符号字体大小，通过CSS transform来调整实际显示大小
+    // 这样可以更精确地控制不同Unicode字符的视觉大小
+    const symbolRatio = 0.88;
+    const calculatedSize = Math.round(baseFontSize * symbolRatio);
+    const minSize = Math.max(12, Math.round(baseFontSize * 0.75));
+
+    return Math.max(minSize, calculatedSize);
+  }
+
+  /**
+   * 获取符号的CSS transform scale值
+   * 用于补偿不同Unicode字符的内在尺寸差异
+   * @param {string} symbol - 符号字符
+   * @returns {number} CSS transform scale值
+   */
+  getSymbolScale(symbol) {
+    // 基于实际视觉效果调整，让所有符号看起来大小一致
+    const symbolScales = {
+      '●': 1.0,   // 实心圆：标准大小
+      '○': 0.5,  // 空心圆：进一步缩小，因为它还是比实心圆大
+      '▪': 1.2,   // 小方块：需要放大更多，因为它看起来很小
+      '▫': 0.8,   // 空心方块：需要缩小
+      '‣': 1.0,   // 三角形：标准大小
+      '⁃': 1.0    // 短横线：标准大小
     };
 
-    // 计算符号大小，确保最小12px，最大不超过基础字号
-    const ratio = symbolSizeRatioMap[symbol] || 0.8;
-    const calculatedSize = Math.round(baseFontSize * ratio);
-
-    // 设置合理的范围：最小12px，最大为基础字号
-    return Math.max(12, Math.min(calculatedSize, baseFontSize));
+    return symbolScales[symbol] || 1.0;
   }
 }

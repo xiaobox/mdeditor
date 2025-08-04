@@ -60,6 +60,18 @@ export function isSupportedLanguage(language) {
 }
 
 /**
+ * 生成微信兼容的语法高亮样式
+ * @param {string} color - 颜色值
+ * @param {string} type - 语法类型 (keyword, string, comment, etc.)
+ * @returns {string} - 样式字符串
+ */
+function createWechatCompatibleStyle(color, type) {
+  // 多重保护策略：内联样式 + font标签 + 数据属性 + CSS类名
+  const className = `syntax-${type}`;
+  return `style="color: ${color} !important; font-weight: inherit; text-decoration: none;" class="${className}" data-syntax="${type}" data-color="${color}"`;
+}
+
+/**
  * 主要的代码高亮函数 - 使用固定的代码样式配色
  * @param {string} code - 代码内容
  * @param {string} language - 编程语言
@@ -101,26 +113,23 @@ export function highlightCode(code, language, codeTheme) {
   // 收集所有需要高亮的片段，按优先级处理
   const rules = [
     // 1. 注释 - 最高优先级
-    { pattern: /\/\/.*$/gm, color: highlight.comment },
-    { pattern: /\/\*[\s\S]*?\*\//g, color: highlight.comment },
+    { pattern: /\/\/.*$/gm, color: highlight.comment, type: 'comment' },
+    { pattern: /\/\*[\s\S]*?\*\//g, color: highlight.comment, type: 'comment' },
 
-    // 2. 字符串
-    { pattern: /(["'`])[^"'`]*?\1/g, color: highlight.string },
+    // 2. 字符串 - 确保不匹配转义字符中的引号
+    { pattern: /(["'`])(?!gt;|lt;|amp;|quot;)[^"'`]*?\1/g, color: highlight.string, type: 'string' },
 
     // 3. 关键字
-    { pattern: /\b(function|const|let|var|if|else|for|while|return|class|import|export|from|default|async|await|try|catch|finally|public|private|protected|static|void|int|string|boolean|true|false|null|undefined)\b/g, color: highlight.keyword },
+    { pattern: /\b(function|const|let|var|if|else|for|while|return|class|import|export|from|default|async|await|try|catch|finally|public|private|protected|static|void|int|string|boolean|true|false|null|undefined)\b/g, color: highlight.keyword, type: 'keyword' },
 
     // 4. 数字
-    { pattern: /\b\d+(?:\.\d+)?\b/g, color: highlight.number },
+    { pattern: /\b\d+(?:\.\d+)?\b/g, color: highlight.number, type: 'number' },
 
     // 5. 函数名
-    { pattern: /\b[a-zA-Z_$][a-zA-Z0-9_$]*(?=\()/g, color: highlight.function },
+    { pattern: /\b[a-zA-Z_$][a-zA-Z0-9_$]*(?=\()/g, color: highlight.function, type: 'function' }
 
-    // 6. 操作符（如果定义了）
-    ...(highlight.operator ? [{ pattern: /[+\-*/%=<>!&|^~?:]+/g, color: highlight.operator }] : []),
-
-    // 7. 标点符号（如果定义了）
-    ...(highlight.punctuation ? [{ pattern: /[{}[\]();,\.]/g, color: highlight.punctuation }] : [])
+    // 移除操作符和标点符号的高亮，因为它们容易与转义字符冲突
+    // 这样可以保证代码块中的括号等字符正常显示
   ];
 
   // 按优先级处理每个规则，避免重叠
@@ -146,7 +155,8 @@ export function highlightCode(code, language, codeTheme) {
           start,
           end,
           text: match[0],
-          color: rule.color
+          color: rule.color,
+          type: rule.type
         });
 
         // 标记为已处理
@@ -171,8 +181,9 @@ export function highlightCode(code, language, codeTheme) {
       finalResult += unprocessedText;
     }
 
-    // 添加高亮的文本
-    finalResult += `<span style="color: ${highlight.color} !important;">${highlight.text}</span>`;
+    // 添加高亮的文本 - 使用多重样式保护确保微信兼容性
+    const styleAttr = createWechatCompatibleStyle(highlight.color, highlight.type);
+    finalResult += `<span ${styleAttr}><font color="${highlight.color}">${highlight.text}</font></span>`;
     lastIndex = highlight.end;
   });
 

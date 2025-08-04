@@ -251,10 +251,10 @@ export default {
 
 
 
-    // 监听markdown内容变化
+    // 监听markdown内容变化 - 不使用immediate，等待初始化完成
     watch(() => props.markdown, () => {
       processMarkdown()
-    }, { immediate: true })
+    })
 
     // 监听颜色主题变化
     watch(currentColorTheme, () => {
@@ -285,6 +285,9 @@ export default {
     onMounted(() => {
       // 初始化主题系统
       initialize()
+
+      // 初始化完成后立即处理markdown
+      processMarkdown()
 
       // 监听自定义主题变化事件
       window.addEventListener('custom-theme-changed', handleCustomThemeChange)
