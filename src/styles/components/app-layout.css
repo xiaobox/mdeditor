@@ -68,6 +68,21 @@
   overflow: hidden;
   background: linear-gradient(135deg, var(--theme-bg-primary) 0%, var(--theme-bg-secondary) 100%);
 }
+
+/* 视图模式样式 */
+.app-main.view-mode-editor {
+  justify-content: center;
+}
+
+.app-main.view-mode-preview {
+  justify-content: center;
+}
+
+.app-main.view-mode-editor .editor-panel,
+.app-main.view-mode-preview .preview-panel {
+  max-width: 1200px;
+  min-width: 600px;
+}
 /* 面板通用样式 */
 .editor-panel,
 .preview-panel {

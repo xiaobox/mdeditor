@@ -3,11 +3,13 @@
     <!-- 应用头部 -->
     <AppHeader
       :show-settings-panel="showSettingsPanel"
+      :view-mode="viewMode"
       :copy-format-options="copyFormatOptions"
       :selected-copy-format="selectedCopyFormat"
       :has-content="hasContent"
       @open-github="openGithub"
       @toggle-settings="toggleSettingsPanel"
+      @set-view-mode="setViewMode"
       @show-guide="showGuide"
       @copy-format-select="handleCopyFormatSelect"
       @update:selected-copy-format="selectedCopyFormat = $event"
@@ -16,6 +18,8 @@
     <!-- 主内容区域 -->
     <AppMain
       :markdown-content="markdownContent"
+      :sync-scroll-enabled="syncScrollEnabled"
+      :view-mode="viewMode"
       @update:markdown-content="updateMarkdownContent"
       @clear-content="clearContent"
       @load-sample="loadSample"
@@ -25,7 +29,11 @@
     <!-- 应用底部 -->
     <AppFooter
       :character-count="characterCount"
-      :is-ready="isHtmlReady"
+      :line-count="lineCount"
+      :word-count="wordCount"
+      :estimated-read-time="estimatedReadTime"
+      :sync-scroll-enabled="syncScrollEnabled"
+      @toggle-sync-scroll="toggleSyncScroll"
     />
 
     <!-- 通知组件 -->
@@ -70,6 +78,8 @@ const {
   htmlContent,
   showSettingsPanel,
   showMarkdownGuide,
+  syncScrollEnabled,
+  viewMode,
   notifications,
   selectedCopyFormat,
   copyFormatOptions,
@@ -78,6 +88,9 @@ const {
   hasContent,
   isHtmlReady,
   characterCount,
+  lineCount,
+  wordCount,
+  estimatedReadTime,
 
   // 方法
   updateMarkdownContent,
@@ -88,6 +101,8 @@ const {
   closeSettingsPanel,
   showGuide,
   closeGuide,
+  toggleSyncScroll,
+  setViewMode,
   showNotification,
   removeNotification,
   handleCopyFormatSelect,

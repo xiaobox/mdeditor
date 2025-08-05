@@ -11,60 +11,7 @@
 
 import { ref, computed } from 'vue'
 
-// 默认示例内容
-const DEFAULT_SAMPLE_CONTENT = `# Markdown 格式完整测试
-
-## 📋 所有格式枚举测试
-
-这是一个包含所有 Markdown 格式的完整测试文档，用于检查社交平台兼容性。
-
-### 基础格式测试
-- **粗体文本** 和 __另一种粗体语法__
-- *斜体文本* 和 _另一种斜体语法_
-- ***粗斜体文本*** 和 ___另一种粗斜体___
-- ~~删除线文本~~
-- \`行内代码\` 示例
-
-
-
-### 列表测试
-1. 有序列表项
-2. 包含 **格式** 的项
-3. 包含 \`代码\` 的项
-
-- 无序列表项
-- 包含 **粗体** 和 *斜体* 的项
-- 包含 \`代码\` 的项
-
-### 引用块测试
-> 这是一个简单的引用块。
->
-> 可以包含 **粗体** 和 *斜体* 文本。
-
-### 代码块测试
-\`\`\`javascript
-// JavaScript 代码示例
-function greet(name) {
-  console.log(\`Hello, \${name}!\`);
-  return \`Welcome, \${name}\`;
-}
-
-const user = 'World';
-greet(user);
-\`\`\`
-
-### 表格测试
-| 功能 | 语法 | 示例 |
-|------|------|------|
-| **粗体** | \`**text**\` | **示例文本** |
-| *斜体* | \`*text*\` | *示例文本* |
-| \`代码\` | \`\\\`code\\\`\` | \`console.log()\` |
-
----
-
-🎯 **测试目标**：检查所有格式在社交平台中的显示效果和兼容性。`
-
-// 完整的初始内容（用于初始化）
+// 初始内容（用于初始化和示例加载）
 const INITIAL_CONTENT = `# Markdown 格式完整测试
 
 ## 📋 所有格式枚举测试
@@ -265,6 +212,36 @@ export function useContentState(options = {}) {
   const isHtmlReady = computed(() => htmlContent.value.length > 0)
   const characterCount = computed(() => markdownContent.value.length)
 
+  // 新增统计信息
+  const lineCount = computed(() => {
+    if (!markdownContent.value) return 0
+    return markdownContent.value.split('\n').length
+  })
+
+  const wordCount = computed(() => {
+    if (!markdownContent.value) return 0
+    // 中英文混合计数：中文字符按字计算，英文按单词计算
+    const text = markdownContent.value.trim()
+    if (!text) return 0
+
+    // 移除代码块内容（避免影响统计）
+    const withoutCodeBlocks = text.replace(/```[\s\S]*?```/g, '')
+
+    // 统计中文字符
+    const chineseChars = (withoutCodeBlocks.match(/[\u4e00-\u9fff]/g) || []).length
+
+    // 统计英文单词（移除中文字符后按空格分割）
+    const englishText = withoutCodeBlocks.replace(/[\u4e00-\u9fff]/g, ' ')
+    const englishWords = englishText.split(/\s+/).filter(word => word.length > 0).length
+
+    return chineseChars + englishWords
+  })
+
+  const estimatedReadTime = computed(() => {
+    const wordsPerMinute = 200 // 中文阅读速度约200字/分钟
+    return Math.max(1, Math.ceil(wordCount.value / wordsPerMinute))
+  })
+
   // 方法
   const updateMarkdownContent = (content) => {
     markdownContent.value = content
@@ -282,7 +259,7 @@ export function useContentState(options = {}) {
 
   const loadSample = () => {
     if (confirm('确定要加载示例内容吗？这将覆盖当前内容。')) {
-      markdownContent.value = DEFAULT_SAMPLE_CONTENT
+      markdownContent.value = INITIAL_CONTENT
       onNotify?.('示例内容已加载', 'success')
     }
   }
@@ -296,6 +273,9 @@ export function useContentState(options = {}) {
     hasContent,
     isHtmlReady,
     characterCount,
+    lineCount,
+    wordCount,
+    estimatedReadTime,
 
     // 方法
     updateMarkdownContent,

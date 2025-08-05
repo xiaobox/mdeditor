@@ -1,7 +1,7 @@
 <template>
-  <main class="app-main">
+  <main class="app-main" :class="`view-mode-${viewMode}`">
     <!-- 左侧：Markdown编辑器 -->
-    <div class="editor-panel">
+    <div v-if="viewMode === 'both' || viewMode === 'editor'" class="editor-panel">
       <div class="panel-header">
         <h3>
           <svg viewBox="0 0 24 24" width="20" height="20">
@@ -24,13 +24,14 @@
       </div>
       <MarkdownEditor
         :model-value="markdownContent"
+        :sync-scroll-enabled="syncScrollEnabled"
         @update:model-value="$emit('update:markdown-content', $event)"
         class="editor-content"
       />
     </div>
 
     <!-- 右侧：预览面板 -->
-    <div class="preview-panel">
+    <div v-if="viewMode === 'both' || viewMode === 'preview'" class="preview-panel">
       <div class="panel-header">
         <h3>
           <svg viewBox="0 0 24 24" width="20" height="20">
@@ -42,9 +43,10 @@
           <!-- 预留扩展功能位置 -->
         </div>
       </div>
-      
+
       <PreviewPane
         :markdown="markdownContent"
+        :sync-scroll-enabled="syncScrollEnabled"
         @html-generated="$emit('html-generated', $event)"
         class="preview-content"
       />
@@ -60,6 +62,14 @@ defineProps({
   markdownContent: {
     type: String,
     required: true
+  },
+  syncScrollEnabled: {
+    type: Boolean,
+    default: true
+  },
+  viewMode: {
+    type: String,
+    default: 'both'
   }
 })
 

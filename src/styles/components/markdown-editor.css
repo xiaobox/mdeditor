@@ -138,7 +138,7 @@
 /* CodeMirror 样式 - 简化版 */
 .markdown-editor :deep(.cm-editor) {
   height: 100%;
-  font-size: 16px; /* 与预览页面正文字体大小保持一致 */
+  font-size: 18px; /* 增大字体大小，提高可读性 */
 }
 
 .markdown-editor :deep(.cm-scroller) {

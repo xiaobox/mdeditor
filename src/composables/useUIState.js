@@ -18,6 +18,8 @@ export function useUIState() {
   // 状态
   const showSettingsPanel = ref(false)
   const showMarkdownGuide = ref(false)
+  const syncScrollEnabled = ref(true) // 默认启用同步滚动
+  const viewMode = ref('both') // 'both', 'editor', 'preview'
 
   // 设置面板控制方法
   const toggleSettingsPanel = () => {
@@ -45,10 +47,49 @@ export function useUIState() {
     showMarkdownGuide.value = !showMarkdownGuide.value
   }
 
+  // 同步滚动控制方法
+  const toggleSyncScroll = () => {
+    syncScrollEnabled.value = !syncScrollEnabled.value
+  }
+
+  const enableSyncScroll = () => {
+    syncScrollEnabled.value = true
+  }
+
+  const disableSyncScroll = () => {
+    syncScrollEnabled.value = false
+  }
+
+  // 视图模式控制方法
+  const setViewMode = (mode) => {
+    viewMode.value = mode
+  }
+
+  const toggleViewMode = () => {
+    const modes = ['both', 'editor', 'preview']
+    const currentIndex = modes.indexOf(viewMode.value)
+    const nextIndex = (currentIndex + 1) % modes.length
+    viewMode.value = modes[nextIndex]
+  }
+
+  const showBothPanes = () => {
+    viewMode.value = 'both'
+  }
+
+  const showEditorOnly = () => {
+    viewMode.value = 'editor'
+  }
+
+  const showPreviewOnly = () => {
+    viewMode.value = 'preview'
+  }
+
   return {
     // 状态
     showSettingsPanel,
     showMarkdownGuide,
+    syncScrollEnabled,
+    viewMode,
 
     // 设置面板方法
     toggleSettingsPanel,
@@ -58,6 +99,18 @@ export function useUIState() {
     // Markdown指南方法
     showGuide,
     closeGuide,
-    toggleGuide
+    toggleGuide,
+
+    // 同步滚动方法
+    toggleSyncScroll,
+    enableSyncScroll,
+    disableSyncScroll,
+
+    // 视图模式方法
+    setViewMode,
+    toggleViewMode,
+    showBothPanes,
+    showEditorOnly,
+    showPreviewOnly
   }
 }

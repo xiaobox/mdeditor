@@ -56,12 +56,19 @@ export default {
     theme: {
       type: String,
       default: 'light'
+    },
+    syncScrollEnabled: {
+      type: Boolean,
+      default: true
     }
   },
   emits: ['update:modelValue', 'showMarkdownGuide'],
   setup(props, { emit }) {
     // 滚动同步处理
     const handleEditorScroll = (scrollPercentage) => {
+      // 只有在启用同步滚动时才执行同步
+      if (!props.syncScrollEnabled) return
+
       // 同步到预览区
       const previewElement = document.querySelector('.preview-rendered')
       if (previewElement) {

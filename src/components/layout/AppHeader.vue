@@ -5,12 +5,36 @@
       <span class="header-subtitle">现代化 Markdown 编辑器</span>
     </div>
     <div class="header-right">
-      <button class="header-btn" @click="$emit('open-github')" title="查看源码">
-        <svg viewBox="0 0 24 24" width="16" height="16">
-          <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"/>
-        </svg>
-        <span>GitHub</span>
-      </button>
+      <!-- 视图切换按钮组 -->
+      <div class="view-toggle-group">
+        <button
+          :class="['view-toggle-btn', { 'active': viewMode === 'both' }]"
+          @click="$emit('set-view-mode', 'both')"
+          title="显示编辑器和预览"
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16">
+            <path fill="currentColor" d="M3,3H11V5H3V3M13,3H21V5H13V3M3,7H11V9H3V7M13,7H21V9H13V7M3,11H11V13H3V11M13,11H21V13H13V11M3,15H11V17H3V15M13,15H21V17H13V15M3,19H11V21H3V19M13,19H21V21H13V19Z"/>
+          </svg>
+        </button>
+        <button
+          :class="['view-toggle-btn', { 'active': viewMode === 'editor' }]"
+          @click="$emit('set-view-mode', 'editor')"
+          title="仅显示编辑器"
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16">
+            <path fill="currentColor" d="M14.6,16.6L19.2,12L14.6,7.4L16,6L22,12L16,18L14.6,16.6M9.4,16.6L4.8,12L9.4,7.4L8,6L2,12L8,18L9.4,16.6Z"/>
+          </svg>
+        </button>
+        <button
+          :class="['view-toggle-btn', { 'active': viewMode === 'preview' }]"
+          @click="$emit('set-view-mode', 'preview')"
+          title="仅显示预览"
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16">
+            <path fill="currentColor" d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z"/>
+          </svg>
+        </button>
+      </div>
 
       <button
         class="header-btn"
@@ -39,6 +63,13 @@
         @update:model-value="$emit('update:selected-copy-format', $event)"
         @select="$emit('copy-format-select', $event)"
       />
+
+      <button class="header-btn" @click="$emit('open-github')" title="查看源码">
+        <svg viewBox="0 0 24 24" width="16" height="16">
+          <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"/>
+        </svg>
+        <span>GitHub</span>
+      </button>
     </div>
   </header>
 </template>
@@ -50,6 +81,10 @@ defineProps({
   showSettingsPanel: {
     type: Boolean,
     default: false
+  },
+  viewMode: {
+    type: String,
+    default: 'both'
   },
   copyFormatOptions: {
     type: Array,
@@ -70,7 +105,8 @@ defineEmits([
   'toggle-settings',
   'show-guide',
   'copy-format-select',
-  'update:selected-copy-format'
+  'update:selected-copy-format',
+  'set-view-mode'
 ])
 </script>
 
@@ -296,6 +332,54 @@ defineEmits([
     -6px -6px 12px rgba(255, 255, 255, 0.8),
     0 0 0 3px rgba(var(--primary-rgb), 0.3);
 }
+
+/* 视图切换按钮组样式 */
+.view-toggle-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 2px;
+  margin-right: 16px;
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.view-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0;
+}
+
+.view-toggle-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--primary-color);
+}
+
+.view-toggle-btn.active {
+  background: var(--primary-color);
+  color: white;
+  box-shadow: 0 2px 4px rgba(var(--primary-rgb, 0, 168, 107), 0.3);
+}
+
+.view-toggle-btn.active:hover {
+  background: var(--primary-hover);
+  color: white;
+}
+
+
 
 /* 保留旧的 .btn 类以兼容 DropdownMenu */
 .btn:hover {

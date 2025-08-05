@@ -57,6 +57,10 @@ export default {
     markdown: {
       type: String,
       default: ''
+    },
+    syncScrollEnabled: {
+      type: Boolean,
+      default: true
     }
   },
   emits: ['html-generated'],
@@ -149,6 +153,9 @@ export default {
 
       // 保存滚动位置
       saveScrollPosition()
+
+      // 只有在启用同步滚动时才执行同步
+      if (!props.syncScrollEnabled) return
 
       // 计算滚动百分比
       const maxScrollTop = Math.max(0, scrollHeight - clientHeight)
