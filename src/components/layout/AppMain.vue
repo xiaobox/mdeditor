@@ -88,42 +88,18 @@ defineEmits([
   gap: var(--spacing-3xl);
   padding: var(--spacing-4xl);
   overflow: hidden;
-  background: var(--gradient-main);
+  background: #f5f5f5;
   position: relative;
-}
-
-.app-main::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 40% 60%, rgba(34, 197, 94, 0.03) 0%, transparent 50%);
-  pointer-events: none;
 }
 
 .editor-panel,
 .preview-panel {
   flex: 1;
   min-width: 400px;
-  background: linear-gradient(145deg,
-    #ffffff 0%,
-    #fefefe 25%,
-    #fdfdfd 50%,
-    #fafafa 75%,
-    #f7f7f7 100%);
-  border-radius: 20px;
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.12),
-    0 8px 24px rgba(0, 0, 0, 0.08),
-    0 4px 12px rgba(0, 0, 0, 0.04),
-    inset 0 2px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -133,9 +109,9 @@ defineEmits([
 
 .editor-panel:hover,
 .preview-panel:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
-  border-color: var(--primary-color);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: #d0d0d0;
 }
 
 .panel-header {
@@ -143,8 +119,8 @@ defineEmits([
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  background: linear-gradient(135deg, var(--theme-bg-secondary), var(--theme-bg-primary));
-  border-bottom: 1px solid var(--theme-border-light);
+  background: #f8f8f8;
+  border-bottom: 1px solid #e0e0e0;
   position: relative;
   overflow: hidden;
 }

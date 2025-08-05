@@ -1,8 +1,5 @@
 /* PreviewPane 组件样式 */
 
-/* 导入统一默认主题 */
-@import '../themes/default-theme.css';
-
 .preview-pane {
   display: flex;
   flex-direction: column;

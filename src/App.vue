@@ -118,7 +118,7 @@ themeManager.initialize()
 
 <style scoped>
 /* 导入原来的样式 */
-@import './styles/components/app-layout.css';
+@import './styles/components/layout/app-layout.css';
 @import './styles/components/notifications.css';
 
 

@@ -3,74 +3,13 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, var(--theme-bg-secondary) 0%, var(--theme-bg-tertiary) 100%);
+  background: #f5f5f5;
   color: var(--theme-text-primary);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   overflow: hidden;
 }
-/* 应用头部 */
-.app-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px 32px;
-  background: linear-gradient(135deg, var(--theme-bg-secondary), var(--theme-bg-primary));
-  border-bottom: 1px solid var(--theme-border-light);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  flex-shrink: 0;
-  position: relative;
-  overflow: visible;
-}
-.header-left {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.header-left h1 {
-  font-size: 26px;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin: 0;
-  letter-spacing: -0.8px;
-  position: relative;
-}
-.header-left h1::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
-  border-radius: 2px;
-  opacity: 0.6;
-}
-.header-subtitle {
-  font-size: 14px;
-  color: var(--theme-text-secondary);
-  font-weight: 500;
-  letter-spacing: 0.2px;
-}
-.header-center {
-  display: none;
-}
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-/* 主内容区域 */
-.app-main {
-  flex: 1;
-  display: flex;
-  gap: 24px;
-  padding: 32px;
-  overflow: hidden;
-  background: linear-gradient(135deg, var(--theme-bg-primary) 0%, var(--theme-bg-secondary) 100%);
-}
+/* 应用头部样式在 app-header.css 中定义 */
+/* 主内容区域样式在 AppMain.vue 中定义 */
 
 /* 视图模式样式 */
 .app-main.view-mode-editor {
@@ -157,41 +96,7 @@
   flex: 1;
   overflow: hidden;
 }
-/* 应用页脚 */
-.app-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 32px;
-  background: linear-gradient(135deg, var(--theme-bg-secondary), var(--theme-bg-primary));
-  border-top: 1px solid var(--theme-border-light);
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
-  flex-shrink: 0;
-  position: relative;
-}
-.app-footer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
-  opacity: 0.6;
-}
-.footer-left,
-.footer-right {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-.footer-left span,
-.footer-right span {
-  font-size: 14px;
-  color: var(--theme-text-secondary);
-  font-weight: 600;
-  letter-spacing: 0.2px;
-}
+/* 应用页脚样式在 app-footer.css 中定义 */
 /* 状态指示器 */
 .status-indicator {
   display: inline-flex;
@@ -274,22 +179,6 @@
   }
 }
 @media (max-width: 768px) {
-  .app-header {
-    padding: 20px 24px;
-  }
-  .header-left h1 {
-    font-size: 22px;
-  }
-  .header-left h1::after {
-    width: 40px;
-    height: 2px;
-  }
-  .header-subtitle {
-    font-size: 13px;
-  }
-  .header-right {
-    gap: 12px;
-  }
   .app-main {
     padding: 20px;
     gap: 16px;
@@ -303,13 +192,6 @@
   }
   .panel-header h3 {
     font-size: 16px;
-  }
-  .app-footer {
-    padding: 16px 24px;
-  }
-  .footer-left,
-  .footer-right {
-    gap: 16px;
   }
 }
 

@@ -4,17 +4,9 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 32px;
-  background: linear-gradient(135deg,
-    #94a3b8 0%,
-    #cbd5e1 25%,
-    #e2e8f0 50%,
-    #f1f5f9 75%,
-    #f8fafc 100%);
-  border-top: 1px solid rgba(148, 163, 184, 0.2);
-  box-shadow:
-    0 -8px 32px rgba(0, 0, 0, 0.06),
-    0 -4px 16px rgba(0, 0, 0, 0.04),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.8);
+  background: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
   position: relative;
 }

@@ -15,7 +15,7 @@
   transition: var(--transition-all-normal);
   text-decoration: none;
   white-space: nowrap;
-  background: var(--gray-200);
+  background: var(--gray-100);
   color: var(--primary-color);
   box-shadow: var(--shadow-neumorphism-raised);
   position: relative;
@@ -50,7 +50,7 @@
   height: var(--spacing-toolbar);
   border: none;
   border-radius: var(--radius-xl);
-  background: var(--gray-200);
+  background: var(--gray-100);
   cursor: pointer;
   font-size: var(--font-size-base);
   transition: var(--transition-all-normal);

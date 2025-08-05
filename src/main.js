@@ -20,7 +20,9 @@ import { createApp } from 'vue';
 import App from './App.vue';
 
 // 导入全局 CSS
-// `global.css` 定义了应用的整体基础样式和 CSS 变量
+// `default-theme.css` 定义了默认主题变量
+import './styles/themes/default-theme.css';
+// `global.css` 定义了应用的整体基础样式和设计令牌
 import './styles/global.css';
 // `components/index.css` 作为组件样式的统一入口
 import './styles/components/index.css';

@@ -310,5 +310,5 @@ defineExpose({
 </script>
 
 <style scoped>
-@import '../../styles/components/app-footer.css';
+@import '../../styles/components/layout/app-footer.css';
 </style>

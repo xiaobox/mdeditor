@@ -111,5 +111,5 @@ defineEmits([
 </script>
 
 <style scoped>
-@import '../../styles/components/app-header.css';
+@import '../../styles/components/layout/app-header.css';
 </style>

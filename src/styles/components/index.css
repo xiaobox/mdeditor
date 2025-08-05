@@ -1,7 +1,7 @@
 /* 组件样式统一导入文件 */
 
 /* 布局组件 */
-@import './app-layout.css';
+@import './layout/app-layout.css';
 /* app-header.css 和 app-footer.css 已在各自组件中导入 */
 
 /* 功能组件 */
