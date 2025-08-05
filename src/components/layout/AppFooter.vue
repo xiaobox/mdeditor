@@ -66,7 +66,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 
 const props = defineProps({
   characterCount: {
@@ -96,6 +96,10 @@ defineEmits(['toggle-sync-scroll'])
 // 滚动状态检测
 const hasScrollableContent = ref(false)
 
+// 存储当前绑定的元素引用，用于清理事件监听器
+let currentEditorScroller = null
+let currentPreviewScroller = null
+
 // 检查是否有可滚动内容
 const checkScrollableContent = () => {
   try {
@@ -124,35 +128,144 @@ const checkScrollableContent = () => {
 const handleEditorScroll = () => checkScrollableContent()
 const handlePreviewScroll = () => checkScrollableContent()
 
-// 生命周期
-onMounted(() => {
-  // 初始检查
-  setTimeout(checkScrollableContent, 100)
+// 清理现有的事件监听器
+const cleanupScrollListeners = () => {
+  if (currentEditorScroller) {
+    currentEditorScroller.removeEventListener('scroll', handleEditorScroll)
+    currentEditorScroller = null
+  }
+  if (currentPreviewScroller) {
+    currentPreviewScroller.removeEventListener('scroll', handlePreviewScroll)
+    currentPreviewScroller = null
+  }
+}
 
-  // 添加滚动监听器
+// 设置滚动监听器
+const setupScrollListeners = () => {
+  // 先清理现有的监听器
+  cleanupScrollListeners()
+
+  // 查找新的滚动元素
   const editorScroller = document.querySelector('.cm-scroller')
   const previewScroller = document.querySelector('.preview-rendered')
 
+  // 绑定编辑器滚动监听器
   if (editorScroller) {
     editorScroller.addEventListener('scroll', handleEditorScroll, { passive: true })
+    currentEditorScroller = editorScroller
+    console.debug('✅ Editor scroll listener attached')
+  } else {
+    console.debug('⚠️ Editor scroller not found')
   }
 
+  // 绑定预览面板滚动监听器
   if (previewScroller) {
     previewScroller.addEventListener('scroll', handlePreviewScroll, { passive: true })
+    currentPreviewScroller = previewScroller
+    console.debug('✅ Preview scroll listener attached')
+  } else {
+    console.debug('⚠️ Preview scroller not found')
   }
+}
+
+// 使用 MutationObserver 监听 DOM 变化
+let mutationObserver = null
+
+const startDOMObserver = () => {
+  // 创建 MutationObserver 来监听 DOM 变化
+  mutationObserver = new MutationObserver((mutations) => {
+    let shouldRebind = false
+
+    mutations.forEach((mutation) => {
+      // 检查是否有新增或删除的节点
+      if (mutation.type === 'childList') {
+        // 检查是否涉及编辑器或预览面板的变化
+        const addedNodes = Array.from(mutation.addedNodes)
+        const removedNodes = Array.from(mutation.removedNodes)
+
+        const hasRelevantChanges = [...addedNodes, ...removedNodes].some(node => {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            return node.classList?.contains('cm-scroller') ||
+                   node.classList?.contains('preview-rendered') ||
+                   node.querySelector?.('.cm-scroller') ||
+                   node.querySelector?.('.preview-rendered')
+          }
+          return false
+        })
+
+        if (hasRelevantChanges) {
+          shouldRebind = true
+          console.debug('🔄 DOM change detected, will rebind scroll listeners')
+        }
+      }
+    })
+
+    if (shouldRebind) {
+      // 延迟重新绑定，确保 DOM 完全更新
+      nextTick(() => {
+        setTimeout(() => {
+          setupScrollListeners()
+          checkScrollableContent()
+        }, 100)
+      })
+    }
+  })
+
+  // 开始观察整个应用的 DOM 变化
+  const appElement = document.getElementById('app')
+  if (appElement) {
+    mutationObserver.observe(appElement, {
+      childList: true,
+      subtree: true
+    })
+  }
+}
+
+// 手动重新初始化监听器（作为备用方案）
+const reinitializeListeners = () => {
+  console.debug('🔄 Manually reinitializing scroll listeners')
+  setupScrollListeners()
+  checkScrollableContent()
+}
+
+// 生命周期
+onMounted(() => {
+  // 初始设置
+  nextTick(() => {
+    setTimeout(() => {
+      setupScrollListeners()
+      checkScrollableContent()
+      startDOMObserver()
+    }, 100)
+  })
+
+  // 添加一个定期检查机制，确保监听器始终有效
+  const intervalCheck = setInterval(() => {
+    const editorExists = document.querySelector('.cm-scroller')
+    const previewExists = document.querySelector('.preview-rendered')
+
+    // 如果元素存在但监听器丢失，重新绑定
+    if ((editorExists && !currentEditorScroller) ||
+        (previewExists && !currentPreviewScroller)) {
+      console.debug('🔧 Detected missing listeners, reinitializing...')
+      reinitializeListeners()
+    }
+  }, 2000) // 每2秒检查一次
+
+  // 清理定时器
+  onUnmounted(() => {
+    clearInterval(intervalCheck)
+  })
 })
 
 onUnmounted(() => {
-  // 移除滚动监听器
-  const editorScroller = document.querySelector('.cm-scroller')
-  const previewScroller = document.querySelector('.preview-rendered')
+  // 清理所有监听器
+  cleanupScrollListeners()
 
-  if (editorScroller) {
-    editorScroller.removeEventListener('scroll', handleEditorScroll)
-  }
-
-  if (previewScroller) {
-    previewScroller.removeEventListener('scroll', handlePreviewScroll)
+  // 停止 DOM 观察
+  if (mutationObserver) {
+    mutationObserver.disconnect()
+    mutationObserver = null
   }
 })
 
@@ -186,6 +299,12 @@ const scrollToTop = () => {
     console.error('Scroll error:', error)
   }
 }
+
+// 暴露方法给父组件
+defineExpose({
+  reinitializeListeners,
+  checkScrollableContent
+})
 
 // 移除不需要的计算属性，现在从props直接获取
 </script>
