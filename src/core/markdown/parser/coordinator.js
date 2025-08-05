@@ -9,72 +9,13 @@
 import { getLineProcessor } from '../processors/line.js';
 import { TableProcessor } from '../processors/table.js';
 import { ListProcessor } from '../processors/list.js';
-import { formatBlockquote, formatCodeBlock } from '../formatters/legacy.js';
-import { processInlineFormatsWithoutEscapes } from '../formatters/text.js';
+import { formatBlockquote } from '../formatters/legacy.js';
 import { getThemesSafe } from '../../../shared/utils/theme.js';
 import { cleanReferenceLinks } from '../formatters/text.js';
 import { FormatterContext } from './context.js';
+import { WeChatStyler } from '../post-processors/wechat-styler.js';
 
-/**
- * 使用字体设置包装 HTML 内容 - 采用 doocs/md 的成功方案
- * @param {string} html - 原始 HTML 内容
- * @param {Object} fontSettings - 字体设置对象
- * @returns {string} - 包装后的 HTML
- */
-// 微信公众号专用：为HTML添加内联样式，精确控制字体粗细
-function addWeChatInlineStyles(html, fontFamily, fontSize, lineHeight) {
-  const baseStyle = `font-family: ${fontFamily}; color: #333;`;
 
-  // 精确控制字体粗细，使用数值而不是关键词
-  const normalWeight = '400';  // 明确的正常粗细
-  const boldWeight = '700';    // 明确的粗体粗细
-  const semiBoldWeight = '600'; // 半粗体
-
-  // 替换各种HTML标签，添加内联样式，强制指定font-weight
-  return html
-    .replace(/<p(?![^>]*style=)/g, `<p style="${baseStyle} font-size: ${fontSize}px; line-height: ${lineHeight}; margin: 1.5em 8px; font-weight: ${normalWeight};"`)
-    .replace(/<h1(?![^>]*style=)/g, `<h1 style="${baseStyle} font-size: ${Math.round(fontSize * 2.2)}px; line-height: 1.3; font-weight: ${boldWeight}; margin: 1.8em 0 1.5em; text-align: center;"`)
-    .replace(/<h2(?![^>]*style=)/g, `<h2 style="${baseStyle} font-size: ${Math.round(fontSize * 1.5)}px; line-height: 1.4; font-weight: ${semiBoldWeight}; margin: 2em 0 1.5em;"`)
-    .replace(/<h3(?![^>]*style=)/g, `<h3 style="${baseStyle} font-size: ${Math.round(fontSize * 1.3)}px; line-height: ${lineHeight}; font-weight: ${semiBoldWeight}; margin: 1.5em 0 1em;"`)
-    .replace(/<li(?![^>]*style=)/g, `<li style="${baseStyle} font-size: ${fontSize}px; line-height: ${lineHeight}; font-weight: ${normalWeight}; margin: 0.5em 0;"`)
-    .replace(/<blockquote(?![^>]*style=)/g, `<blockquote style="${baseStyle} font-size: ${fontSize}px; line-height: ${lineHeight}; margin: 1.5em 8px; padding: 1em 1em 1em 2em; border-left: 3px solid #dbdbdb; background-color: #f8f8f8; font-weight: ${normalWeight};"`)
-    .replace(/<ul(?![^>]*style=)/g, `<ul style="${baseStyle} font-size: ${fontSize}px; line-height: ${lineHeight}; margin: 1.5em 8px; padding-left: 25px; font-weight: ${normalWeight};"`)
-    .replace(/<ol(?![^>]*style=)/g, `<ol style="${baseStyle} font-size: ${fontSize}px; line-height: ${lineHeight}; margin: 1.5em 8px; padding-left: 25px; font-weight: ${normalWeight};"`)
-    .replace(/<strong(?![^>]*style=)/g, `<strong style="${baseStyle} font-weight: ${boldWeight};"`)
-    .replace(/<b(?![^>]*style=)/g, `<b style="${baseStyle} font-weight: ${boldWeight};"`)
-    .replace(/<em(?![^>]*style=)/g, `<em style="${baseStyle} font-weight: ${normalWeight}; font-style: italic;"`)
-    .replace(/<i(?![^>]*style=)/g, `<i style="${baseStyle} font-weight: ${normalWeight}; font-style: italic;"`);
-}
-
-function wrapWithFontStyles(html, fontSettings) {
-  if (!fontSettings || !html) return html;
-
-  // 字体族映射 - 微信公众号极简兼容版本，使用最安全的字体设置
-  const fontFamilyMap = {
-    'microsoft-yahei': 'Microsoft YaHei, Arial, sans-serif',
-    'pingfang-sc': 'PingFang SC, Microsoft YaHei, Arial, sans-serif',
-    'hiragino-sans': 'Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif',
-    'arial': 'Arial, sans-serif',
-    'system-safe': 'Microsoft YaHei, Arial, sans-serif'
-  };
-
-  const fontFamily = fontFamilyMap[fontSettings.fontFamily] || fontFamilyMap['microsoft-yahei'];
-  const fontSize = fontSettings.fontSize || 16;
-  const lineHeight = fontSize <= 14 ? '1.7' : fontSize <= 18 ? '1.6' : '1.5';
-
-  // 微信公众号不支持<style>标签，改用内联样式
-
-  // 微信公众号兼容：移除<style>标签，使用纯内联样式
-  // 为HTML内容添加内联样式
-  const styledHtml = addWeChatInlineStyles(html, fontFamily, fontSize, lineHeight);
-
-  // 使用微信公众号标准的 HTML 结构，所有样式内联，明确控制字体粗细
-  return `<section data-role="outer" class="rich_media_content" style="font-family: ${fontFamily}; font-size: ${fontSize}px; line-height: ${lineHeight}; font-weight: 400; color: #333; margin: 0; padding: 0;">
-<section data-role="inner" style="font-family: ${fontFamily}; font-size: ${fontSize}px; line-height: ${lineHeight}; font-weight: 400; color: #333;">
-${styledHtml}
-</section>
-</section>`;
-}
 
 // 导入处理策略
 import {
@@ -161,63 +102,7 @@ export class FormatterCoordinator {
     throw new Error('没有找到合适的处理策略');
   }
 
-  /**
-   * 处理代码块内容
-   * @param {string} line - 当前行
-   * @param {string} trimmedLine - 去除空白的当前行
-   * @returns {Object} 处理结果
-   */
-  handleCodeBlockContent(line, trimmedLine) {
-    if (trimmedLine.startsWith('```')) {
-      // 结束代码块
-      const blockInfo = this.context.endCodeBlock();
-      const fontSize = this.context.fontSettings?.fontSize || 16;
 
-      const result = formatCodeBlock(
-        blockInfo.content,
-        blockInfo.language,
-        this.context.currentTheme,
-        this.context.codeTheme,
-        this.context.options.isPreview || false,
-        fontSize
-      );
-      
-      return {
-        result,
-        shouldContinue: true,
-        updateContext: {} // 不需要额外更新，endCodeBlock已处理
-      };
-    } else {
-      // 添加到代码块内容
-      this.context.addCodeBlockContent(line);
-      return {
-        result: '',
-        shouldContinue: true,
-        updateContext: {}
-      };
-    }
-  }
-
-  /**
-   * 处理空行
-   * @returns {Object} 处理结果
-   */
-  handleEmptyLine() {
-    if (this.context.isInBlockquote()) {
-      this.context.addBlockquoteContent('');
-      return {
-        result: '',
-        shouldContinue: true,
-        updateContext: {}
-      };
-    }
-    
-    return {
-      result: '',
-      shouldContinue: true,
-      updateContext: {}
-    };
-  }
 
   /**
    * 结束引用块
@@ -233,28 +118,7 @@ export class FormatterCoordinator {
     return '';
   }
 
-  /**
-   * 处理普通段落
-   * @param {string} line - 当前行
-   * @param {string} trimmedLine - 去除空白的当前行
-   * @returns {Object} 处理结果
-   */
-  handleParagraph(_line, trimmedLine) {
-    // 获取字体设置
-    const fontSettings = this.context.fontSettings;
-    const fontSize = fontSettings?.fontSize || 16;
-    const lineHeight = fontSettings?.fontSize <= 14 ? '1.7' : fontSettings?.fontSize <= 18 ? '1.6' : '1.5';
 
-    const formattedText = processInlineFormatsWithoutEscapes(trimmedLine, this.context.currentTheme, fontSize);
-
-    const result = `<p style="margin: 12px 0; line-height: ${lineHeight}; font-size: ${fontSize}px; font-weight: normal;">${formattedText}</p>`;
-
-    return {
-      result,
-      shouldContinue: true,
-      updateContext: {}
-    };
-  }
 
   /**
    * 更新上下文
@@ -376,10 +240,11 @@ function _parseMarkdownInternal(markdownText, options = {}) {
 
   result += coordinator.finalize(); // 处理任何未结束的块
 
-  // 如果不是预览模式且有字体设置，包装结果以应用字体样式
-  if (!options.isPreview && fontSettings) {
-    result = wrapWithFontStyles(result, fontSettings);
-  }
+  // 使用 WeChat 后处理器应用字体样式和平台兼容性处理
+  result = WeChatStyler.process(result, {
+    fontSettings,
+    isPreview: options.isPreview
+  });
 
   return result;
 }
