@@ -1,0 +1,296 @@
+/* AppHeader 组件样式 */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-3xl) var(--spacing-4xl);
+  background: var(--gradient-header);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  flex-shrink: 0;
+  position: relative;
+  overflow: visible;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.header-left h1 {
+  font-size: 26px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--primary-color); /* 降级支持 */
+  margin: 0;
+  letter-spacing: -0.8px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.header-left h1:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+.header-left h1::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  border-radius: 2px;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.header-left h1:hover::after {
+  opacity: 0.8;
+  width: 80px;
+}
+
+.header-subtitle {
+  font-size: 14px;
+  color: var(--primary-color);
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  opacity: 0.95;
+  transition: all 0.3s ease;
+}
+
+.header-subtitle:hover {
+  opacity: 1;
+  color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 简洁现代的 Neumorphism 按钮设计 - 跟随主题色 */
+.header-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border: none;
+  border-radius: var(--radius-2xl);
+  background: var(--gray-200);
+  color: var(--primary-color);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--transition-all-normal);
+  white-space: nowrap;
+  user-select: none;
+  position: relative;
+  box-shadow: var(--shadow-neumorphism-small);
+}
+
+/* 悬停状态 - 轻微内凹效果 + 主题色增强 */
+.header-btn:hover {
+  color: var(--primary-hover);
+  font-weight: var(--font-weight-bold);
+  box-shadow: var(--shadow-neumorphism-pressed);
+}
+
+/* 激活状态 - 深度内凹 */
+.header-btn:active {
+  color: var(--primary-dark);
+  box-shadow:
+    inset var(--spacing-xs) var(--spacing-xs) var(--spacing-md) rgba(163, 177, 198, 0.5),
+    inset calc(-1 * var(--spacing-xs)) calc(-1 * var(--spacing-xs)) var(--spacing-md) rgba(255, 255, 255, 0.9);
+}
+
+/* 选中状态（用于设置按钮） - 简洁的主题色 Neumorphism */
+.header-btn.active {
+  background: var(--primary-color);
+  color: white;
+  font-weight: 700;
+  box-shadow:
+    /* 主题色的内凹效果 */
+    inset 3px 3px 6px rgba(0, 0, 0, 0.2),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.1),
+    /* 轻微外部光晕 */
+    0 0 20px rgba(var(--primary-rgb), 0.3);
+}
+
+.header-btn.active:hover {
+  background: var(--primary-hover);
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.15),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.05),
+    0 0 25px rgba(var(--primary-rgb), 0.4);
+}
+
+.header-btn.active:active {
+  box-shadow:
+    inset 4px 4px 8px rgba(0, 0, 0, 0.3),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.1);
+}
+
+/* 禁用状态 - 简洁的禁用效果 */
+.header-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: var(--gray-400);
+  box-shadow: var(--shadow-xs);
+}
+
+.header-btn:disabled:hover {
+  color: var(--gray-400);
+  box-shadow: var(--shadow-xs);
+}
+
+/* 图标样式 - 跟随主题色 */
+.header-btn svg {
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  opacity: 0.9;
+  color: var(--primary-color);
+}
+
+.header-btn:hover svg {
+  opacity: 1;
+  color: var(--primary-hover);
+  transform: scale(1.05);
+}
+
+.header-btn.active svg {
+  opacity: 1;
+  color: white;
+}
+
+.header-btn:active svg {
+  color: var(--primary-dark);
+}
+
+/* 文字样式 - 跟随主题色 */
+.header-btn span {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: all 0.2s ease;
+}
+
+.header-btn:hover span {
+  font-weight: 700;
+}
+
+.header-btn.active span {
+  font-weight: 700;
+}
+
+/* 焦点状态（无障碍） - 简洁焦点环 */
+.header-btn:focus-visible {
+  outline: none;
+  box-shadow:
+    6px 6px 12px rgba(163, 177, 198, 0.6),
+    -6px -6px 12px rgba(255, 255, 255, 0.8),
+    0 0 0 3px rgba(var(--primary-rgb), 0.3);
+}
+
+/* 视图切换按钮组样式 */
+.view-toggle-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 2px;
+  margin-right: 16px;
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.view-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0;
+}
+
+.view-toggle-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--primary-color);
+}
+
+.view-toggle-btn.active {
+  background: var(--primary-color);
+  color: white;
+  box-shadow: 0 2px 4px rgba(var(--primary-rgb, 0, 168, 107), 0.3);
+}
+
+.view-toggle-btn.active:hover {
+  background: var(--primary-hover);
+  color: white;
+}
+
+/* 保留旧的 .btn 类以兼容 DropdownMenu */
+.btn:hover {
+  background: var(--theme-bg-secondary);
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-github {
+  background: var(--gradient-github);
+  color: var(--white);
+  border-color: var(--gray-800);
+}
+
+.btn-github:hover {
+  background: var(--gradient-github-hover);
+  border-color: var(--gray-600);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--theme-bg-tertiary) 0%, var(--theme-bg-secondary) 100%);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .header-left h1 {
+    font-size: 20px;
+  }
+  
+  .header-subtitle {
+    display: none;
+  }
+  
+  .btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  .btn span {
+    display: none;
+  }
+}
