@@ -6,7 +6,7 @@
           <path fill="currentColor" d="M9,4V7H14V4H16V7H17A1,1 0 0,1 18,8V18A1,1 0 0,1 17,19H7A1,1 0 0,1 6,18V8A1,1 0 0,1 7,7H8V4H9M8,9V17H16V9H8Z"/>
         </svg>
       </div>
-      <h3>字体设置</h3>
+      <h3>字体</h3>
     </div>
 
     <!-- 字体族选择 -->
@@ -37,74 +37,12 @@
       </div>
     </div>
 
-    <!-- 字号设置 -->
-    <div class="font-setting-group">
-      <div class="section-header">
-        <div class="section-icon">
-          <svg viewBox="0 0 24 24" width="20" height="20">
-            <path fill="currentColor" d="M11,7A2,2 0 0,1 13,9V17A2,2 0 0,1 11,19H9A2,2 0 0,1 7,17V9A2,2 0 0,1 9,7H11M9,9V17H11V9H9M12,2A2,2 0 0,1 14,4V6H12V4H10V6H8V4A2,2 0 0,1 10,2H12Z"/>
-          </svg>
-        </div>
-        <h3>字号设置</h3>
-      </div>
 
-      <!-- 字号设置卡片 -->
-      <div class="font-size-card">
-        <!-- 顶部控制区 -->
-        <div class="font-size-top-section">
-          <!-- 左侧滑块区域 -->
-          <div class="font-size-slider-area">
-            <input
-              type="range"
-              class="font-size-slider"
-              :min="fontSizeRange.min"
-              :max="fontSizeRange.max"
-              :step="fontSizeRange.step"
-              :value="selectedFontSize"
-              @input="$emit('update-font-size', Number($event.target.value))"
-            />
-            <div class="font-size-marks">
-              <span v-for="mark in fontSizeMarks" :key="mark" class="font-size-mark">{{ mark }}</span>
-            </div>
-          </div>
-
-          <!-- 右侧预览区域 -->
-          <div class="font-size-preview-area">
-            <div class="preview-display">
-              <div class="preview-info">
-                <span class="current-size">{{ selectedFontSize }}</span>
-                <span class="size-unit">px</span>
-              </div>
-              <div
-                class="preview-char"
-                :style="getFontSizePreviewStyle()"
-              >
-                文
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 字号预设 -->
-      <div class="font-size-presets">
-        <button
-          v-for="preset in fontSizePresets"
-          :key="preset.value"
-          class="font-size-preset-btn"
-          :class="{ active: selectedFontSize === preset.value }"
-          @click="$emit('update-font-size', preset.value)"
-        >
-          {{ preset.label }}
-        </button>
-      </div>
-    </div>
   </section>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { fontSizeOptions, fontSettingsUtils } from '../../core/theme/presets/font-settings.js'
+import { fontSettingsUtils } from '../../core/theme/presets/font-settings.js'
 
 const props = defineProps({
   fontFamilyList: {
@@ -115,43 +53,14 @@ const props = defineProps({
     type: String,
     required: true
   },
-  selectedFontSize: {
-    type: Number,
-    required: true
-  }
+
 })
 
-defineEmits(['select-font-family', 'update-font-size'])
-
-// 字体相关的计算属性和数据
-const fontSizeRange = computed(() => ({
-  min: fontSizeOptions.min,
-  max: fontSizeOptions.max,
-  step: fontSizeOptions.step
-}))
-
-const fontSizeMarks = computed(() => [
-  fontSizeOptions.min,
-  Math.floor((fontSizeOptions.min + fontSizeOptions.max) / 2),
-  fontSizeOptions.max
-])
-
-const fontSizePresets = computed(() => fontSizeOptions.presets)
+defineEmits(['select-font-family'])
 
 // 字体预览相关方法
 const getFontPreviewStyle = (fontId) => {
   return fontSettingsUtils.getPreviewStyle(fontId, 14)
-}
-
-// 字号预览样式
-const getFontSizePreviewStyle = () => {
-  const fontFamily = fontSettingsUtils.getFontFamily(props.selectedFontFamily)
-  return {
-    fontFamily: fontFamily ? fontFamily.value : 'inherit',
-    fontSize: `${props.selectedFontSize}px`,
-    lineHeight: '1.2',
-    transition: 'all 0.2s ease'
-  }
 }
 </script>
 
