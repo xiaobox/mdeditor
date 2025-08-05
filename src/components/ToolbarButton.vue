@@ -50,32 +50,28 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: var(--spacing-toolbar);
+  height: var(--spacing-toolbar);
   border: none;
-  border-radius: 10px;
-  background: #e8e8eb;
+  border-radius: var(--radius-xl);
+  background: var(--gray-200);
   color: var(--primary-color);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--transition-all-normal);
   /* 移除 margin，让父容器的 gap 来控制间距 */
-  box-shadow:
-    5px 5px 10px rgba(163, 177, 198, 0.7),
-    -5px -5px 10px rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-neumorphism-small);
 }
 
 .toolbar-btn:hover {
   color: var(--primary-hover);
-  box-shadow:
-    inset 3px 3px 6px rgba(163, 177, 198, 0.5),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow-neumorphism-pressed);
 }
 
 .toolbar-btn:active {
   color: var(--primary-dark);
   box-shadow:
-    inset 4px 4px 8px rgba(163, 177, 198, 0.6),
-    inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+    inset var(--spacing-xs) var(--spacing-xs) var(--spacing-md) rgba(163, 177, 198, 0.6),
+    inset calc(-1 * var(--spacing-xs)) calc(-1 * var(--spacing-xs)) var(--spacing-md) rgba(255, 255, 255, 0.9);
 }
 
 .toolbar-btn svg {

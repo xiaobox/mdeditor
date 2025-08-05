@@ -23,12 +23,12 @@ defineEmits(['apply'])
 
 <style scoped>
 .settings-footer {
-  padding: 32px 40px;
+  padding: var(--spacing-4xl) var(--spacing-5xl);
   background: linear-gradient(135deg, var(--theme-bg-secondary), var(--theme-bg-primary));
   border-top: 1px solid var(--theme-border-light);
   display: flex;
   justify-content: flex-end;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
 }
 
 .apply-button {

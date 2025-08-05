@@ -115,18 +115,10 @@ defineEmits([
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 32px;
-  background: linear-gradient(135deg,
-    #f8fafc 0%,
-    #f1f5f9 25%,
-    #e2e8f0 50%,
-    #cbd5e1 75%,
-    #94a3b8 100%);
+  padding: var(--spacing-3xl) var(--spacing-4xl);
+  background: var(--gradient-header);
   border-bottom: 1px solid rgba(148, 163, 184, 0.2);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.06),
-    0 4px 16px rgba(0, 0, 0, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.8);
   flex-shrink: 0;
   position: relative;
   overflow: visible;
@@ -200,46 +192,37 @@ defineEmits([
 .header-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 18px;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-xl);
   border: none;
-  border-radius: 12px;
-  background: #f0f0f3;
+  border-radius: var(--radius-2xl);
+  background: var(--gray-200);
   color: var(--primary-color);
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.2;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--transition-all-normal);
   white-space: nowrap;
   user-select: none;
   position: relative;
-  box-shadow:
-    /* 轻柔的外部阴影 */
-    6px 6px 12px rgba(163, 177, 198, 0.6),
-    -6px -6px 12px rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow-neumorphism-small);
 }
 
 /* 悬停状态 - 轻微内凹效果 + 主题色增强 */
 .header-btn:hover {
   color: var(--primary-hover);
-  font-weight: 700;
-  box-shadow:
-    /* 内凹阴影 */
-    inset 3px 3px 6px rgba(163, 177, 198, 0.4),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.8),
-    /* 主题色光晕 */
-    0 0 20px rgba(var(--primary-rgb), 0.2);
+  font-weight: var(--font-weight-bold);
+  box-shadow: var(--shadow-neumorphism-pressed);
 }
 
 /* 激活状态 - 深度内凹 */
 .header-btn:active {
   color: var(--primary-dark);
   box-shadow:
-    /* 深度内凹阴影 */
-    inset 4px 4px 8px rgba(163, 177, 198, 0.5),
-    inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+    inset var(--spacing-xs) var(--spacing-xs) var(--spacing-md) rgba(163, 177, 198, 0.5),
+    inset calc(-1 * var(--spacing-xs)) calc(-1 * var(--spacing-xs)) var(--spacing-md) rgba(255, 255, 255, 0.9);
 }
 
 /* 选中状态（用于设置按钮） - 简洁的主题色 Neumorphism */
@@ -273,17 +256,13 @@ defineEmits([
 .header-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  color: #9ca3af;
-  box-shadow:
-    2px 2px 4px rgba(163, 177, 198, 0.3),
-    -2px -2px 4px rgba(255, 255, 255, 0.5);
+  color: var(--gray-400);
+  box-shadow: var(--shadow-xs);
 }
 
 .header-btn:disabled:hover {
-  color: #9ca3af;
-  box-shadow:
-    2px 2px 4px rgba(163, 177, 198, 0.3),
-    -2px -2px 4px rgba(255, 255, 255, 0.5);
+  color: var(--gray-400);
+  box-shadow: var(--shadow-xs);
 }
 
 /* 图标样式 - 跟随主题色 */
@@ -390,21 +369,17 @@ defineEmits([
 }
 
 .btn-github {
-  background: linear-gradient(135deg, #24292e 0%, #1a1e22 100%);
-  color: white;
-  border-color: #24292e;
+  background: var(--gradient-github);
+  color: var(--white);
+  border-color: var(--gray-800);
 }
 
 .btn-github:hover {
-  background: linear-gradient(135deg, #2f363d 0%, #24292e 100%);
-  border-color: #444d56;
+  background: var(--gradient-github-hover);
+  border-color: var(--gray-600);
 }
 
-.btn-settings.active {
-  background: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
-}
+
 
 .btn-secondary {
   background: linear-gradient(135deg, var(--theme-bg-tertiary) 0%, var(--theme-bg-secondary) 100%);

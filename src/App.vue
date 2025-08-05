@@ -121,51 +121,5 @@ themeManager.initialize()
 @import './styles/components/app-layout.css';
 @import './styles/components/notifications.css';
 
-/* 设置按钮样式 */
-.btn-settings {
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  color: #495057;
-  border: 1px solid #dee2e6;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
 
-.btn-settings::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg,
-    var(--theme-primary-light) 0%,
-    var(--theme-primary-lighter) 50%,
-    var(--theme-primary-light) 100%);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.btn-settings:hover::before {
-  opacity: 1;
-}
-
-.btn-settings:hover {
-  border-color: var(--theme-primary);
-  color: var(--theme-primary, #00A86B);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.btn-settings.active {
-  background: var(--theme-primary, #00A86B);
-  color: white;
-  border-color: var(--theme-primary, #00A86B);
-  box-shadow: 0 2px 8px var(--theme-primary, #00A86B)40;
-}
-
-.btn-settings.active::before {
-  opacity: 0;
-}
 </style>

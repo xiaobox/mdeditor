@@ -3,35 +3,130 @@
 
 /* 全局基础样式 - 重置和通用工具 */
 
-/* 扩展变量 - 简化版 */
+/* 完整设计令牌系统 */
 :root {
-  /* 状态色 */
-  --success-color: #10b981;
-  --warning-color: #f59e0b;
-  --error-color: #ef4444;
-  --danger-color: #ef4444;
-  --info-color: #3b82f6;
+  /* ===== 字体系统 ===== */
+  /* 字体大小 */
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 32px;
 
-  /* 快速过渡 */
-  --transition-fast: 150ms ease;
+  /* 字体权重 */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 
-  /* 动画 */
-  --transition-normal: 200ms ease;
+  /* 行高 */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
 
-  /* 圆角 */
+  /* ===== 间距系统 ===== */
+  --spacing-xs: 4px;
+  --spacing-sm: 6px;
+  --spacing-md: 8px;
+  --spacing-lg: 12px;
+  --spacing-xl: 16px;
+  --spacing-2xl: 20px;
+  --spacing-3xl: 24px;
+  --spacing-4xl: 32px;
+  --spacing-toolbar: 36px; /* 专门用于工具栏按钮的尺寸 */
+  --spacing-toolbar-mobile: 44px; /* 移动端工具栏按钮尺寸 */
+  --spacing-5xl: 40px;
+  --spacing-6xl: 48px;
+
+  /* ===== 圆角系统 ===== */
+  --radius-xs: 2px;
   --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+  --radius-3xl: 16px;
   --radius-full: 9999px;
 
-  /* 中性色系 */
+  /* ===== 阴影系统 ===== */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+
+  /* Neumorphism 阴影 */
+  --shadow-neumorphism-raised: 7px 7px 14px rgba(163, 177, 198, 0.7), -7px -7px 14px rgba(255, 255, 255, 0.9);
+  --shadow-neumorphism-pressed: inset 3px 3px 6px rgba(163, 177, 198, 0.4), inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+  --shadow-neumorphism-small: 5px 5px 10px rgba(163, 177, 198, 0.7), -5px -5px 10px rgba(255, 255, 255, 0.9);
+
+  /* ===== 过渡动画系统 ===== */
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow: 300ms ease;
+  --transition-all-fast: all 150ms ease;
+  --transition-all-normal: all 200ms ease;
+  --transition-all-slow: all 300ms ease;
+
+  /* ===== 状态色系统 ===== */
+  --success-color: #10b981;
+  --success-light: rgba(16, 185, 129, 0.1);
+  --success-dark: #059669;
+
+  --warning-color: #f59e0b;
+  --warning-light: rgba(245, 158, 11, 0.1);
+  --warning-dark: #d97706;
+
+  --error-color: #ef4444;
+  --error-light: rgba(239, 68, 68, 0.1);
+  --error-dark: #dc2626;
+
+  --danger-color: #ef4444;
+  --danger-light: rgba(239, 68, 68, 0.1);
+  --danger-dark: #dc2626;
+
+  --info-color: #3b82f6;
+  --info-light: rgba(59, 130, 246, 0.1);
+  --info-dark: #2563eb;
+
+  /* ===== 中性色系统 ===== */
+  --gray-50: #f9fafb;
   --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
   --gray-300: #d1d5db;
   --gray-400: #9ca3af;
   --gray-500: #6b7280;
   --gray-600: #4b5563;
   --gray-700: #374151;
   --gray-800: #1f2937;
+  --gray-900: #111827;
+
+  /* ===== 常用颜色组合 ===== */
+  --white: #ffffff;
+  --black: #000000;
+  --transparent: transparent;
+
+  /* ===== 渐变系统 ===== */
+  --gradient-header: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 25%, #e2e8f0 50%, #cbd5e1 75%, #94a3b8 100%);
+  --gradient-main: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 25%, #cbd5e1 50%, #94a3b8 75%, #64748b 100%);
+  --gradient-button: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  --gradient-github: linear-gradient(135deg, #24292e 0%, #1a1e22 100%);
+  --gradient-github-hover: linear-gradient(135deg, #2f363d 0%, #24292e 100%);
+
+  /* ===== Z-index 系统 ===== */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 9999;
 }
 
 /* 基础重置样式 */

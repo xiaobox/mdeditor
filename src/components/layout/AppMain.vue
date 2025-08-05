@@ -85,15 +85,10 @@ defineEmits([
 .app-main {
   flex: 1;
   display: flex;
-  gap: 24px;
-  padding: 32px;
+  gap: var(--spacing-3xl);
+  padding: var(--spacing-4xl);
   overflow: hidden;
-  background: linear-gradient(135deg,
-    #f1f5f9 0%,
-    #e2e8f0 25%,
-    #cbd5e1 50%,
-    #94a3b8 75%,
-    #64748b 100%);
+  background: var(--gradient-main);
   position: relative;
 }
 

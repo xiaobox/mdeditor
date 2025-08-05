@@ -98,24 +98,24 @@ const getCodeStylePreviewStyles = (styleId) => {
 .settings-section {
   background: var(--theme-bg-primary);
   border: 1px solid var(--theme-border-light);
-  border-radius: 16px;
-  padding: 32px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  border-radius: var(--radius-3xl);
+  padding: var(--spacing-4xl);
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-all-slow);
 }
 
 .settings-section:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transform: translateY(calc(-1 * var(--spacing-xs)));
+  box-shadow: var(--shadow-xl);
   border-color: var(--primary-color);
 }
 
 .section-header {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-3xl);
+  padding-bottom: var(--spacing-xl);
   border-bottom: 1px solid var(--theme-border-light);
 }
 

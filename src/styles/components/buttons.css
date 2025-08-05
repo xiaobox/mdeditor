@@ -5,47 +5,40 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px 20px;
-  border-radius: 12px;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  border-radius: var(--radius-2xl);
   border: none;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--transition-all-normal);
   text-decoration: none;
   white-space: nowrap;
-  background: #e8e8eb;
+  background: var(--gray-200);
   color: var(--primary-color);
-  box-shadow:
-    7px 7px 14px rgba(163, 177, 198, 0.7),
-    -7px -7px 14px rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-neumorphism-raised);
   position: relative;
 }
 
 .btn:hover:not(:disabled) {
   color: var(--primary-hover);
-  font-weight: 700;
-  box-shadow:
-    inset 3px 3px 6px rgba(163, 177, 198, 0.4),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.8),
-    0 0 20px rgba(var(--primary-rgb), 0.2);
+  font-weight: var(--font-weight-bold);
+  box-shadow: var(--shadow-neumorphism-pressed);
 }
 
 .btn:active:not(:disabled) {
   color: var(--primary-dark);
   box-shadow:
-    inset 4px 4px 8px rgba(163, 177, 198, 0.5),
-    inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+    inset var(--spacing-xs) var(--spacing-xs) var(--spacing-md) rgba(163, 177, 198, 0.5),
+    inset calc(-1 * var(--spacing-xs)) calc(-1 * var(--spacing-xs)) var(--spacing-md) rgba(255, 255, 255, 0.9);
 }
 
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  color: #9ca3af;
-  box-shadow:
-    2px 2px 4px rgba(163, 177, 198, 0.3),
-    -2px -2px 4px rgba(255, 255, 255, 0.5);
+  color: var(--gray-400);
+  box-shadow: var(--shadow-xs);
 }
 
 /* 小按钮 - Neumorphism 风格 */
@@ -53,32 +46,30 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: var(--spacing-toolbar);
+  height: var(--spacing-toolbar);
   border: none;
-  border-radius: 10px;
-  background: #e8e8eb;
+  border-radius: var(--radius-xl);
+  background: var(--gray-200);
   cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s ease;
+  font-size: var(--font-size-base);
+  transition: var(--transition-all-normal);
   color: var(--primary-color);
-  box-shadow:
-    5px 5px 10px rgba(163, 177, 198, 0.7),
-    -5px -5px 10px rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-neumorphism-small);
 }
 
 .btn-small:hover {
   color: var(--primary-hover);
   box-shadow:
-    inset 2px 2px 4px rgba(163, 177, 198, 0.3),
-    inset -2px -2px 4px rgba(255, 255, 255, 0.7);
+    inset var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) rgba(163, 177, 198, 0.3),
+    inset calc(-1 * var(--spacing-xs)) calc(-1 * var(--spacing-xs)) var(--spacing-xs) rgba(255, 255, 255, 0.7);
 }
 
 .btn-small:active {
   color: var(--primary-dark);
   box-shadow:
-    inset 3px 3px 6px rgba(163, 177, 198, 0.4),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+    inset var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) rgba(163, 177, 198, 0.4),
+    inset calc(-1 * var(--spacing-sm)) calc(-1 * var(--spacing-sm)) var(--spacing-sm) rgba(255, 255, 255, 0.8);
 }
 
 /* 按钮变体 */
@@ -161,21 +152,21 @@
 
 /* 按钮尺寸 */
 .btn-xs {
-  padding: 4px 8px;
-  font-size: 12px;
-  border-radius: 4px;
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-xs);
+  border-radius: var(--radius-sm);
 }
 
 .btn-sm {
-  padding: 6px 12px;
-  font-size: 13px;
-  border-radius: 6px;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-md);
 }
 
 .btn-lg {
-  padding: 12px 24px;
-  font-size: 16px;
-  border-radius: 8px;
+  padding: var(--spacing-lg) var(--spacing-3xl);
+  font-size: var(--font-size-md);
+  border-radius: var(--radius-lg);
 }
 
 .btn-xl {
@@ -250,22 +241,22 @@
 /* 响应式按钮 */
 @media (max-width: 768px) {
   .btn {
-    padding: 10px 16px;
-    font-size: 16px;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    font-size: var(--font-size-md);
   }
-  
+
   .btn-small {
-    width: 44px;
-    height: 44px;
+    width: var(--spacing-toolbar-mobile);
+    height: var(--spacing-toolbar-mobile);
   }
-  
+
   .btn-xs {
-    padding: 6px 10px;
-    font-size: 14px;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-size-base);
   }
-  
+
   .btn-sm {
-    padding: 8px 14px;
-    font-size: 15px;
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: var(--font-size-base);
   }
 }
