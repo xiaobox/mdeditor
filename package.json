@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
+    "@vitest/coverage-v8": "^1.6.1",
     "@vitest/ui": "^1.6.1",
     "@vue/test-utils": "^2.4.6",
     "jsdom": "^23.2.0",

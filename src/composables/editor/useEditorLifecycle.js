@@ -1,7 +1,7 @@
 /**
- * @file src/composables/useEditorLifecycle.js
+ * @file src/composables/editor/useEditorLifecycle.js
  * @description 编辑器生命周期管理 Composable
- * 
+ *
  * 专门负责管理 CodeMirror 编辑器的创建、销毁和重新初始化逻辑
  */
 
