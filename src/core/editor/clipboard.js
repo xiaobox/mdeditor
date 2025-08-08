@@ -51,6 +51,7 @@ function createRichTextContainer(html, fontSettings = null) {
   let fontFamily = '"Microsoft YaHei", "微软雅黑", Arial, sans-serif'; // 默认使用微信兼容字体
   let fontSize = `${EDITOR_CONFIG.FONT_SIZE}px`;
   let lineHeight = EDITOR_CONFIG.LINE_HEIGHT;
+  let letterSpacing = 0;
 
   if (fontSettings) {
     try {
@@ -71,7 +72,13 @@ function createRichTextContainer(html, fontSettings = null) {
       if (fontSettings.fontSize && typeof fontSettings.fontSize === 'number') {
         fontSize = `${fontSettings.fontSize}px`;
         // 根据字号调整行高，与coordinator.js保持一致
-        lineHeight = fontSettings.fontSize <= 14 ? '1.7' : fontSettings.fontSize <= 18 ? '1.6' : '1.5';
+        lineHeight = fontSettings.lineHeight && typeof fontSettings.lineHeight === 'number'
+          ? String(fontSettings.lineHeight)
+          : (fontSettings.fontSize <= 14 ? '1.7' : fontSettings.fontSize <= 18 ? '1.6' : '1.5');
+      }
+
+      if (typeof fontSettings.letterSpacing === 'number') {
+        letterSpacing = fontSettings.letterSpacing;
       }
     } catch (error) {
       console.warn('Failed to apply font settings to clipboard container:', error);
@@ -84,6 +91,7 @@ function createRichTextContainer(html, fontSettings = null) {
     font-family: ${fontFamily};
     font-size: ${fontSize};
     line-height: ${lineHeight};
+    letter-spacing: ${letterSpacing}px;
     font-weight: 400;
     color: #333;
     background-color: #ffffff;

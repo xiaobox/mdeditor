@@ -42,7 +42,8 @@ export function useEditorTheme(theme = 'auto') {
       '.cm-scroller': {
         fontFamily: '"SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
         fontSize: '14px',
-        lineHeight: '1.6'
+        lineHeight: '1.6',
+        overflowX: 'hidden'
       },
       '.cm-focused': {
         outline: 'none'
@@ -52,7 +53,13 @@ export function useEditorTheme(theme = 'auto') {
       },
       '.cm-content': {
         padding: '16px',
-        minHeight: '100%'
+        minHeight: '100%',
+        whiteSpace: 'pre-wrap',
+        wordBreak: 'break-word'
+      },
+      '.cm-line': {
+        whiteSpace: 'pre-wrap',
+        wordBreak: 'break-word'
       }
     });
   };

@@ -34,7 +34,9 @@ export function useSettingsPanel(props, emit) {
     currentFontSettings,
     fontFamilyList,
     setFontFamily,
-    setFontSize
+    setFontSize,
+    setLetterSpacing,
+    setLineHeight
   } = themeManager
 
   // 本地状态
@@ -43,6 +45,8 @@ export function useSettingsPanel(props, emit) {
   const selectedCodeStyleId = ref(currentCodeStyleId.value)
   const selectedFontFamily = ref(currentFontFamily.value)
   const selectedFontSize = ref(currentFontSize.value)
+  const selectedLetterSpacing = ref(currentFontSettings.value.letterSpacing ?? 0)
+  const selectedLineHeight = ref(currentFontSettings.value.lineHeight ?? 1.6)
   const showColorPicker = ref(false)
   const selectedCustomColor = ref('#3b82f6')
   const currentCustomColor = ref('#3b82f6')
@@ -52,6 +56,8 @@ export function useSettingsPanel(props, emit) {
   // 保存面板打开时的初始设置，用于应用设置时的比较
   const initialFontFamily = ref(currentFontFamily.value)
   const initialFontSize = ref(currentFontSize.value)
+  const initialLetterSpacing = ref(currentFontSettings.value.letterSpacing ?? 0)
+  const initialLineHeight = ref(currentFontSettings.value.lineHeight ?? 1.6)
   const initialCustomColor = ref('#3b82f6')
   const initialIsUsingCustomColor = ref(false)
 
@@ -104,6 +110,14 @@ export function useSettingsPanel(props, emit) {
 
   const updateFontSize = (size) => {
     selectedFontSize.value = size
+  }
+
+  const updateLetterSpacing = (value) => {
+    selectedLetterSpacing.value = value
+  }
+
+  const updateLineHeight = (value) => {
+    selectedLineHeight.value = value
   }
 
   // 颜色处理辅助函数
@@ -197,10 +211,14 @@ export function useSettingsPanel(props, emit) {
     // 使用字体设置的ID而不是对象
     selectedFontFamily.value = currentFontSettings.value.fontFamily
     selectedFontSize.value = currentFontSettings.value.fontSize
+    selectedLetterSpacing.value = currentFontSettings.value.letterSpacing ?? 0
+    selectedLineHeight.value = currentFontSettings.value.lineHeight ?? 1.6
 
     // 更新初始设置值
     initialFontFamily.value = currentFontSettings.value.fontFamily
     initialFontSize.value = currentFontSettings.value.fontSize
+    initialLetterSpacing.value = currentFontSettings.value.letterSpacing ?? 0
+    initialLineHeight.value = currentFontSettings.value.lineHeight ?? 1.6
 
     showColorPicker.value = false
 
@@ -315,6 +333,8 @@ export function useSettingsPanel(props, emit) {
     // 应用字体设置 - 与面板打开时的初始值比较
     let fontFamilyChanged = false
     let fontSizeChanged = false
+    let letterSpacingChanged = false
+    let lineHeightChanged = false
 
     if (selectedFontFamily.value !== initialFontFamily.value) {
       setFontFamily(selectedFontFamily.value)
@@ -323,6 +343,14 @@ export function useSettingsPanel(props, emit) {
     if (selectedFontSize.value !== initialFontSize.value) {
       setFontSize(selectedFontSize.value)
       fontSizeChanged = true
+    }
+    if (selectedLetterSpacing.value !== initialLetterSpacing.value) {
+      setLetterSpacing(selectedLetterSpacing.value)
+      letterSpacingChanged = true
+    }
+    if (selectedLineHeight.value !== initialLineHeight.value) {
+      setLineHeight(selectedLineHeight.value)
+      lineHeightChanged = true
     }
 
     // 分别处理字体族和字号的通知
@@ -337,6 +365,20 @@ export function useSettingsPanel(props, emit) {
     if (fontSizeChanged) {
       setTimeout(() => {
         emit('show-notification', `字号已更新为${selectedFontSize.value}px`, 'success')
+      }, delay)
+      delay += 100
+    }
+
+    if (letterSpacingChanged) {
+      setTimeout(() => {
+        emit('show-notification', `字间距已更新为${selectedLetterSpacing.value}px`, 'success')
+      }, delay)
+      delay += 100
+    }
+
+    if (lineHeightChanged) {
+      setTimeout(() => {
+        emit('show-notification', `行间距已更新为${selectedLineHeight.value}`, 'success')
       }, delay)
       delay += 100
     }
@@ -377,6 +419,8 @@ export function useSettingsPanel(props, emit) {
     selectedCodeStyleId,
     selectedFontFamily,
     selectedFontSize,
+    selectedLetterSpacing,
+    selectedLineHeight,
     showColorPicker,
     selectedCustomColor,
     currentCustomColor,
@@ -398,6 +442,8 @@ export function useSettingsPanel(props, emit) {
     selectCodeStyle,
     selectFontFamily,
     updateFontSize,
+    updateLetterSpacing,
+    updateLineHeight,
     adjustColorBrightness,
     toggleColorPicker,
     closeColorPicker,

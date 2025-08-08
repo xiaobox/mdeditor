@@ -87,7 +87,10 @@ export const fontFamilyGroups = {
  */
 export const defaultFontSettings = {
   fontFamily: 'microsoft-yahei', // 使用微信公众号兼容性最佳的字体
-  fontSize: 16
+  fontSize: 16,
+  // 新增：字间距(px) 与 行高(倍数)
+  letterSpacing: 0,
+  lineHeight: 1.6
 };
 
 /**
@@ -145,11 +148,14 @@ export function getValidFontSize(fontSize) {
 export function generateFontCSSVariables(fontSettings) {
   const fontFamily = getFontFamily(fontSettings.fontFamily);
   const fontSize = getValidFontSize(fontSettings.fontSize);
+  const letterSpacing = typeof fontSettings.letterSpacing === 'number' ? fontSettings.letterSpacing : 0;
+  const lineHeight = typeof fontSettings.lineHeight === 'number' ? fontSettings.lineHeight : (fontSize <= 14 ? 1.7 : fontSize <= 18 ? 1.6 : 1.5);
   
   return {
     '--markdown-font-family': fontFamily ? fontFamily.value : fontFamilyOptions[0].value,
     '--markdown-font-size': `${fontSize}px`,
-    '--markdown-line-height': fontSize <= 14 ? '1.7' : fontSize <= 18 ? '1.6' : '1.5'
+    '--markdown-line-height': String(lineHeight),
+    '--markdown-letter-spacing': `${letterSpacing}px`
   };
 }
 
@@ -174,7 +180,8 @@ export const fontSettingsUtils = {
     return {
       fontFamily: fontFamily ? fontFamily.value : 'inherit',
       fontSize: `${getValidFontSize(fontSize)}px`,
-      lineHeight: fontSize <= 14 ? '1.7' : fontSize <= 18 ? '1.6' : '1.5'
+      lineHeight: fontSize <= 14 ? '1.7' : fontSize <= 18 ? '1.6' : '1.5',
+      letterSpacing: '0px'
     };
   },
   

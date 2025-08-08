@@ -64,6 +64,11 @@ export function useEditorLifecycle({ editorState, editorEvents, editorTheme }) {
       ...editorTheme.getEditorExtensions(updateListener)
     ];
 
+    // 启用软换行，避免横向滚动条
+    if (EDITOR_CONFIG.WORD_WRAP && EditorView && EditorView.lineWrapping) {
+      extensions.push(EditorView.lineWrapping)
+    }
+
     // 创建编辑器状态
     const state = EditorState.create({
       doc: editorState.content.value,

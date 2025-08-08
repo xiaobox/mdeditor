@@ -334,13 +334,19 @@ class CSSVariableManager {
 
     const fontFamily = fontFamilyMap[fontSettings.fontFamily] || fontFamilyMap['system-default'];
     const fontSize = Math.max(12, Math.min(24, fontSettings.fontSize || 16));
-    const lineHeight = fontSize <= 14 ? '1.7' : fontSize <= 18 ? '1.6' : '1.5';
+    const resolvedLineHeight = typeof fontSettings.lineHeight === 'number'
+      ? String(fontSettings.lineHeight)
+      : (fontSize <= 14 ? '1.7' : fontSize <= 18 ? '1.6' : '1.5');
+    const resolvedLetterSpacing = typeof fontSettings.letterSpacing === 'number'
+      ? `${fontSettings.letterSpacing}px`
+      : '0px';
 
     return {
       // 只更新预览区域的字体变量，不影响全局主题字体
       '--markdown-font-family': fontFamily,
       '--markdown-font-size': `${fontSize}px`,
-      '--markdown-line-height': lineHeight
+      '--markdown-line-height': resolvedLineHeight,
+      '--markdown-letter-spacing': resolvedLetterSpacing
     };
   }
 

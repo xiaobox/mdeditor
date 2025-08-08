@@ -68,6 +68,8 @@ const themeState = reactive({
   themeSystemId: ThemeStorage.load(STORAGE_KEYS.THEME_SYSTEM, STORAGE_DEFAULTS.THEME_SYSTEM),
   fontFamily: ThemeStorage.load(STORAGE_KEYS.FONT_FAMILY, STORAGE_DEFAULTS.FONT_FAMILY),
   fontSize: parseInt(ThemeStorage.load(STORAGE_KEYS.FONT_SIZE, STORAGE_DEFAULTS.FONT_SIZE.toString()), 10),
+  letterSpacing: parseFloat(ThemeStorage.load(STORAGE_KEYS.LETTER_SPACING, String(STORAGE_DEFAULTS.LETTER_SPACING))),
+  lineHeight: parseFloat(ThemeStorage.load(STORAGE_KEYS.LINE_HEIGHT, String(STORAGE_DEFAULTS.LINE_HEIGHT))),
   isInitialized: false,
   hasTemporaryCustomTheme: false, // 标记是否有临时自定义主题
   customThemeUpdateTrigger: 0 // 用于触发自定义主题列表的响应式更新
@@ -130,7 +132,9 @@ export function useThemeManager() {
   /** 当前字体设置对象 */
   const currentFontSettings = computed(() => ({
     fontFamily: themeState.fontFamily,
-    fontSize: themeState.fontSize
+    fontSize: themeState.fontSize,
+    letterSpacing: themeState.letterSpacing,
+    lineHeight: themeState.lineHeight
   }))
 
   /** 当前字体族对象 */
@@ -230,7 +234,9 @@ export function useThemeManager() {
       // 立即应用字体设置，不受其他条件限制
       cssManager.applyFontSettings({
         fontFamily: fontId,
-        fontSize: themeState.fontSize
+        fontSize: themeState.fontSize,
+        letterSpacing: themeState.letterSpacing,
+        lineHeight: themeState.lineHeight
       })
 
       return true
@@ -252,7 +258,9 @@ export function useThemeManager() {
       // 立即应用字体设置，不受其他条件限制
       cssManager.applyFontSettings({
         fontFamily: themeState.fontFamily,
-        fontSize: validSize
+        fontSize: validSize,
+        letterSpacing: themeState.letterSpacing,
+        lineHeight: themeState.lineHeight
       })
 
       return true
@@ -277,6 +285,40 @@ export function useThemeManager() {
     }
 
     return changed
+  }
+
+  /** 设置字间距(px) */
+  const setLetterSpacing = (value) => {
+    const spacing = Number.isFinite(value) ? value : 0
+    if (spacing !== themeState.letterSpacing) {
+      themeState.letterSpacing = spacing
+      ThemeStorage.save(STORAGE_KEYS.LETTER_SPACING, String(spacing))
+      cssManager.applyFontSettings({
+        fontFamily: themeState.fontFamily,
+        fontSize: themeState.fontSize,
+        letterSpacing: spacing,
+        lineHeight: themeState.lineHeight
+      })
+      return true
+    }
+    return false
+  }
+
+  /** 设置行高(倍数) */
+  const setLineHeight = (value) => {
+    const lh = Number.isFinite(value) && value > 0 ? value : 1.6
+    if (lh !== themeState.lineHeight) {
+      themeState.lineHeight = lh
+      ThemeStorage.save(STORAGE_KEYS.LINE_HEIGHT, String(lh))
+      cssManager.applyFontSettings({
+        fontFamily: themeState.fontFamily,
+        fontSize: themeState.fontSize,
+        letterSpacing: themeState.letterSpacing,
+        lineHeight: lh
+      })
+      return true
+    }
+    return false
   }
 
   /**
@@ -392,7 +434,9 @@ export function useThemeManager() {
       themeSystem: themeState.themeSystemId,
       fontSettings: {
         fontFamily: themeState.fontFamily,
-        fontSize: themeState.fontSize
+          fontSize: themeState.fontSize,
+          letterSpacing: themeState.letterSpacing,
+          lineHeight: themeState.lineHeight
       },
       timestamp: Date.now(),
       version: '1.1'
@@ -507,6 +551,8 @@ export function useThemeManager() {
     setThemeSystem,
     setFontFamily,
     setFontSize,
+        setLetterSpacing,
+        setLineHeight,
     setFontSettings,
     setThemes,
 

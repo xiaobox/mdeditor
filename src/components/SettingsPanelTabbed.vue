@@ -61,9 +61,26 @@
             <FontSettingsSection
               :font-family-list="fontFamilyList"
               :selected-font-family="selectedFontFamily"
-              :selected-font-size="selectedFontSize"
               @select-font-family="selectFontFamily"
+            />
+          </div>
+
+          <!-- 字号设置 -->
+          <div v-show="activeTab === 'font-size-settings'" class="tab-content">
+            <FontSizeSection
+              :selected-font-family="selectedFontFamily"
+              :selected-font-size="selectedFontSize"
               @update-font-size="updateFontSize"
+            />
+          </div>
+
+          <!-- 间距设置 -->
+          <div v-show="activeTab === 'spacing-settings'" class="tab-content">
+            <SpacingSettingsSection
+              :letter-spacing="selectedLetterSpacing"
+              :line-height="selectedLineHeight"
+              @update-letter-spacing="updateLetterSpacing"
+              @update-line-height="updateLineHeight"
             />
           </div>
         </div>
@@ -99,6 +116,8 @@ import ThemeSystemSection from './settings/ThemeSystemSection.vue'
 import ColorThemeSection from './settings/ColorThemeSection.vue'
 import CodeStyleSection from './settings/CodeStyleSection.vue'
 import FontSettingsSection from './settings/FontSettingsSection.vue'
+import FontSizeSection from './settings/FontSizeSection.vue'
+import SpacingSettingsSection from './settings/SpacingSettingsSection.vue'
 import ColorPicker from './ColorPicker.vue'
 
 // Props
@@ -120,6 +139,8 @@ const {
   selectedCodeStyleId,
   selectedFontFamily,
   selectedFontSize,
+  selectedLetterSpacing,
+  selectedLineHeight,
   showColorPicker,
   currentCustomColor,
 
@@ -137,6 +158,8 @@ const {
   selectCodeStyle,
   selectFontFamily,
   updateFontSize,
+  updateLetterSpacing,
+  updateLineHeight,
   toggleColorPicker,
   closeColorPicker,
   onColorChange,
@@ -188,6 +211,14 @@ const tabs = ref([
     icon: {
       viewBox: '0 0 24 24',
       path: 'M11,7A2,2 0 0,1 13,9V17A2,2 0 0,1 11,19H9A2,2 0 0,1 7,17V9A2,2 0 0,1 9,7H11M9,9V17H11V9H9M12,2A2,2 0 0,1 14,4V6H12V4H10V6H8V4A2,2 0 0,1 10,2H12Z'
+    }
+  },
+  {
+    id: 'spacing-settings',
+    label: '间距',
+    icon: {
+      viewBox: '0 0 24 24',
+      path: 'M3 11h18v2H3v-2m6-6h6v2H9V5m0 14h6v2H9v-2'
     }
   }
 ])

@@ -36,7 +36,9 @@ export const STORAGE_DEFAULTS = {
   CODE_STYLE: THEME_DEFAULTS.CODE_STYLE_ID,
   THEME_SYSTEM: THEME_DEFAULTS.THEME_SYSTEM_ID,
   FONT_FAMILY: 'system-default',
-  FONT_SIZE: 16
+  FONT_SIZE: 16,
+  LETTER_SPACING: THEME_DEFAULTS.LETTER_SPACING,
+  LINE_HEIGHT: THEME_DEFAULTS.LINE_HEIGHT
 };
 
 /**
@@ -118,7 +120,9 @@ export class ThemeStorage {
       codeStyle: this.load(STORAGE_KEYS.CODE_STYLE, STORAGE_DEFAULTS.CODE_STYLE),
       themeSystem: this.load(STORAGE_KEYS.THEME_SYSTEM, STORAGE_DEFAULTS.THEME_SYSTEM),
       fontFamily: this.load(STORAGE_KEYS.FONT_FAMILY, STORAGE_DEFAULTS.FONT_FAMILY),
-      fontSize: parseInt(this.load(STORAGE_KEYS.FONT_SIZE, STORAGE_DEFAULTS.FONT_SIZE.toString()), 10)
+      fontSize: parseInt(this.load(STORAGE_KEYS.FONT_SIZE, STORAGE_DEFAULTS.FONT_SIZE.toString()), 10),
+      letterSpacing: parseFloat(this.load(STORAGE_KEYS.LETTER_SPACING, String(STORAGE_DEFAULTS.LETTER_SPACING))),
+      lineHeight: parseFloat(this.load(STORAGE_KEYS.LINE_HEIGHT, String(STORAGE_DEFAULTS.LINE_HEIGHT)))
     };
   }
 
@@ -133,6 +137,8 @@ export class ThemeStorage {
     allSuccess = allSuccess && this.remove(STORAGE_KEYS.THEME_SYSTEM);
     allSuccess = allSuccess && this.remove(STORAGE_KEYS.FONT_FAMILY);
     allSuccess = allSuccess && this.remove(STORAGE_KEYS.FONT_SIZE);
+    allSuccess = allSuccess && this.remove(STORAGE_KEYS.LETTER_SPACING);
+    allSuccess = allSuccess && this.remove(STORAGE_KEYS.LINE_HEIGHT);
     return allSuccess;
   }
 }

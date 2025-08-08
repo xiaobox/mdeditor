@@ -17,6 +17,8 @@ export const STORAGE_KEYS = {
   THEME_SYSTEM: 'markdown-editor-theme-system',
   FONT_FAMILY: 'markdown-editor-font-family',
   FONT_SIZE: 'markdown-editor-font-size',
+  LETTER_SPACING: 'markdown-editor-letter-spacing',
+  LINE_HEIGHT: 'markdown-editor-line-height',
 };
 
 /**
@@ -35,6 +37,8 @@ export const THEME_DEFAULTS = {
   // 字体设置
   FONT_FAMILY: 'system-default',
   FONT_SIZE: 16,
+  LETTER_SPACING: 0, // px
+  LINE_HEIGHT: 1.6,
 
   // 自动切换
   AUTO_SWITCH: true,
