@@ -162,7 +162,7 @@ defineEmits([
 .btn-small:hover {
   background: var(--theme-bg-secondary);
   color: var(--theme-text-primary);
-  border-color: var(--primary-color);
+  border-color: var(--theme-primary);
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -232,6 +232,6 @@ defineEmits([
 
 .editor-content::-webkit-scrollbar-thumb:hover,
 .preview-content::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-color);
+  background: var(--theme-primary);
 }
 </style>

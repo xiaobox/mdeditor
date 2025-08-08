@@ -58,7 +58,7 @@
   border: none;
   border-radius: 10px;
   background: #e8e8eb;
-  color: var(--primary-color);
+  color: var(--theme-primary);
   cursor: pointer;
   transition: all 0.2s ease;
   margin: 10px 0;
@@ -68,14 +68,14 @@
 }
 
 .toolbar-btn:hover {
-  color: var(--primary-hover);
+  color: var(--theme-primary-hover);
   box-shadow:
     inset 3px 3px 6px rgba(163, 177, 198, 0.5),
     inset -3px -3px 6px rgba(255, 255, 255, 0.8);
 }
 
 .toolbar-btn:active {
-  color: var(--primary-dark);
+  color: var(--theme-primary-dark);
   box-shadow:
     inset 4px 4px 8px rgba(163, 177, 198, 0.6),
     inset -4px -4px 8px rgba(255, 255, 255, 0.9);
@@ -101,20 +101,20 @@
 }
 
 .toolbar-btn-guide {
-  background: var(--primary-color);
+  background: var(--theme-primary);
   color: white;
   box-shadow:
     inset 2px 2px 4px rgba(0, 0, 0, 0.2),
     inset -2px -2px 4px rgba(255, 255, 255, 0.1),
-    0 0 15px rgba(var(--primary-rgb), 0.3);
+    0 0 15px rgba(var(--theme-primary-rgb), 0.3);
 }
 
 .toolbar-btn-guide:hover {
-  background: var(--primary-hover);
+  background: var(--theme-primary-hover);
   box-shadow:
     inset 1px 1px 2px rgba(0, 0, 0, 0.15),
     inset -1px -1px 2px rgba(255, 255, 255, 0.05),
-    0 0 20px rgba(var(--primary-rgb), 0.4);
+    0 0 20px rgba(var(--theme-primary-rgb), 0.4);
 }
 
 /* 字数统计 */
@@ -156,7 +156,7 @@
 }
 
 .markdown-editor :deep(.cm-cursor) {
-  border-left-color: var(--primary-color);
+  border-left-color: var(--theme-primary);
   border-left-width: 2px;
 }
 
@@ -180,17 +180,17 @@
 .markdown-editor :deep(.cm-strong) { font-weight: bold; }
 .markdown-editor :deep(.cm-em) { font-style: italic; }
 .markdown-editor :deep(.cm-strikethrough) { text-decoration: line-through; }
-.markdown-editor :deep(.cm-link) { color: var(--primary-color); text-decoration: underline; }
+.markdown-editor :deep(.cm-link) { color: var(--theme-primary); text-decoration: underline; }
 .markdown-editor :deep(.cm-quote) { color: var(--theme-text-secondary); font-style: italic; }
 .markdown-editor :deep(.cm-comment) { color: var(--theme-text-tertiary); }
-.markdown-editor :deep(.cm-keyword) { color: var(--primary-color); }
-.markdown-editor :deep(.cm-string) { color: var(--primary-dark); }
-.markdown-editor :deep(.cm-number) { color: var(--primary-color); }
-.markdown-editor :deep(.cm-atom) { color: var(--primary-color); }
-.markdown-editor :deep(.cm-property) { color: var(--primary-hover); }
-.markdown-editor :deep(.cm-def) { color: var(--primary-dark); }
-.markdown-editor :deep(.cm-variable) { color: var(--primary-hover); }
-.markdown-editor :deep(.cm-operator) { color: var(--primary-color); }
-.markdown-editor :deep(.cm-meta) { color: var(--primary-dark); }
-.markdown-editor :deep(.cm-tag) { color: var(--primary-color); }
-.markdown-editor :deep(.cm-attribute) { color: var(--primary-dark); }
+.markdown-editor :deep(.cm-keyword) { color: var(--theme-primary); }
+.markdown-editor :deep(.cm-string) { color: var(--theme-primary-dark); }
+.markdown-editor :deep(.cm-number) { color: var(--theme-primary); }
+.markdown-editor :deep(.cm-atom) { color: var(--theme-primary); }
+.markdown-editor :deep(.cm-property) { color: var(--theme-primary-hover); }
+.markdown-editor :deep(.cm-def) { color: var(--theme-primary-dark); }
+.markdown-editor :deep(.cm-variable) { color: var(--theme-primary-hover); }
+.markdown-editor :deep(.cm-operator) { color: var(--theme-primary); }
+.markdown-editor :deep(.cm-meta) { color: var(--theme-primary-dark); }
+.markdown-editor :deep(.cm-tag) { color: var(--theme-primary); }
+.markdown-editor :deep(.cm-attribute) { color: var(--theme-primary-dark); }

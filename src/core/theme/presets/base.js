@@ -1,5 +1,5 @@
 /**
- * @file src/config/themes/base.js
+ * @file src/core/theme/presets/base.js
  * @description 主题对象的基础配置和工厂函数
  *
  * 本文件定义了创建各种主题对象（颜色主题、代码样式、排版系统）的“工厂函数”。

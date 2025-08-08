@@ -44,12 +44,7 @@
   --theme-code-border: #E1E4E8;       /* 代码块边框 */
   --theme-code-text: #24292E;         /* 代码主文字 */
 
-  /* 兼容性变量 - 保持向后兼容 */
-  --primary-color: var(--theme-primary);
-  --primary-hover: var(--theme-primary-hover);
-  --primary-light: var(--theme-primary-light);
-  --primary-lighter: var(--theme-primary-lighter);
-  --primary-dark: var(--theme-primary-dark);
+  /* 兼容性变量已移除，统一使用 --theme-* */
   --bg-primary: var(--theme-bg-primary);
   --bg-secondary: var(--theme-bg-secondary);
   --bg-tertiary: var(--theme-bg-tertiary);

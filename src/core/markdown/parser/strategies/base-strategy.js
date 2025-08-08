@@ -1,5 +1,5 @@
 /**
- * @file src/utils/formatters/processing-strategies/base-strategy.js
+ * @file src/core/markdown/parser/strategies/base-strategy.js
  * @description 行处理策略基类
  */
 

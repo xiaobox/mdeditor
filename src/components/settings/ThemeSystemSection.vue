@@ -89,7 +89,7 @@ const getColorPreview = (colorId) => {
 .settings-section:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border-color: var(--primary-color);
+  border-color: var(--theme-primary);
 }
 
 .section-header {
@@ -104,7 +104,7 @@ const getColorPreview = (colorId) => {
 .section-icon {
   width: 44px;
   height: 44px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -156,12 +156,12 @@ const getColorPreview = (colorId) => {
 .theme-system-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  border-color: var(--primary-color);
+  border-color: var(--theme-primary);
 }
 
 .theme-system-card.active {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px var(--primary-color), 0 8px 32px rgba(0, 0, 0, 0.15);
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 2px var(--theme-primary), 0 8px 32px rgba(0, 0, 0, 0.15);
   transform: translateY(-3px);
   background: linear-gradient(135deg, var(--theme-bg-secondary), var(--theme-bg-primary));
 }
@@ -187,7 +187,7 @@ const getColorPreview = (colorId) => {
 }
 
 .theme-system-card:hover .theme-system-title {
-  color: var(--primary-color);
+  color: var(--theme-primary);
 }
 
 .theme-system-colors {
@@ -236,7 +236,7 @@ const getColorPreview = (colorId) => {
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  border: 2px solid var(--primary-color);
+  border: 2px solid var(--theme-primary);
 }
 
 @keyframes shimmer {

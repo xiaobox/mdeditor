@@ -89,7 +89,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { ColorThemeGenerator } from '../core/theme/presets/color-themes.js'
+import { ColorThemeGenerator } from '../core/theme/index.js'
 
 const props = defineProps({
   initialColor: {

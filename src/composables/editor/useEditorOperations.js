@@ -1,5 +1,5 @@
 /**
- * @file src/composables/useEditorOperations.js
+ * @file src/composables/editor/useEditorOperations.js
  * @description 编辑器操作管理 Composable
  * 
  * 专门负责包装编辑器的操作方法

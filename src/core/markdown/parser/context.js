@@ -1,11 +1,12 @@
 /**
- * @file src/utils/formatters/formatter-context.js
+ * @file src/core/markdown/parser/context.js
  * @description 格式化上下文状态管理
  * 
  * 独立管理格式化过程中的所有状态，包括：
  * - 代码块状态
  * - 引用块状态 
  * - 主题信息
+ * - 字体配置
  * - 处理选项
  */
 

@@ -1,9 +1,9 @@
 /**
- * @file src/utils/formatters/line-processors.js
- * @description 行处理器策略模式实现
+ * @file src/core/markdown/processors/line.js
+ * @description 行处理器（策略模式实现）
  * 
- * 将复杂的条件逻辑重构为策略模式，每个处理器负责处理特定类型的 Markdown 行。
- * 这种设计提高了代码的可维护性和可扩展性。
+ * 将复杂的行级判断重构为策略模式：每个处理器只负责一种类型的 Markdown 行。
+ * 这种设计让代码更易扩展与维护。
  */
 
 import { REGEX_PATTERNS, MARKDOWN_SYNTAX } from '../../../config/constants/index.js';

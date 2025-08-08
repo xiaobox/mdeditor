@@ -1,34 +1,13 @@
 /**
- * @file src/config/themes/css-manager.js
+ * @file src/core/theme/manager.js
  * @description 统一的 CSS 变量管理器
  *
- * 本文件定义了一个 `CSSVariableManager` 类，它是一个单例（通过 `cssManager` 实例导出），
- * 负责将主题配置（颜色、字体、间距等）动态地应用到应用的根元素 (`:root`) 上作为 CSS 变量。
- * 这是实现动态主题切换的核心机制。
- *
- * 主要功能:
- * 1.  **动态设置 CSS 变量**: 提供了 `applyColorTheme`, `applyCodeStyle`, `applyThemeSystem`
- *     等方法，接收相应的主题对象，并将其属性转换为 CSS 变量（例如 `primary` -> `--theme-primary`）
- *     设置到 `document.documentElement.style` 上。
- * 2.  **批量更新**: `applyAllThemes` 方法可以一次性应用所有类型的主题，简化了调用。
- * 3.  **解耦**: 将“如何将主题配置应用到 DOM”的逻辑与“主题配置本身”以及“主题状态管理”
- *     完全分离开来。`useThemeManager` 只负责状态变化，然后调用 `cssManager` 来执行实际的 DOM 操作。
- * 4.  **预览支持**: `generatePreviewStyles` 方法可以生成用于组件预览的样式对象，而不会
- *     实际影响全局 CSS 变量，这在设置面板等场景中非常有用。
- * 5.  **工具函数**: 包含一个 `kebabCase` 工具函数，用于将驼峰命名的对象键转换为 CSS 变量风格的
- *     kebab-case 命名。
- *
- * 设计思想:
- * - **单例模式**: 整个应用只需要一个 `CSSVariableManager` 实例来操作根元素的样式，
- *   因此导出一个单例 `cssManager` 是最合适的模式。
- * - **面向接口编程**: 管理器提供了一组清晰的、高级的接口（如 `applyColorTheme`），
- *   隐藏了底层 `setProperty` 的实现细节。
- * - **高性能**: 直接操作 `style` 属性来设置 CSS 变量是一种非常高效的动态样式更新方式，
- *   浏览器会即时重绘受这些变量影响的元素。
- * - **缓存优化**: 通过缓存计算结果，避免重复的样式转换操作。
+ * 说明：头部路径注释已统一到实际文件位置 `src/core/theme/`，
+ * 避免与历史 `src/config/themes/` 路径混淆。
  */
 
 import { memoize, debounce } from '../../shared/utils/performance.js';
+import { computeThemeVariables } from './variables.js';
 
 /**
  * CSS 变量管理器类，用于动态操作 `:root` 上的 CSS 变量。
@@ -187,54 +166,7 @@ class CSSVariableManager {
   applyColorTheme(colorTheme) {
     if (!colorTheme || !this._shouldUpdateTheme(colorTheme, 'colorTheme')) return;
 
-    const variables = {
-      '--theme-primary': colorTheme.primary,
-      '--theme-primary-hover': colorTheme.primaryHover,
-      '--theme-primary-light': colorTheme.primaryLight,
-      '--theme-primary-dark': colorTheme.primaryDark,
-      '--theme-text-primary': colorTheme.textPrimary,
-      '--theme-text-secondary': colorTheme.textSecondary,
-      '--theme-text-tertiary': colorTheme.textTertiary,
-      '--theme-bg-primary': colorTheme.bgPrimary,
-      '--theme-bg-secondary': colorTheme.bgSecondary,
-      '--theme-bg-tertiary': colorTheme.bgTertiary,
-      '--theme-border-light': colorTheme.borderLight,
-      '--theme-border-medium': colorTheme.borderMedium,
-      '--theme-inline-code-bg': colorTheme.inlineCodeBg,
-      '--theme-inline-code-text': colorTheme.inlineCodeText,
-      '--theme-inline-code-border': colorTheme.inlineCodeBorder,
-      '--theme-blockquote-border': colorTheme.blockquoteBorder,
-      '--theme-blockquote-bg': colorTheme.blockquoteBackground,
-      '--theme-hr-color': colorTheme.hrColor,
-      '--theme-table-header-bg': colorTheme.tableHeaderBg,
-      '--theme-table-border': colorTheme.tableBorder,
-
-      // 兼容性变量 - 确保所有组件都能使用新颜色
-      '--primary-color': colorTheme.primary,
-      '--primary-hover': colorTheme.primaryHover,
-      '--primary-light': colorTheme.primaryLight,
-      '--primary-dark': colorTheme.primaryDark,
-    };
-
-    // 应用列表颜色
-    if (colorTheme.listColors && Array.isArray(colorTheme.listColors)) {
-      colorTheme.listColors.forEach((color, index) => {
-        variables[`--theme-list-color-${index + 1}`] = color;
-      });
-    }
-
-    // 动态生成主题色的透明度变体
-    if (colorTheme.primary) {
-      const primaryRgb = this._hexToRgb(colorTheme.primary);
-      if (primaryRgb) {
-        variables['--primary-rgb'] = `${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}`;
-        variables['--theme-primary-15'] = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.15)`;
-        variables['--theme-primary-20'] = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.20)`;
-        variables['--theme-primary-25'] = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.25)`;
-        variables['--theme-primary-40'] = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.40)`;
-        variables['--theme-primary-60'] = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.60)`;
-      }
-    }
+    const variables = computeThemeVariables(colorTheme);
 
     this._debouncedSetVariables(variables);
     this._updateThemeCache(colorTheme, 'colorTheme');
@@ -329,7 +261,8 @@ class CSSVariableManager {
       'pingfang-sc': '"PingFang SC", "苹方-简", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
       'hiragino-sans': '"Hiragino Sans GB", "冬青黑体简体中文", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
       'arial': 'Arial, sans-serif',
-      'system-safe': '"Microsoft YaHei", "微软雅黑", "PingFang SC", "Hiragino Sans GB", Arial, sans-serif'
+      'system-safe': '"Microsoft YaHei", "微软雅黑", "PingFang SC", "Hiragino Sans GB", Arial, sans-serif',
+      'system-default': '"Microsoft YaHei", "微软雅黑", "PingFang SC", "Hiragino Sans GB", Arial, sans-serif'
     };
 
     const fontFamily = fontFamilyMap[fontSettings.fontFamily] || fontFamilyMap['system-default'];
@@ -355,12 +288,67 @@ class CSSVariableManager {
    * @param {object} themes - 包含 `colorTheme`, `codeStyle`, `themeSystem`, `fontSettings` 的对象。
    */
   applyAllThemes({ colorTheme, codeStyle, themeSystem, fontSettings }) {
-    this.applyColorTheme(colorTheme);
-    this.applyCodeStyle(codeStyle);
-    this.applyThemeSystem(themeSystem);
-    if (fontSettings) {
-      this.applyFontSettings(fontSettings);
+    // 合并所有变量后一次性写入，避免防抖合并导致此前变量被覆盖
+    const mergedVariables = {};
+
+    // 颜色主题变量
+    if (colorTheme) {
+      Object.assign(mergedVariables, computeThemeVariables(colorTheme));
     }
+
+    // 代码样式变量
+    if (codeStyle) {
+      const codeVars = {
+        '--code-bg': codeStyle.background,
+        '--code-color': codeStyle.color,
+        '--code-border': codeStyle.border || 'none',
+        '--code-border-radius': codeStyle.borderRadius,
+        '--code-padding': codeStyle.padding,
+        '--code-margin': codeStyle.margin,
+        '--code-font-family': codeStyle.fontFamily,
+        '--code-font-size': codeStyle.fontSize,
+        '--code-line-height': codeStyle.lineHeight,
+        '--code-box-shadow': codeStyle.boxShadow || 'none',
+      };
+      if (codeStyle.syntaxHighlight) {
+        for (const [key, value] of Object.entries(codeStyle.syntaxHighlight)) {
+          codeVars[`--code-syntax-${key}`] = value;
+        }
+      }
+      Object.assign(mergedVariables, codeVars);
+    }
+
+    // 排版主题系统变量
+    if (themeSystem) {
+      const mapping = {
+        layout: '--layout',
+        typography: '--font',
+        spacing: '--spacing',
+        borderRadius: '--border-radius',
+        shadows: '--shadow'
+      };
+      for (const [category, prefix] of Object.entries(mapping)) {
+        if (themeSystem[category]) {
+          for (const [key, value] of Object.entries(themeSystem[category])) {
+            if (typeof value === 'object') {
+              for (const [subKey, subValue] of Object.entries(value)) {
+                mergedVariables[`${prefix}-${this._kebabCase(key)}-${this._kebabCase(subKey)}`] = subValue;
+              }
+            } else {
+              mergedVariables[`${prefix}-${this._kebabCase(key)}`] = value;
+            }
+          }
+        }
+      }
+    }
+
+    // 字体设置变量
+    if (fontSettings) {
+      Object.assign(mergedVariables, this._generateFontCSSVariables(fontSettings));
+    }
+
+    // 一次性同步写入，避免丢失前序变量
+    this._setVariables(mergedVariables);
   }
 
   /**

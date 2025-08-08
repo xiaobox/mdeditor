@@ -24,36 +24,32 @@
  */
 
 import { computed, watch, reactive } from 'vue'
-import { cssManager } from '../../core/theme/manager.js'
-import { ThemeStorage, STORAGE_KEYS, STORAGE_DEFAULTS } from '../../core/theme/storage.js'
 import {
+  cssManager,
+  ThemeStorage,
+  STORAGE_KEYS,
+  STORAGE_DEFAULTS,
   getColorTheme,
   getColorThemeList,
   defaultColorTheme,
   colorThemePresets,
   ColorThemeGenerator,
-  CUSTOM_THEME_STORAGE_KEY
-} from '../../core/theme/presets/color-themes.js'
-import {
+  CUSTOM_THEME_STORAGE_KEY,
   getCodeStyle,
   getCodeStyleList,
   defaultCodeStyle,
-  codeStylePresets
-} from '../../core/theme/presets/code-styles.js'
-import {
+  codeStylePresets,
   getThemeSystem,
   getThemeSystemList,
   defaultThemeSystem,
   themeSystemPresets,
-  themeSystems
-} from '../../core/theme/presets/theme-systems.js'
-import {
+  themeSystems,
   getFontFamily,
   getFontFamilyList,
   defaultFontSettings,
   fontSettingsUtils,
   getValidFontSize
-} from '../../core/theme/presets/font-settings.js'
+} from '../../core/theme/index.js'
 
 /**
  * 全局响应式主题状态。

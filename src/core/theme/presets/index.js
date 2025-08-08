@@ -17,3 +17,6 @@ export * from './code-styles.js';
 // 主题系统预设
 export * from './theme-systems.js';
 
+// 字体设置预设
+export * from './font-settings.js';
+

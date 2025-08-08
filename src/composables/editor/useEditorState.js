@@ -1,5 +1,5 @@
 /**
- * @file src/composables/useEditorState.js
+ * @file src/composables/editor/useEditorState.js
  * @description 编辑器状态管理 Composable
  * 
  * 专门负责管理编辑器的基础状态，包括内容、DOM引用等

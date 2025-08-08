@@ -19,11 +19,11 @@
   right: 0;
   height: 3px;
   background: linear-gradient(90deg,
-    var(--primary-color) 0%,
-    var(--primary-hover) 50%,
-    var(--primary-color) 100%);
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 50%,
+    var(--theme-primary) 100%);
   opacity: 0.8;
-  box-shadow: 0 1px 3px rgba(var(--primary-rgb), 0.3);
+  box-shadow: 0 1px 3px rgba(var(--theme-primary-rgb), 0.3);
 }
 
 .footer-left,
@@ -45,7 +45,7 @@
 }
 
 .stat-item:hover {
-  color: var(--primary-color);
+  color: var(--theme-primary);
   transform: translateY(-1px);
 }
 
@@ -56,7 +56,7 @@
 
 .stat-item:hover svg {
   opacity: 1;
-  color: var(--primary-color);
+  color: var(--theme-primary);
 }
 
 /* 控制按钮组样式 - 简洁现代设计 */
@@ -104,7 +104,7 @@
 }
 
 .toggle-label:hover {
-  color: var(--primary-color);
+  color: var(--theme-primary);
   background: rgba(0, 0, 0, 0.05);
 }
 
@@ -136,7 +136,7 @@
 }
 
 .toggle-checkbox:checked + .toggle-slider {
-  background: var(--primary-color);
+  background: var(--theme-primary);
 }
 
 .toggle-checkbox:checked + .toggle-slider::before {
@@ -172,12 +172,12 @@
 }
 
 .back-to-top-btn:hover {
-  color: var(--primary-color);
+  color: var(--theme-primary);
   background: rgba(0, 0, 0, 0.05);
 }
 
 .back-to-top-btn:active {
-  color: var(--primary-hover);
+  color: var(--theme-primary-hover);
   background: rgba(0, 0, 0, 0.1);
 }
 
@@ -200,45 +200,33 @@
 
 /* 当有可滚动内容时的特殊样式 - 现代简洁风格 */
 .back-to-top-btn.has-scroll {
-  background: rgba(var(--primary-rgb, 0, 168, 107), 0.1);
-  color: var(--primary-color);
-  animation: subtle-glow 2.5s ease-in-out infinite;
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  color: var(--theme-primary);
 }
 
 .back-to-top-btn.has-scroll:hover {
-  background: rgba(var(--primary-rgb, 0, 168, 107), 0.15);
-  color: var(--primary-hover);
-  animation: none;
+  background: rgba(var(--theme-primary-rgb), 0.15);
+  color: var(--theme-primary-hover);
   transform: translateY(-1px);
 }
 
 .back-to-top-btn.has-scroll:active {
-  background: rgba(var(--primary-rgb, 0, 168, 107), 0.2);
-  color: var(--primary-dark);
+  background: rgba(var(--theme-primary-rgb), 0.2);
+  color: var(--theme-primary-dark);
   transform: translateY(0);
 }
 
 .back-to-top-btn.has-scroll svg {
-  color: var(--primary-color);
+  color: var(--theme-primary);
   opacity: 1;
 }
 
 .back-to-top-btn.has-scroll:hover svg {
-  color: var(--primary-hover);
+  color: var(--theme-primary-hover);
   transform: translateY(-2px);
 }
 
-/* 微妙的发光动画 - 只改变颜色，不改变尺寸 */
-@keyframes subtle-glow {
-  0%, 100% {
-    background: rgba(var(--primary-rgb, 0, 168, 107), 0.1);
-    color: var(--primary-color);
-  }
-  50% {
-    background: rgba(var(--primary-rgb, 0, 168, 107), 0.15);
-    color: var(--primary-hover);
-  }
-}
+/* 移除发光动画以避免闪烁 */
 
 /* 响应式设计 */
 @media (max-width: 768px) {

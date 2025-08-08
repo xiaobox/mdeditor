@@ -29,6 +29,8 @@
 
   // localStorage 的键
   const STORAGE_KEY = 'markdown-editor-color-theme';
+  const CUSTOM_THEME_KEY = 'temp-custom-theme';
+  const CUSTOM_COLOR_KEY = 'temp-custom-color';
   const DEFAULT_THEME_ID = 'meihei';
 
   /**
@@ -39,14 +41,10 @@
   function hexToRgb(hex) {
     if (!hex || typeof hex !== 'string') return null;
     const cleanHex = hex.replace('#', '');
-    const shorthandRegex = /^([a-f\d])([a-f\d])([a-f\d])$/i;
-    const fullHex = cleanHex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
-    const result = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fullHex);
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    } : null;
+    const shorthand = /^([a-f\d])([a-f\d])([a-f\d])$/i;
+    const full = cleanHex.replace(shorthand, (m, r, g, b) => r + r + g + g + b + b);
+    const m = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(full);
+    return m ? { r: parseInt(m[1], 16), g: parseInt(m[2], 16), b: parseInt(m[3], 16) } : null;
   }
 
   /**
@@ -54,9 +52,22 @@
    * @param {string} themeId - 主题 ID
    */
   function applyTheme(themeId) {
+    // 优先使用持久化的自定义颜色主题，避免刷新时先渲染内置主题再切换
+    try {
+      const savedCustom = localStorage.getItem(CUSTOM_THEME_KEY);
+      if (savedCustom) {
+        const customTheme = JSON.parse(savedCustom);
+        return applyThemeObject(customTheme);
+      }
+    } catch (_) {}
+
     const theme = colorThemePresets[themeId] || colorThemePresets[DEFAULT_THEME_ID];
     if (!theme) return;
 
+    applyThemeObject(theme);
+  }
+
+  function applyThemeObject(theme) {
     const root = document.documentElement;
     const styles = {
       '--theme-primary': theme.primary,
@@ -68,12 +79,10 @@
       '--theme-inline-code-border': theme.inlineCodeBorder,
     };
 
-
-
     // 生成透明度变体
     const primaryRgb = hexToRgb(theme.primary);
     if (primaryRgb) {
-      styles['--primary-rgb'] = `${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}`;
+      styles['--theme-primary-rgb'] = `${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}`;
       styles['--theme-primary-15'] = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.15)`;
       styles['--theme-primary-20'] = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.20)`;
       styles['--theme-primary-25'] = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.25)`;

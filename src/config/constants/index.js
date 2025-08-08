@@ -28,3 +28,6 @@ export * from './error-messages.js';
 
 // 导出默认值常量
 export * from './defaults.js';
+
+// 导出外部链接常量
+export * from './links.js';

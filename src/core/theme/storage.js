@@ -1,29 +1,6 @@
 /**
- * @file src/config/themes/storage.js
- * @description 主题设置的本地存储管理
- *
- * 本文件负责处理主题配置的持久化，即将用户的选择（如颜色主题、代码样式等）
- * 保存到浏览器的 `localStorage` 中，以便在下次访问时恢复这些设置。
- *
- * 主要功能:
- * 1.  **统一定义存储键**: `STORAGE_KEYS` 对象集中管理所有用于 `localStorage` 的键名，
- *     避免了在代码中散布硬编码的字符串，便于维护和防止冲突。
- * 2.  **提供默认值**: `STORAGE_DEFAULTS` 对象定义了每个设置项的默认值，
- *     当无法从 `localStorage` 中加载到有效值时，将使用这些默认值。
- * 3.  **封装 `localStorage` API**: `ThemeStorage` 类封装了 `localStorage` 的
- *     `getItem`, `setItem`, `removeItem` 等操作，并加入了 `try...catch` 块。
- *     这使得存储操作更安全，即使在某些浏览器禁用了 `localStorage` 的情况下，
- *     应用也不会因此崩溃。
- * 4.  **提供批量操作**: 提供了 `saveAll`, `loadAll`, `clearAll` 等方法，
- *     方便进行导入/导出设置或一键重置等功能。
- *
- * 设计思想:
- * - **防错与健壮性**: 对 `localStorage` 的所有访问都进行了错误处理，这是编写健壮的
- *   Web 应用的良好实践。
- * - **集中管理**: 将所有与存储相关的常量和逻辑都集中在此文件中，使得存储策略清晰、
- *   易于理解和修改。
- * - **向后兼容**: 文件底部导出了一些独立的函数（如 `saveColorTheme`），这可能是为了
- *   兼容旧版本代码，确保平滑过渡。
+ * @file src/core/theme/storage.js
+ * @description 主题设置的本地存储管理（路径注释已统一到 core）
  */
 
 import { THEME_DEFAULTS, STORAGE_KEYS } from '../../config/constants/defaults.js';

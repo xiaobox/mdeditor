@@ -1,5 +1,5 @@
 /**
- * @file src/composables/useMarkdownEditor.js
+ * @file src/composables/editor/useEditor.js
  * @description Markdown 编辑器 Composable
  *
  * 本文件封装了与 CodeMirror 6 编辑器相关的所有逻辑，为 Vue 组件提供一个简洁、

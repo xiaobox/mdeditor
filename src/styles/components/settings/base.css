@@ -5,7 +5,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 1000;
+  z-index: 1100;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,6 +19,7 @@
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(var(--spacing-xs));
+  z-index: 0;
 }
 
 .settings-content {
@@ -33,6 +34,7 @@
   display: flex;
   flex-direction: column;
   border: 1px solid var(--theme-border-light);
+  z-index: 1;
 }
 
 .settings-body {
@@ -108,7 +110,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: var(--z-toast);
+  z-index: 1200;
   /* 禁用底层的指针事件，防止hover效果穿透 */
   backdrop-filter: blur(var(--spacing-xs));
 }
@@ -120,4 +122,21 @@
   max-width: 90vw;
   max-height: 90vh;
   overflow: auto;
+  z-index: 1201;
+}
+
+/* 过渡动画，保持与 markdown-guide 一致 */
+.modal-enter-active,
+.modal-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-from .settings-content,
+.modal-leave-to .settings-content {
+  transform: scale(0.95) translateY(20px);
 }

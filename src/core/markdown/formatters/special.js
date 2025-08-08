@@ -1,14 +1,14 @@
 /**
- * @file src/utils/formatters/special-format-processors.js
- * @description 特殊格式处理工具
+ * @file src/core/markdown/formatters/special.js
+ * @description 特殊格式处理器
  * 
- * 专门处理 Markdown 中的特殊格式，包括：
+ * 负责处理 Markdown 中的特殊格式：
  * - 高亮文本（==text==）
  * - 下标文本（~text~）
  * - 上标文本（^text^）
  * - 键盘按键（<kbd>key</kbd>）
  * 
- * 从 text-processors.js 中提取出来，提高代码的模块化程度。
+ * 从内联处理管道中抽离，增强可维护性与复用性。
  */
 
 /**

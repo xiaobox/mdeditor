@@ -64,7 +64,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { fontSizeOptions, fontSettingsUtils } from '../../core/theme/presets/font-settings.js'
+import { fontSizeOptions, fontSettingsUtils } from '../../core/theme/index.js'
 
 const props = defineProps({
   selectedFontFamily: {

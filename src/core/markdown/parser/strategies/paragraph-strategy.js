@@ -1,6 +1,8 @@
 /**
  * @file src/core/markdown/parser/strategies/paragraph-strategy.js
  * @description 普通段落处理策略（默认策略）
+ * 
+ * 始终可用的兜底策略：当其它行级策略均不匹配时，负责将当前行渲染为段落。
  */
 
 import { LineProcessingStrategy } from './base-strategy.js';

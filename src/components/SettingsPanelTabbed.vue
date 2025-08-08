@@ -264,8 +264,8 @@ defineExpose({
 
 .tab-button.active {
   background: var(--theme-bg-secondary);
-  color: var(--primary-color);
-  border-bottom: 2px solid var(--primary-color);
+  color: var(--theme-primary);
+  border-bottom: 2px solid var(--theme-primary);
 }
 
 .tab-button.active::after {
@@ -275,7 +275,7 @@ defineExpose({
   left: 0;
   right: 0;
   height: 2px;
-  background: var(--primary-color);
+  background: var(--theme-primary);
 }
 
 .tab-icon {

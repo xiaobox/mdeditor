@@ -1,9 +1,9 @@
 /**
- * @file src/utils/formatters/link-media-processors.js
- * @description 链接和媒体处理工具
+ * @file src/core/markdown/formatters/link.js
+ * @description 链接与图片处理器
  * 
- * 专门处理 Markdown 中的链接和媒体元素（图片）。
- * 从 text-processors.js 中提取出来，提高代码的模块化程度。
+ * 专门处理 Markdown 文本中的链接与图片，输出社交平台友好的 HTML。
+ * 该模块从内联文本格式化中抽离，提升模块化与复用性。
  */
 
 import { REGEX_PATTERNS } from '../../../config/constants/index.js';

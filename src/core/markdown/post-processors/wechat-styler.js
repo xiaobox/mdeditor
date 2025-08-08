@@ -1,32 +1,32 @@
 /**
  * @file src/core/markdown/post-processors/wechat-styler.js
- * @description WeChat HTML post-processor for styling and platform compatibility
+ * @description 微信平台样式后处理器（WeChat 适配）
  *
- * This module handles the final HTML styling and WeChat-specific formatting.
- * It's responsible for applying font styles, inline CSS, and platform-specific
- * optimizations after the core Markdown parsing is complete.
+ * 本模块在核心 Markdown 解析完成后，负责进行微信平台的样式补充与兼容性处理。
+ * 主要职责：在 HTML 中追加字体样式、内联 CSS，以及针对平台的细节优化，
+ * 确保在微信公众号富文本环境中还原一致的排版与视觉。
  */
 
 /**
- * WeChat-specific inline style processor
- * Adds inline styles to HTML elements for precise font weight control
- * @param {string} html - Raw HTML content
- * @param {string} fontFamily - Font family string
- * @param {number} fontSize - Font size in pixels
- * @param {string} lineHeight - Line height value
- * @returns {string} - HTML with WeChat-compatible inline styles
+ * 微信环境下的内联样式处理器
+ * 为元素添加内联样式以精确控制字重、行高等
+ * @param {string} html - 原始 HTML 内容
+ * @param {string} fontFamily - 字体族字符串
+ * @param {number} fontSize - 字号（px）
+ * @param {string} lineHeight - 行高值
+ * @returns {string} - 已添加微信兼容内联样式的 HTML
  */
 function addWeChatInlineStyles(html, fontFamily, fontSize, lineHeight, letterSpacing = 0) {
   const lh = parseFloat(lineHeight);
-  const lineHeightCss = Number.isFinite(lh) ? `${Math.round(lh * 100)}%` : (/[empx%]/i.test(String(lineHeight)) ? String(lineHeight) : '160%');
+  const lineHeightCss = Number.isFinite(lh) ? String(lineHeight) : (/[empx%]/i.test(String(lineHeight)) ? String(lineHeight) : '1.6');
   const baseStyle = `font-family: ${fontFamily}; color: #333; letter-spacing: ${letterSpacing}px;`;
 
-  // Precise font weight control using numeric values instead of keywords
-  const normalWeight = '400';  // Explicit normal weight
-  const boldWeight = '700';    // Explicit bold weight
-  const semiBoldWeight = '600'; // Semi-bold weight
+  // 使用数值字重以便在微信中稳定呈现
+  const normalWeight = '400';  // 常规字重
+  const boldWeight = '700';    // 粗体字重
+  const semiBoldWeight = '600'; // 半粗体
 
-  // Replace various HTML tags, adding inline styles with forced font-weight and enforced line-height
+  // 为常见标签追加内联样式，并强制设置行高
   let out = html
     .replace(/<section(?![^>]*style=)/gi, `<section style="${baseStyle} line-height: ${lineHeightCss} !important;"`)
     .replace(/<p(?![^>]*style=)/gi, `<p style="${baseStyle} font-size: ${fontSize}px; line-height: ${lineHeightCss} !important; margin: 1.5em 8px; font-weight: ${normalWeight};"`)
@@ -42,20 +42,25 @@ function addWeChatInlineStyles(html, fontFamily, fontSize, lineHeight, letterSpa
     .replace(/<em(?![^>]*style=)/gi, `<em style="${baseStyle} font-weight: ${normalWeight}; font-style: italic;"`)
     .replace(/<i(?![^>]*style=)/gi, `<i style="${baseStyle} font-weight: ${normalWeight}; font-style: italic;"`);
 
-  // Ensure elements that already have style also get enforced line-height
+  // 若元素已有 style，则追加或替换行高以确保统一
   const enforce = (inputHtml, tag) => {
     const re = new RegExp(`<${tag}([^>]*?)style="([^"]*)"([^>]*)>`, 'gi');
     return inputHtml.replace(re, (m, pre, style, post) => {
-      const cleaned = style.replace(/line-height\s*:\s*[^;]*;?/gi, '').trim();
-      const merged = `line-height: ${lineHeightCss} !important; ${cleaned}`.trim();
-      return `<${tag}${pre}style="${merged}"${post}>`;
+      let updated = style;
+      if (/line-height\s*:/i.test(updated)) {
+        updated = updated.replace(/line-height\s*:\s*[^;]*;?/gi, `line-height: ${lineHeightCss} !important;`);
+      } else {
+        const needsSemicolon = updated.trim().length > 0 && !/[;\s]$/.test(updated.trim());
+        updated = `${updated}${needsSemicolon ? '; ' : ' '}line-height: ${lineHeightCss} !important;`;
+      }
+      return `<${tag}${pre}style="${updated}"${post}>`;
     });
   };
   for (const t of ['section','p','h1','h2','h3','ul','ol','li','blockquote']) {
     out = enforce(out, t);
   }
 
-  // Wrap inner content with span to propagate line-height if editor overrides ancestor styles
+  // 包裹内部内容，防止编辑器层叠样式覆盖导致行高丢失
   const wrapInner = (inputHtml, tag) => {
     const re = new RegExp(`<${tag}([^>]*)>([\s\S]*?)<\/${tag}>`, 'gi');
     return inputHtml.replace(re, (m, attrs, inner) => {
@@ -74,8 +79,8 @@ function addWeChatInlineStyles(html, fontFamily, fontSize, lineHeight, letterSpa
 }
 
 /**
- * Font family mapping for WeChat compatibility
- * Uses the safest font settings for WeChat public account compatibility
+ * 微信兼容字体族映射
+ * 选择在公众平台上渲染最稳定的字体组合
  */
 const FONT_FAMILY_MAP = {
   'microsoft-yahei': 'Microsoft YaHei, Arial, sans-serif',
@@ -86,9 +91,9 @@ const FONT_FAMILY_MAP = {
 };
 
 /**
- * Calculate optimal line height based on font size
- * @param {number} fontSize - Font size in pixels
- * @returns {string} - Line height value
+ * 基于字号计算合适的行高
+ * @param {number} fontSize - 字号（px）
+ * @returns {string} - 行高
  */
 function calculateLineHeight(fontSize, explicitLineHeight) {
   if (typeof explicitLineHeight === 'number' && isFinite(explicitLineHeight) && explicitLineHeight > 0) {
@@ -100,11 +105,11 @@ function calculateLineHeight(fontSize, explicitLineHeight) {
 }
 
 /**
- * WeChat HTML wrapper and styler
- * Wraps HTML content with font styles using the successful doocs/md approach
- * @param {string} html - Raw HTML content
- * @param {Object} fontSettings - Font settings object
- * @returns {string} - Wrapped HTML with WeChat-compatible styling
+ * 微信 HTML 包裹与样式器
+ * 采用纯内联样式（不使用 <style> 标签），符合公众号规范
+ * @param {string} html - 原始 HTML 内容
+ * @param {Object} fontSettings - 字体设置对象
+ * @returns {string} - 包裹后的 HTML
  */
 export function wrapWithFontStyles(html, fontSettings) {
   if (!fontSettings || !html) return html;
@@ -114,40 +119,38 @@ export function wrapWithFontStyles(html, fontSettings) {
   const lineHeight = calculateLineHeight(fontSize, fontSettings.lineHeight);
   const letterSpacing = typeof fontSettings.letterSpacing === 'number' ? fontSettings.letterSpacing : 0;
 
-  // WeChat public account doesn't support <style> tags, use inline styles instead
-  // Add inline styles to HTML content for WeChat compatibility
+  // 公众号不支持 <style> 标签，改用内联样式
   const styledHtml = addWeChatInlineStyles(html, fontFamily, fontSize, lineHeight, letterSpacing);
 
-  // Use WeChat public account standard HTML structure with all styles inline
-  // Explicitly control font weight for consistent rendering
+  // 使用公众号常见的外层结构，全部使用内联样式
   const lh2 = parseFloat(lineHeight);
-  const lineHeightCss = Number.isFinite(lh2) ? `${Math.round(lh2 * 100)}%` : (/[empx%]/i.test(String(lineHeight)) ? String(lineHeight) : '160%');
-  return `<section data-role="outer" class="rich_media_content" style="font-family: ${fontFamily}; font-size: ${fontSize}px; line-height: ${lineHeightCss} !important; letter-spacing: ${letterSpacing}px; font-weight: 400; color: #333; margin: 0; padding: 0;">
-<section data-role="inner" style="font-family: ${fontFamily}; font-size: ${fontSize}px; line-height: ${lineHeightCss} !important; letter-spacing: ${letterSpacing}px; font-weight: 400; color: #333;">
+  const lhCss = Number.isFinite(lh2) ? String(lineHeight) : (/[empx%]/i.test(String(lineHeight)) ? String(lineHeight) : '1.6');
+  return `<section data-role="outer" class="rich_media_content" style="font-family: ${fontFamily}; font-size: ${fontSize}px; line-height: ${lhCss} !important; letter-spacing: ${letterSpacing}px; font-weight: 400; color: #333; margin: 0; padding: 0;">
+<section data-role="inner" style="font-family: ${fontFamily}; font-size: ${fontSize}px; line-height: ${lhCss} !important; letter-spacing: ${letterSpacing}px; font-weight: 400; color: #333;">
 ${styledHtml}
 </section>
 </section>`;
 }
 
 /**
- * HTML post-processor for WeChat platform
- * Main entry point for applying WeChat-specific styling and formatting
+ * 微信平台 HTML 后处理器
+ * 作为入口统一应用微信特定的样式与格式
  */
 export class WeChatStyler {
   /**
-   * Process HTML content for WeChat compatibility
-   * @param {string} html - Raw HTML content
-   * @param {Object} options - Processing options
-   * @param {Object} options.fontSettings - Font settings object
-   * @param {boolean} options.isPreview - Whether this is preview mode
-   * @returns {string} - Processed HTML
+   * 处理 HTML 内容以适配微信
+   * @param {string} html - 原始 HTML 内容
+   * @param {Object} options - 处理选项
+   * @param {Object} options.fontSettings - 字体设置对象
+   * @param {boolean} options.isPreview - 是否为预览模式
+   * @returns {string} - 处理后的 HTML
    */
   static process(html, options = {}) {
     if (!html) return '';
 
     const { fontSettings, isPreview = false } = options;
 
-    // Only apply font styling if not in preview mode and font settings are provided
+    // 预览模式不强制追加字体样式
     if (!isPreview && fontSettings) {
       return wrapWithFontStyles(html, fontSettings);
     }
@@ -156,11 +159,11 @@ export class WeChatStyler {
   }
 
   /**
-   * Apply only inline styles without wrapper sections
-   * Useful for partial content processing
-   * @param {string} html - Raw HTML content
-   * @param {Object} fontSettings - Font settings object
-   * @returns {string} - HTML with inline styles applied
+   * 仅追加内联样式，不包裹额外结构
+   * 适用于片段内容的处理
+   * @param {string} html - 原始 HTML 内容
+   * @param {Object} fontSettings - 字体设置对象
+   * @returns {string} - 添加内联样式后的 HTML
    */
   static applyInlineStyles(html, fontSettings) {
     if (!fontSettings || !html) return html;

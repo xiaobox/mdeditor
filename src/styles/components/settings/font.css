@@ -31,14 +31,14 @@
 }
 
 .font-family-card:hover {
-  border-color: var(--primary-color);
+  border-color: var(--theme-primary);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 .font-family-card.active {
-  border-color: var(--primary-color);
-  background: var(--primary-light);
+  border-color: var(--theme-primary);
+  background: var(--theme-primary-light);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
@@ -128,7 +128,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--primary-color);
+  background: var(--theme-primary);
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease;
@@ -143,7 +143,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--primary-color);
+  background: var(--theme-primary);
   cursor: pointer;
   border: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -184,7 +184,7 @@
 .current-size {
   font-size: 18px;
   font-weight: 700;
-  color: var(--primary-color);
+  color: var(--theme-primary);
 }
 
 .size-unit {
@@ -235,7 +235,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--primary-color);
+  background: var(--theme-primary);
   cursor: pointer;
   border: 2px solid white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -251,7 +251,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--primary-color);
+  background: var(--theme-primary);
   cursor: pointer;
   border: 2px solid white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -284,13 +284,13 @@
 }
 
 .font-size-preset-btn:hover {
-  border-color: var(--primary-color);
-  background: var(--primary-light);
+  border-color: var(--theme-primary);
+  background: var(--theme-primary-light);
 }
 
 .font-size-preset-btn.active {
-  border-color: var(--primary-color);
-  background: var(--primary-color);
+  border-color: var(--theme-primary);
+  background: var(--theme-primary);
   color: white;
 }
 

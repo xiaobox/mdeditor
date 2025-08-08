@@ -55,7 +55,7 @@ export default {
   border: none;
   border-radius: var(--radius-xl);
   background: var(--gray-200);
-  color: var(--primary-color);
+  color: var(--theme-primary);
   cursor: pointer;
   transition: var(--transition-all-normal);
   /* 移除 margin，让父容器的 gap 来控制间距 */
@@ -63,12 +63,12 @@ export default {
 }
 
 .toolbar-btn:hover {
-  color: var(--primary-hover);
+  color: var(--theme-primary-hover);
   box-shadow: var(--shadow-neumorphism-pressed);
 }
 
 .toolbar-btn:active {
-  color: var(--primary-dark);
+  color: var(--theme-primary-dark);
   box-shadow:
     inset var(--spacing-xs) var(--spacing-xs) var(--spacing-md) rgba(163, 177, 198, 0.6),
     inset calc(-1 * var(--spacing-xs)) calc(-1 * var(--spacing-xs)) var(--spacing-md) rgba(255, 255, 255, 0.9);
@@ -82,21 +82,21 @@ export default {
 @media (prefers-color-scheme: dark) {
   .toolbar-btn {
     background: #2a2a2a;
-    color: var(--primary-color);
+    color: var(--theme-primary);
     box-shadow:
       5px 5px 10px rgba(0, 0, 0, 0.3),
       -5px -5px 10px rgba(255, 255, 255, 0.05);
   }
 
   .toolbar-btn:hover {
-    color: var(--primary-hover);
+    color: var(--theme-primary-hover);
     box-shadow:
       inset 3px 3px 6px rgba(0, 0, 0, 0.4),
       inset -3px -3px 6px rgba(255, 255, 255, 0.08);
   }
 
   .toolbar-btn:active {
-    color: var(--primary-dark);
+    color: var(--theme-primary-dark);
     box-shadow:
       inset 4px 4px 8px rgba(0, 0, 0, 0.5),
       inset -4px -4px 8px rgba(255, 255, 255, 0.1);

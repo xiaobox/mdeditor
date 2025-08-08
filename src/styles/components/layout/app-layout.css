@@ -44,7 +44,7 @@
 .preview-panel:hover {
   transform: translateY(-2px);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
-  border-color: var(--primary-color);
+  border-color: var(--theme-primary);
 }
 /* 面板头部 */
 .panel-header {
@@ -64,7 +64,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(90deg, var(--theme-primary), var(--theme-primary-hover));
   opacity: 0.8;
 }
 .panel-header h3 {
@@ -82,9 +82,9 @@
   content: '';
   width: 6px;
   height: 6px;
-  background: var(--primary-color);
+  background: var(--theme-primary);
   border-radius: 50%;
-  box-shadow: 0 0 8px var(--primary-color);
+  box-shadow: 0 0 8px var(--theme-primary);
 }
 .panel-actions {
   display: flex;
@@ -116,11 +116,11 @@
   transition: all var(--transition-fast);
 }
 .status-indicator.ready {
-  background-color: var(--primary-light);
-  color: var(--primary-color);
+  background-color: var(--theme-primary-light);
+  color: var(--theme-primary);
 }
 .status-indicator.ready::before {
-  background-color: var(--primary-color);
+  background-color: var(--theme-primary);
   animation: pulse 2s infinite;
 }
 .status-indicator.pending {
@@ -215,7 +215,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-color);
+  background: var(--theme-primary);
 }
 
 ::-webkit-scrollbar-corner {
@@ -224,18 +224,18 @@
 
 /* 选择文本样式 */
 ::selection {
-  background: var(--primary-color);
+  background: var(--theme-primary);
   color: white;
 }
 
 ::-moz-selection {
-  background: var(--primary-color);
+  background: var(--theme-primary);
   color: white;
 }
 
 /* 焦点样式 */
 *:focus {
-  outline: 2px solid var(--primary-color);
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
 }
 

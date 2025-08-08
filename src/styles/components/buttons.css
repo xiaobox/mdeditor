@@ -16,19 +16,19 @@
   text-decoration: none;
   white-space: nowrap;
   background: var(--gray-100);
-  color: var(--primary-color);
+  color: var(--theme-primary);
   box-shadow: var(--shadow-neumorphism-raised);
   position: relative;
 }
 
 .btn:hover:not(:disabled) {
-  color: var(--primary-hover);
+  color: var(--theme-primary-hover);
   font-weight: var(--font-weight-bold);
   box-shadow: var(--shadow-neumorphism-pressed);
 }
 
 .btn:active:not(:disabled) {
-  color: var(--primary-dark);
+  color: var(--theme-primary-dark);
   box-shadow:
     inset var(--spacing-xs) var(--spacing-xs) var(--spacing-md) rgba(163, 177, 198, 0.5),
     inset calc(-1 * var(--spacing-xs)) calc(-1 * var(--spacing-xs)) var(--spacing-md) rgba(255, 255, 255, 0.9);
@@ -54,19 +54,19 @@
   cursor: pointer;
   font-size: var(--font-size-base);
   transition: var(--transition-all-normal);
-  color: var(--primary-color);
+  color: var(--theme-primary);
   box-shadow: var(--shadow-neumorphism-small);
 }
 
 .btn-small:hover {
-  color: var(--primary-hover);
+  color: var(--theme-primary-hover);
   box-shadow:
     inset var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) rgba(163, 177, 198, 0.3),
     inset calc(-1 * var(--spacing-xs)) calc(-1 * var(--spacing-xs)) var(--spacing-xs) rgba(255, 255, 255, 0.7);
 }
 
 .btn-small:active {
-  color: var(--primary-dark);
+  color: var(--theme-primary-dark);
   box-shadow:
     inset var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) rgba(163, 177, 198, 0.4),
     inset calc(-1 * var(--spacing-sm)) calc(-1 * var(--spacing-sm)) var(--spacing-sm) rgba(255, 255, 255, 0.8);
@@ -74,21 +74,21 @@
 
 /* 按钮变体 */
 .btn-primary {
-  background: var(--primary-color);
+  background: var(--theme-primary);
   color: white;
   font-weight: 700;
   box-shadow:
     inset 2px 2px 4px rgba(0, 0, 0, 0.2),
     inset -2px -2px 4px rgba(255, 255, 255, 0.1),
-    0 0 15px rgba(var(--primary-rgb), 0.3);
+    0 0 15px rgba(var(--theme-primary-rgb), 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--primary-hover);
+  background: var(--theme-primary-hover);
   box-shadow:
     inset 1px 1px 2px rgba(0, 0, 0, 0.15),
     inset -1px -1px 2px rgba(255, 255, 255, 0.05),
-    0 0 20px rgba(var(--primary-rgb), 0.4);
+    0 0 20px rgba(var(--theme-primary-rgb), 0.4);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -106,7 +106,7 @@
 .btn-secondary:hover:not(:disabled) {
   background: var(--theme-bg-secondary);
   color: var(--theme-text-primary);
-  border-color: var(--primary-color);
+  border-color: var(--theme-primary);
   transform: translateY(-1px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }

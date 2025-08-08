@@ -43,7 +43,7 @@ defineEmits(['close'])
 .header-icon {
   width: 56px;
   height: 56px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -106,6 +106,6 @@ defineEmits(['close'])
   color: var(--theme-text-primary);
   transform: translateY(-1px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  border-color: var(--primary-color);
+  border-color: var(--theme-primary);
 }
 </style>

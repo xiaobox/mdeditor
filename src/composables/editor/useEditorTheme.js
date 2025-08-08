@@ -1,5 +1,5 @@
 /**
- * @file src/composables/useEditorTheme.js
+ * @file src/composables/editor/useEditorTheme.js
  * @description 编辑器主题管理 Composable
  * 
  * 专门负责处理编辑器的主题相关逻辑

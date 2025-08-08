@@ -1,140 +1,153 @@
 <template>
-  <div class="settings-panel" :class="{ 'disable-hover': showColorPicker }" v-if="visible">
-    <div class="settings-overlay" @click="$emit('close')" v-show="!showColorPicker"></div>
-    <div class="settings-content">
-      <!-- 设置面板头部 -->
-      <SettingsHeader @close="$emit('close')" />
+  <transition name="modal">
+    <div
+      class="settings-panel"
+      :class="{ 'disable-hover': showColorPicker }"
+      v-if="visible"
+    >
+      <div
+        class="settings-overlay"
+        @click="$emit('close')"
+        v-show="!showColorPicker"
+      ></div>
+      <div class="settings-content">
+        <!-- 设置面板头部 -->
+        <SettingsHeader @close="$emit('close')" />
 
-      <div class="settings-body">
-        <!-- 侧边导航栏 -->
-        <div class="settings-navigation">
-          <div class="nav-title">快速导航</div>
-          <nav class="nav-menu">
-            <a
-              v-for="section in navigationSections"
-              :key="section.id"
-              class="nav-item"
-              :class="{ active: activeSection === section.id }"
-              @click="scrollToSection(section.id)"
-            >
-              <div class="nav-icon">
-                <svg :viewBox="section.icon.viewBox" width="18" height="18">
-                  <path :d="section.icon.path" fill="currentColor" />
-                </svg>
-              </div>
-              <span class="nav-label">{{ section.label }}</span>
-            </a>
-          </nav>
-        </div>
+        <div class="settings-body">
+          <!-- 侧边导航栏 -->
+          <div class="settings-navigation">
+            <div class="nav-title">快速导航</div>
+            <nav class="nav-menu">
+              <a
+                v-for="section in navigationSections"
+                :key="section.id"
+                class="nav-item"
+                :class="{ active: activeSection === section.id }"
+                @click="scrollToSection(section.id)"
+              >
+                <div class="nav-icon">
+                  <svg :viewBox="section.icon.viewBox" width="18" height="18">
+                    <path :d="section.icon.path" fill="currentColor" />
+                  </svg>
+                </div>
+                <span class="nav-label">{{ section.label }}</span>
+              </a>
+            </nav>
+          </div>
 
-        <!-- 设置内容区域 -->
-        <div class="settings-content-area">
-          <div class="settings-sections">
-            <!-- 主题系统设置 -->
-            <section id="theme-system" class="settings-section-wrapper">
-              <ThemeSystemSection
-                :layout-list="layoutList"
-                :selected-theme-system-id="selectedThemeSystemId"
-                @select="selectThemeSystem"
-              />
-            </section>
+          <!-- 设置内容区域 -->
+          <div class="settings-content-area">
+            <div class="settings-sections">
+              <!-- 主题系统设置 -->
+              <section id="theme-system" class="settings-section-wrapper">
+                <ThemeSystemSection
+                  :layout-list="layoutList"
+                  :selected-theme-system-id="selectedThemeSystemId"
+                  @select="selectThemeSystem"
+                />
+              </section>
 
-            <!-- 主题色设置 -->
-            <section id="color-theme" class="settings-section-wrapper">
-              <ColorThemeSection
-                :builtin-color-themes="builtinColorThemes"
-                :selected-theme-id="selectedThemeId"
-                :is-custom-color-active="isCustomColorActive"
-                :current-custom-color="currentCustomColor"
-                @select-theme="selectTheme"
-                @toggle-color-picker="toggleColorPicker"
-              />
-            </section>
+              <!-- 主题色设置 -->
+              <section id="color-theme" class="settings-section-wrapper">
+                <ColorThemeSection
+                  :builtin-color-themes="builtinColorThemes"
+                  :selected-theme-id="selectedThemeId"
+                  :is-custom-color-active="isCustomColorActive"
+                  :current-custom-color="currentCustomColor"
+                  @select-theme="selectTheme"
+                  @toggle-color-picker="toggleColorPicker"
+                />
+              </section>
 
-            <!-- 代码样式设置 -->
-            <section id="code-style" class="settings-section-wrapper">
-              <CodeStyleSection
-                :code-style-list="codeStyleList"
-                :selected-code-style-id="selectedCodeStyleId"
-                @select="selectCodeStyle"
-              />
-            </section>
+              <!-- 代码样式设置 -->
+              <section id="code-style" class="settings-section-wrapper">
+                <CodeStyleSection
+                  :code-style-list="codeStyleList"
+                  :selected-code-style-id="selectedCodeStyleId"
+                  @select="selectCodeStyle"
+                />
+              </section>
 
-            <!-- 字体设置 -->
-            <section id="font-settings" class="settings-section-wrapper">
-              <FontSettingsSection
-                :font-family-list="fontFamilyList"
-                :selected-font-family="selectedFontFamily"
-                @select-font-family="selectFontFamily"
-              />
-            </section>
+              <!-- 字体设置 -->
+              <section id="font-settings" class="settings-section-wrapper">
+                <FontSettingsSection
+                  :font-family-list="fontFamilyList"
+                  :selected-font-family="selectedFontFamily"
+                  @select-font-family="selectFontFamily"
+                />
+              </section>
 
-            <!-- 字号设置 -->
-            <section id="font-size-settings" class="settings-section-wrapper">
-              <FontSizeSection
-                :selected-font-family="selectedFontFamily"
-                :selected-font-size="selectedFontSize"
-                @update-font-size="updateFontSize"
-              />
-            </section>
+              <!-- 字号设置 -->
+              <section id="font-size-settings" class="settings-section-wrapper">
+                <FontSizeSection
+                  :selected-font-family="selectedFontFamily"
+                  :selected-font-size="selectedFontSize"
+                  @update-font-size="updateFontSize"
+                />
+              </section>
 
-            <!-- 间距设置 -->
-            <section id="spacing-settings" class="settings-section-wrapper">
-              <SpacingSettingsSection
-                :letter-spacing="selectedLetterSpacing"
-                :line-height="selectedLineHeight"
-                @update-letter-spacing="updateLetterSpacing"
-                @update-line-height="updateLineHeight"
-              />
-            </section>
+              <!-- 间距设置 -->
+              <section id="spacing-settings" class="settings-section-wrapper">
+                <SpacingSettingsSection
+                  :letter-spacing="selectedLetterSpacing"
+                  :line-height="selectedLineHeight"
+                  @update-letter-spacing="updateLetterSpacing"
+                  @update-line-height="updateLineHeight"
+                />
+              </section>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- 设置面板底部 -->
-      <SettingsFooter
-        :current-color-theme="currentColorTheme"
-        @apply="applySettings"
-      />
-    </div>
-
-    <!-- 颜色选择器弹窗 -->
-    <div v-if="showColorPicker" class="color-picker-overlay" @click="closeColorPicker">
-      <div class="color-picker-modal" @click.stop>
-        <ColorPicker
-          :initial-color="currentCustomColor"
-          @change="onColorChange"
-          @confirm="onColorConfirm"
-          @cancel="closeColorPicker"
+        <!-- 设置面板底部 -->
+        <SettingsFooter
+          @apply="applySettings"
         />
       </div>
+
+      <!-- 颜色选择器弹窗 -->
+      <div
+        v-if="showColorPicker"
+        class="color-picker-overlay"
+        @click="closeColorPicker"
+      >
+        <div class="color-picker-modal" @click.stop>
+          <ColorPicker
+            :initial-color="currentCustomColor"
+            @change="onColorChange"
+            @confirm="onColorConfirm"
+            @cancel="closeColorPicker"
+          />
+        </div>
+      </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script setup>
-import { ref, watch, nextTick, onMounted, onUnmounted } from 'vue'
-import { useSettingsPanel } from '../composables/useSettingsPanel.js'
-import SettingsHeader from './settings/SettingsHeader.vue'
-import SettingsFooter from './settings/SettingsFooter.vue'
-import ThemeSystemSection from './settings/ThemeSystemSection.vue'
-import ColorThemeSection from './settings/ColorThemeSection.vue'
-import CodeStyleSection from './settings/CodeStyleSection.vue'
-import FontSettingsSection from './settings/FontSettingsSection.vue'
-import FontSizeSection from './settings/FontSizeSection.vue'
-import SpacingSettingsSection from './settings/SpacingSettingsSection.vue'
-import ColorPicker from './ColorPicker.vue'
+import { ref, watch, nextTick, onMounted, onUnmounted } from "vue";
+import { useSettingsPanel } from "../composables/useSettingsPanel.js";
+import SettingsHeader from "./settings/SettingsHeader.vue";
+import SettingsFooter from "./settings/SettingsFooter.vue";
+import ThemeSystemSection from "./settings/ThemeSystemSection.vue";
+import ColorThemeSection from "./settings/ColorThemeSection.vue";
+import CodeStyleSection from "./settings/CodeStyleSection.vue";
+import FontSettingsSection from "./settings/FontSettingsSection.vue";
+import FontSizeSection from "./settings/FontSizeSection.vue";
+import SpacingSettingsSection from "./settings/SpacingSettingsSection.vue";
+import ColorPicker from "./ColorPicker.vue";
 
 // Props
 const props = defineProps({
   visible: {
     type: Boolean,
-    default: false
-  }
-})
+    default: false,
+  },
+});
 
 // Emits
-const emit = defineEmits(['close', 'show-notification'])
+const emit = defineEmits(["close", "show-notification"]);
 
 // 使用设置面板 composable
 const {
@@ -144,8 +157,8 @@ const {
   selectedCodeStyleId,
   selectedFontFamily,
   selectedFontSize,
-    selectedLetterSpacing,
-    selectedLineHeight,
+  selectedLetterSpacing,
+  selectedLineHeight,
   showColorPicker,
   selectedCustomColor,
   currentCustomColor,
@@ -174,149 +187,156 @@ const {
   onColorChange,
   onColorConfirm,
   resetSelections,
-  applySettings
-} = useSettingsPanel(props, emit)
+  applySettings,
+} = useSettingsPanel(props, emit);
 
 // 导航相关状态
-const activeSection = ref('theme-system')
+const activeSection = ref("theme-system");
 
 // 导航配置
-  const navigationSections = ref([
+const navigationSections = ref([
   {
-    id: 'theme-system',
-    label: '主题系统',
+    id: "theme-system",
+    label: "主题系统",
     icon: {
-      viewBox: '0 0 24 24',
-      path: 'M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z'
-    }
+      viewBox: "0 0 24 24",
+      path: "M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z",
+    },
   },
   {
-    id: 'color-theme',
-    label: '主题色',
+    id: "color-theme",
+    label: "主题色",
     icon: {
-      viewBox: '0 0 24 24',
-      path: 'M17.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,9A1.5,1.5 0 0,1 19,10.5A1.5,1.5 0 0,1 17.5,12M14.5,8A1.5,1.5 0 0,1 13,6.5A1.5,1.5 0 0,1 14.5,5A1.5,1.5 0 0,1 16,6.5A1.5,1.5 0 0,1 14.5,8M9.5,8A1.5,1.5 0 0,1 8,6.5A1.5,1.5 0 0,1 9.5,5A1.5,1.5 0 0,1 11,6.5A1.5,1.5 0 0,1 9.5,8M6.5,12A1.5,1.5 0 0,1 5,10.5A1.5,1.5 0 0,1 6.5,9A1.5,1.5 0 0,1 8,10.5A1.5,1.5 0 0,1 6.5,12M12,3A9,9 0 0,0 3,12A9,9 0 0,0 12,21A1.5,1.5 0 0,0 13.5,19.5C13.5,19.11 13.35,18.76 13.11,18.5C12.88,18.23 12.73,17.88 12.73,17.5A1.5,1.5 0 0,1 14.23,16H16A5,5 0 0,0 21,11C21,6.58 16.97,3 12,3Z'
-    }
+      viewBox: "0 0 24 24",
+      path: "M17.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,9A1.5,1.5 0 0,1 19,10.5A1.5,1.5 0 0,1 17.5,12M14.5,8A1.5,1.5 0 0,1 13,6.5A1.5,1.5 0 0,1 14.5,5A1.5,1.5 0 0,1 16,6.5A1.5,1.5 0 0,1 14.5,8M9.5,8A1.5,1.5 0 0,1 8,6.5A1.5,1.5 0 0,1 9.5,5A1.5,1.5 0 0,1 11,6.5A1.5,1.5 0 0,1 9.5,8M6.5,12A1.5,1.5 0 0,1 5,10.5A1.5,1.5 0 0,1 6.5,9A1.5,1.5 0 0,1 8,10.5A1.5,1.5 0 0,1 6.5,12M12,3A9,9 0 0,0 3,12A9,9 0 0,0 12,21A1.5,1.5 0 0,0 13.5,19.5C13.5,19.11 13.35,18.76 13.11,18.5C12.88,18.23 12.73,17.88 12.73,17.5A1.5,1.5 0 0,1 14.23,16H16A5,5 0 0,0 21,11C21,6.58 16.97,3 12,3Z",
+    },
   },
   {
-    id: 'code-style',
-    label: '代码样式',
+    id: "code-style",
+    label: "代码样式",
     icon: {
-      viewBox: '0 0 24 24',
-      path: 'M14.6,16.6L19.2,12L14.6,7.4L16,6L22,12L16,18L14.6,16.6M9.4,16.6L4.8,12L9.4,7.4L8,6L2,12L8,18L9.4,16.6Z'
-    }
+      viewBox: "0 0 24 24",
+      path: "M14.6,16.6L19.2,12L14.6,7.4L16,6L22,12L16,18L14.6,16.6M9.4,16.6L4.8,12L9.4,7.4L8,6L2,12L8,18L9.4,16.6Z",
+    },
   },
   {
-    id: 'font-settings',
-    label: '字体',
+    id: "font-settings",
+    label: "字体",
     icon: {
-      viewBox: '0 0 24 24',
-      path: 'M9,4V7H14V19H17V7H22V4H9M3,4V7H6V19H9V7H12V4H3Z'
-    }
+      viewBox: "0 0 24 24",
+      path: "M9,4V7H14V19H17V7H22V4H9M3,4V7H6V19H9V7H12V4H3Z",
+    },
   },
   {
-    id: 'font-size-settings',
-    label: '字号',
+    id: "font-size-settings",
+    label: "字号",
     icon: {
-      viewBox: '0 0 24 24',
-      path: 'M11,7A2,2 0 0,1 13,9V17A2,2 0 0,1 11,19H9A2,2 0 0,1 7,17V9A2,2 0 0,1 9,7H11M9,9V17H11V9H9M12,2A2,2 0 0,1 14,4V6H12V4H10V6H8V4A2,2 0 0,1 10,2H12Z'
-    }
+      viewBox: "0 0 24 24",
+      path: "M11,7A2,2 0 0,1 13,9V17A2,2 0 0,1 11,19H9A2,2 0 0,1 7,17V9A2,2 0 0,1 9,7H11M9,9V17H11V9H9M12,2A2,2 0 0,1 14,4V6H12V4H10V6H8V4A2,2 0 0,1 10,2H12Z",
+    },
   },
   {
-    id: 'spacing-settings',
-    label: '间距',
+    id: "spacing-settings",
+    label: "间距",
     icon: {
-      viewBox: '0 0 24 24',
-      path: 'M3 11h18v2H3v-2m6-6h6v2H9V5m0 14h6v2H9v-2'
-    }
-  }
-])
+      viewBox: "0 0 24 24",
+      path: "M3 11h18v2H3v-2m6-6h6v2H9V5m0 14h6v2H9v-2",
+    },
+  },
+]);
 
 // 滚动到指定区域
 const scrollToSection = (sectionId) => {
-  const element = document.getElementById(sectionId)
+  const element = document.getElementById(sectionId);
   if (element) {
     element.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-      inline: 'nearest'
-    })
-    activeSection.value = sectionId
+      behavior: "smooth",
+      block: "start",
+      inline: "nearest",
+    });
+    activeSection.value = sectionId;
   }
-}
+};
 
 // 监听滚动事件，更新当前激活的导航项
 const handleScroll = () => {
-  const sections = navigationSections.value.map(section => section.id)
-  const scrollContainer = document.querySelector('.settings-content-area')
+  const sections = navigationSections.value.map((section) => section.id);
+  const scrollContainer = document.querySelector(".settings-content-area");
 
-  if (!scrollContainer) return
+  if (!scrollContainer) return;
 
-  const containerHeight = scrollContainer.clientHeight
+  const containerHeight = scrollContainer.clientHeight;
 
   for (const sectionId of sections) {
-    const element = document.getElementById(sectionId)
+    const element = document.getElementById(sectionId);
     if (element) {
-      const rect = element.getBoundingClientRect()
-      const containerRect = scrollContainer.getBoundingClientRect()
-      const relativeTop = rect.top - containerRect.top
+      const rect = element.getBoundingClientRect();
+      const containerRect = scrollContainer.getBoundingClientRect();
+      const relativeTop = rect.top - containerRect.top;
 
       // 如果元素在视口的上半部分，则认为是当前激活的区域
-      if (relativeTop <= containerHeight / 3 && relativeTop >= -rect.height / 2) {
-        activeSection.value = sectionId
-        break
+      if (
+        relativeTop <= containerHeight / 3 &&
+        relativeTop >= -rect.height / 2
+      ) {
+        activeSection.value = sectionId;
+        break;
       }
     }
   }
-}
+};
 
 // 直接定位到当前激活区域（复用导航点击的精确定位逻辑）
 const jumpToActiveSection = () => {
-  const element = document.getElementById(activeSection.value)
+  const element = document.getElementById(activeSection.value);
   if (element) {
     // 使用与导航点击相同的 scrollIntoView 方法，但不使用平滑滚动
     element.scrollIntoView({
-      behavior: 'auto', // 使用 'auto' 而不是 'smooth'，实现瞬间定位
-      block: 'start',   // 与导航点击保持一致的定位方式
-      inline: 'nearest' // 与导航点击保持一致的定位方式
-    })
+      behavior: "auto", // 使用 'auto' 而不是 'smooth'，实现瞬间定位
+      block: "start", // 与导航点击保持一致的定位方式
+      inline: "nearest", // 与导航点击保持一致的定位方式
+    });
   }
-}
+};
 
 // 监听面板可见性变化，立即设置滚动位置
-watch(() => props.visible, (newVisible, oldVisible) => {
-  if (newVisible && !oldVisible) {
-    // 面板从隐藏变为显示时，立即设置滚动位置
-    // 使用 nextTick 确保DOM已渲染完成
-    nextTick(() => {
-      jumpToActiveSection()
-    })
-  }
-}, { flush: 'post' }) // 使用 post 确保在DOM更新后执行
+watch(
+  () => props.visible,
+  (newVisible, oldVisible) => {
+    if (newVisible && !oldVisible) {
+      // 面板从隐藏变为显示时，立即设置滚动位置
+      // 使用 nextTick 确保DOM已渲染完成
+      nextTick(() => {
+        jumpToActiveSection();
+      });
+    }
+  },
+  { flush: "post" }
+); // 使用 post 确保在DOM更新后执行
 
 // 生命周期钩子
 onMounted(() => {
-  const scrollContainer = document.querySelector('.settings-content-area')
+  const scrollContainer = document.querySelector(".settings-content-area");
   if (scrollContainer) {
-    scrollContainer.addEventListener('scroll', handleScroll)
+    scrollContainer.addEventListener("scroll", handleScroll);
   }
-})
+});
 
 onUnmounted(() => {
-  const scrollContainer = document.querySelector('.settings-content-area')
+  const scrollContainer = document.querySelector(".settings-content-area");
   if (scrollContainer) {
-    scrollContainer.removeEventListener('scroll', handleScroll)
+    scrollContainer.removeEventListener("scroll", handleScroll);
   }
-})
+});
 
 // 暴露方法给父组件
 defineExpose({
-  resetSelections
-})
+  resetSelections,
+});
 </script>
 
 <style scoped>
-@import '../styles/components/settings/index.css';
+@import "../styles/components/settings/index.css";
 
 /* 设置面板主体布局 */
 .settings-body {
@@ -372,7 +392,7 @@ defineExpose({
 }
 
 .nav-item.active {
-  background: var(--primary-color);
+  background: var(--theme-primary);
   color: white;
 }
 

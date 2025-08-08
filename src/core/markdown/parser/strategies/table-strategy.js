@@ -1,5 +1,5 @@
 /**
- * @file src/utils/formatters/processing-strategies/table-strategy.js
+ * @file src/core/markdown/parser/strategies/table-strategy.js
  * @description 表格处理策略
  */
 

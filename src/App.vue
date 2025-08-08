@@ -109,9 +109,8 @@ const {
   openGithub
 } = useAppState()
 
-// 初始化主题管理器
+// 初始化主题管理器（全局单例内部已自动调用 initialize）
 const themeManager = useGlobalThemeManager()
-themeManager.initialize()
 
 
 </script>

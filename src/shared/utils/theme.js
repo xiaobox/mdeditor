@@ -7,16 +7,12 @@
 
 import { 
   getColorTheme, 
-  defaultColorTheme 
-} from '../../core/theme/presets/color-themes.js';
-import { 
-  getCodeStyle, 
-  defaultCodeStyle 
-} from '../../core/theme/presets/code-styles.js';
-import { 
-  getThemeSystem, 
-  defaultThemeSystem 
-} from '../../core/theme/presets/theme-systems.js';
+  defaultColorTheme,
+  getCodeStyle,
+  defaultCodeStyle,
+  getThemeSystem,
+  defaultThemeSystem
+} from '../../core/theme/index.js';
 
 
 /**

@@ -21,11 +21,11 @@
 .header-left h1 {
   font-size: 26px;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-hover) 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: var(--primary-color); /* 降级支持 */
+  color: var(--theme-primary);
   margin: 0;
   letter-spacing: -0.8px;
   position: relative;
@@ -44,7 +44,7 @@
   left: 0;
   width: 60px;
   height: 3px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
   border-radius: 2px;
   opacity: 0.6;
   transition: all 0.3s ease;
@@ -57,7 +57,7 @@
 
 .header-subtitle {
   font-size: 14px;
-  color: var(--primary-color);
+  color: var(--theme-primary);
   font-weight: 600;
   letter-spacing: 0.2px;
   opacity: 0.95;
@@ -66,7 +66,7 @@
 
 .header-subtitle:hover {
   opacity: 1;
-  color: var(--primary-hover);
+  color: var(--theme-primary-hover);
   transform: translateY(-1px);
 }
 
@@ -85,7 +85,7 @@
   border: none;
   border-radius: var(--radius-2xl);
   background: var(--gray-100);
-  color: var(--primary-color);
+  color: var(--theme-primary);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-tight);
@@ -100,14 +100,14 @@
 
 /* 悬停状态 - 轻微内凹效果 + 主题色增强 */
 .header-btn:hover {
-  color: var(--primary-hover);
+  color: var(--theme-primary-hover);
   font-weight: var(--font-weight-bold);
   box-shadow: var(--shadow-neumorphism-pressed);
 }
 
 /* 激活状态 - 深度内凹 */
 .header-btn:active {
-  color: var(--primary-dark);
+  color: var(--theme-primary-dark);
   box-shadow:
     inset var(--spacing-xs) var(--spacing-xs) var(--spacing-md) rgba(163, 177, 198, 0.5),
     inset calc(-1 * var(--spacing-xs)) calc(-1 * var(--spacing-xs)) var(--spacing-md) rgba(255, 255, 255, 0.9);
@@ -115,7 +115,7 @@
 
 /* 选中状态（用于设置按钮） - 简洁的主题色 Neumorphism */
 .header-btn.active {
-  background: var(--primary-color);
+  background: var(--theme-primary);
   color: white;
   font-weight: 700;
   box-shadow:
@@ -123,15 +123,15 @@
     inset 3px 3px 6px rgba(0, 0, 0, 0.2),
     inset -3px -3px 6px rgba(255, 255, 255, 0.1),
     /* 轻微外部光晕 */
-    0 0 20px rgba(var(--primary-rgb), 0.3);
+    0 0 20px rgba(var(--theme-primary-rgb), 0.3);
 }
 
 .header-btn.active:hover {
-  background: var(--primary-hover);
+  background: var(--theme-primary-hover);
   box-shadow:
     inset 2px 2px 4px rgba(0, 0, 0, 0.15),
     inset -2px -2px 4px rgba(255, 255, 255, 0.05),
-    0 0 25px rgba(var(--primary-rgb), 0.4);
+    0 0 25px rgba(var(--theme-primary-rgb), 0.4);
 }
 
 .header-btn.active:active {
@@ -158,12 +158,12 @@
   flex-shrink: 0;
   transition: all 0.2s ease;
   opacity: 0.9;
-  color: var(--primary-color);
+  color: var(--theme-primary);
 }
 
 .header-btn:hover svg {
   opacity: 1;
-  color: var(--primary-hover);
+  color: var(--theme-primary-hover);
   transform: scale(1.05);
 }
 
@@ -173,7 +173,7 @@
 }
 
 .header-btn:active svg {
-  color: var(--primary-dark);
+  color: var(--theme-primary-dark);
 }
 
 /* 文字样式 - 跟随主题色 */
@@ -197,7 +197,7 @@
   box-shadow:
     6px 6px 12px rgba(163, 177, 198, 0.6),
     -6px -6px 12px rgba(255, 255, 255, 0.8),
-    0 0 0 3px rgba(var(--primary-rgb), 0.3);
+    0 0 0 3px rgba(var(--theme-primary-rgb), 0.3);
 }
 
 /* 视图切换按钮组样式 */
@@ -232,24 +232,24 @@
 
 .view-toggle-btn:hover {
   background: rgba(0, 0, 0, 0.05);
-  color: var(--primary-color);
+  color: var(--theme-primary);
 }
 
 .view-toggle-btn.active {
-  background: var(--primary-color);
+  background: var(--theme-primary);
   color: white;
-  box-shadow: 0 2px 4px rgba(var(--primary-rgb, 0, 168, 107), 0.3);
+  box-shadow: 0 2px 4px rgba(var(--theme-primary-rgb), 0.3);
 }
 
 .view-toggle-btn.active:hover {
-  background: var(--primary-hover);
+  background: var(--theme-primary-hover);
   color: white;
 }
 
 /* 视图切换按钮的焦点状态 */
 .view-toggle-btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.3);
+  box-shadow: 0 0 0 2px rgba(var(--theme-primary-rgb), 0.3);
 }
 
 /* 视图切换按钮的禁用状态 */
@@ -267,7 +267,7 @@
 /* 保留旧的 .btn 类以兼容 DropdownMenu */
 .btn:hover {
   background: var(--theme-bg-secondary);
-  border-color: var(--primary-color);
+  border-color: var(--theme-primary);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }

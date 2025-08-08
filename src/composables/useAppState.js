@@ -15,6 +15,7 @@ import { useContentState } from './useContentState.js'
 import { useUIState } from './useUIState.js'
 import { useNotification } from './useNotification.js'
 import { useClipboard } from './useClipboard.js'
+import { EXTERNAL_LINKS } from '../config/constants/links.js'
 
 export function useAppState() {
   // 初始化各个功能域的 composables
@@ -36,7 +37,7 @@ export function useAppState() {
 
   // 外部链接功能
   const openGithub = () => {
-    window.open('https://github.com/your-username/modern-md-editor', '_blank')
+    window.open(EXTERNAL_LINKS.GITHUB_REPO, '_blank')
   }
 
   return {

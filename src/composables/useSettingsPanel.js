@@ -12,7 +12,7 @@
 
 import { ref, computed, onMounted, watch } from 'vue'
 import { useGlobalThemeManager } from './index.js'
-import { getColorThemeList } from '../core/theme/presets/color-themes.js'
+import { getColorThemeList } from '../core/theme/index.js'
 
 export function useSettingsPanel(props, emit) {
   // 使用统一主题管理器
@@ -92,7 +92,7 @@ export function useSettingsPanel(props, emit) {
     }
 
     // 立即应用选中主题的颜色到CSS变量，以便选中状态边框颜色实时更新
-    import('../core/theme/presets/color-themes.js').then(({ getColorTheme }) => {
+    import('../core/theme/index.js').then(({ getColorTheme }) => {
       const fullTheme = getColorTheme(themeId)
       if (fullTheme) {
         themeManager.cssManager.applyColorTheme(fullTheme)
@@ -159,7 +159,7 @@ export function useSettingsPanel(props, emit) {
   const onColorConfirm = async (color) => {
     try {
       // 导入颜色生成器来创建临时主题
-      const { ColorThemeGenerator } = await import('../core/theme/presets/color-themes.js')
+      const { ColorThemeGenerator } = await import('../core/theme/index.js')
       const tempTheme = ColorThemeGenerator.generateThemeColors(color)
 
       // 创建完整的主题对象

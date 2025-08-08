@@ -1,5 +1,5 @@
 /**
- * @file src/config/themes/theme-systems.js
+ * @file src/core/theme/presets/theme-systems.js
  * @description 排版主题系统的定义文件
  *
  * 本文件定义了更高层次的“排版主题系统”（Theme System）。

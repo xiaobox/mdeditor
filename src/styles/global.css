@@ -108,7 +108,7 @@ body {
   height: 20px;
   border: 2px solid var(--gray-300);
   border-radius: 50%;
-  border-top-color: var(--primary-color);
+  border-top-color: var(--theme-primary);
   animation: spin 0.8s linear infinite;
 }
 
@@ -118,11 +118,11 @@ body {
 
 /* ===== 基础交互样式 ===== */
 ::selection {
-  background-color: var(--primary-light);
+  background-color: var(--theme-primary-light);
   color: var(--text-primary);
 }
 
 :focus-visible {
-  outline: 2px solid var(--primary-color);
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
 }

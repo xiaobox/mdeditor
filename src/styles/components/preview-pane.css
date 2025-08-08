@@ -83,14 +83,14 @@
 }
 
 .mode-btn:hover:not(.active) {
-  color: var(--primary-color);
+  color: var(--theme-primary);
   background: rgba(255, 255, 255, 0.3);
 }
 
 /* 激活状态 - 凸起的标签页 */
 .mode-btn.active {
   background: linear-gradient(145deg, #ffffff, #f8f9fa);
-  color: var(--primary-color);
+  color: var(--theme-primary);
   font-weight: 600;
   /* 凸起效果 - 从容器中突出 */
   box-shadow:
@@ -103,7 +103,7 @@
 }
 
 .mode-btn.active:hover {
-  color: var(--primary-hover);
+  color: var(--theme-primary-hover);
   background: linear-gradient(145deg, #ffffff, #fafbfc);
   box-shadow:
     4px 4px 8px rgba(163, 177, 198, 0.6),
@@ -127,7 +127,7 @@
 
 .mode-btn.active .mode-icon {
   opacity: 1;
-  color: var(--primary-color);
+  color: var(--theme-primary);
 }
 
 /* Tab 文字样式 - 已移除，现在只使用图标 */
@@ -430,7 +430,7 @@ pre[class*="language-"]::after {
 
 /* 预览面板引用块样式 - 简化版 */
 .modern-markdown blockquote {
-  border-left: 4px solid var(--primary-color);
+  border-left: 4px solid var(--theme-primary);
   background: var(--theme-quote-bg);
   margin: 16px 0;
   padding: 16px 20px;

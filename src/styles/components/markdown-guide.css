@@ -51,7 +51,7 @@
   justify-content: center;
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
   border-radius: 12px;
   color: white;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
@@ -62,7 +62,7 @@
   font-size: 28px;
   font-weight: 700;
   color: var(--theme-text-primary);
-  background: linear-gradient(135deg, var(--theme-text-primary), var(--primary-color));
+  background: linear-gradient(135deg, var(--theme-text-primary), var(--theme-primary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -128,7 +128,7 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
   border-radius: 10px;
   color: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -163,7 +163,7 @@
 .syntax-item:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  border-color: var(--primary-color);
+  border-color: var(--theme-primary);
 }
 
 .syntax-left {
@@ -186,7 +186,7 @@
   content: '';
   width: 4px;
   height: 16px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
   border-radius: 2px;
 }
 
@@ -224,7 +224,7 @@
   top: 0;
   bottom: 0;
   width: 3px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
   border-radius: 0 2px 2px 0;
 }
 
@@ -238,7 +238,7 @@
 
 .demo-h1 {
   font-size: 24px;
-  background: linear-gradient(135deg, var(--theme-text-primary), var(--primary-color));
+  background: linear-gradient(135deg, var(--theme-text-primary), var(--theme-primary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -249,7 +249,7 @@
 .demo-quote {
   margin: 12px 0;
   padding: 16px 20px;
-  border-left: 4px solid var(--primary-color);
+  border-left: 4px solid var(--theme-primary);
   background: var(--theme-bg-tertiary);
   border-radius: 0 8px 8px 0;
   color: var(--theme-text-secondary);
@@ -263,7 +263,7 @@
   left: 8px;
   top: 8px;
   font-size: 24px;
-  color: var(--primary-color);
+  color: var(--theme-primary);
   font-weight: bold;
 }
 
@@ -308,7 +308,7 @@
 }
 
 .demo-task-list .task-done {
-  color: var(--primary-color);
+  color: var(--theme-primary);
 }
 
 .demo-task-list .task-todo {
@@ -316,7 +316,7 @@
 }
 
 .demo-link {
-  color: var(--primary-color);
+  color: var(--theme-primary);
   text-decoration: none;
   font-weight: 500;
   border-bottom: 1px solid transparent;
@@ -324,7 +324,7 @@
 }
 
 .demo-link:hover {
-  border-bottom-color: var(--primary-color);
+  border-bottom-color: var(--theme-primary);
 }
 
 .demo-image {
@@ -356,7 +356,7 @@
 .demo-hr {
   border: none;
   height: 3px;
-  background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+  background: linear-gradient(90deg, transparent, var(--theme-primary), transparent);
   margin: 20px 0;
   border-radius: 2px;
   width: 100%;
@@ -367,7 +367,7 @@
 .syntax-right .demo-hr {
   margin: 16px 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--theme-border-light), var(--primary-color), var(--theme-border-light));
+  background: linear-gradient(90deg, var(--theme-border-light), var(--theme-primary), var(--theme-border-light));
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 

@@ -1,5 +1,5 @@
 /**
- * @file src/utils/formatters/table-processor.js
+ * @file src/core/markdown/processors/table.js
  * @description 表格处理器
  * 
  * 专门处理 Markdown 表格的复杂逻辑，包括表格检测、行解析和格式化。

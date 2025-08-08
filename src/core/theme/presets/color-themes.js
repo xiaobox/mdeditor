@@ -1,5 +1,5 @@
 /**
- * @file src/config/themes/color-themes.js
+ * @file src/core/theme/presets/color-themes.js
  * @description 颜色主题的定义文件
  *
  * 本文件集中定义了所有可用的颜色主题（Color Theme）。

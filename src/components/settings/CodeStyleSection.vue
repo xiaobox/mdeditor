@@ -62,7 +62,7 @@
 </template>
 
 <script setup>
-import { getCodeStyle } from '../../core/theme/presets/code-styles.js'
+import { getCodeStyle } from '../../core/theme/index.js'
 
 defineProps({
   codeStyleList: {
@@ -107,7 +107,7 @@ const getCodeStylePreviewStyles = (styleId) => {
 .settings-section:hover {
   transform: translateY(calc(-1 * var(--spacing-xs)));
   box-shadow: var(--shadow-xl);
-  border-color: var(--primary-color);
+  border-color: var(--theme-primary);
 }
 
 .section-header {
@@ -122,7 +122,7 @@ const getCodeStylePreviewStyles = (styleId) => {
 .section-icon {
   width: 44px;
   height: 44px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -174,12 +174,12 @@ const getCodeStylePreviewStyles = (styleId) => {
 .code-style-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  border-color: var(--primary-color);
+  border-color: var(--theme-primary);
 }
 
 .code-style-card.active {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px var(--primary-color), 0 8px 32px rgba(0, 0, 0, 0.15);
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 2px var(--theme-primary), 0 8px 32px rgba(0, 0, 0, 0.15);
   transform: translateY(-3px);
   background: linear-gradient(135deg, var(--theme-bg-secondary), var(--theme-bg-primary));
 }
@@ -334,7 +334,7 @@ const getCodeStylePreviewStyles = (styleId) => {
 }
 
 .code-style-card:hover .code-style-name {
-  color: var(--primary-color);
+  color: var(--theme-primary);
   transform: translateY(-1px);
 }
 
@@ -358,7 +358,7 @@ const getCodeStylePreviewStyles = (styleId) => {
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  border: 2px solid var(--primary-color);
+  border: 2px solid var(--theme-primary);
 }
 
 @keyframes shimmer {

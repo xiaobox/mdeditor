@@ -22,7 +22,7 @@
     "vue-codemirror": "^6.1.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.5.0",
+    "@vitejs/plugin-vue": "^5.0.4",
     "@vitest/ui": "^1.6.1",
     "@vue/test-utils": "^2.4.6",
     "jsdom": "^23.2.0",

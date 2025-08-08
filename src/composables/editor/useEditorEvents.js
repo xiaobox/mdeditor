@@ -1,5 +1,5 @@
 /**
- * @file src/composables/useEditorEvents.js
+ * @file src/composables/editor/useEditorEvents.js
  * @description 编辑器事件处理 Composable
  * 
  * 专门负责处理编辑器的各种事件，如内容变化、滚动等

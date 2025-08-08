@@ -1,5 +1,5 @@
 /**
- * @file src/config/themes/code-styles.js
+ * @file src/core/theme/presets/code-styles.js
  * @description 代码高亮样式的定义文件
  *
  * 本文件集中定义了所有可用的代码高亮样式（Code Style）。

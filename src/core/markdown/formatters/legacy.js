@@ -24,11 +24,11 @@ export function formatInlineText(text, theme = defaultColorTheme, baseFontSize =
 }
 
 /**
- * Formats inline text for internal nested calls, without handling escape characters.
- * @param {string} text - The text content to format.
- * @param {object} [theme=defaultColorTheme] - The color theme object.
+ * 内部调用的内联文本格式化（不处理转义字符）
+ * @param {string} text - 待格式化的文本内容
+ * @param {object} [theme=defaultColorTheme] - 颜色主题对象
  * @param {number} [baseFontSize=16] - 基础字号
- * @returns {string} - The formatted HTML string.
+ * @returns {string} - 格式化后的 HTML 字符串
  */
 function formatInlineTextInternal(text, theme = defaultColorTheme, baseFontSize = 16) {
   if (!text) return '';
@@ -323,11 +323,11 @@ function buildNestedQuotes(lines, level, theme, baseFontSize = 16) {
 }
 
 /**
- * Formats a blockquote, handling nested quotes and applying theme styles.
- * @param {string[]} contentLines - The lines of content within the blockquote.
- * @param {object} [theme=defaultColorTheme] - The color theme object.
+ * 格式化引用块，支持嵌套引用并应用主题样式
+ * @param {string[]} contentLines - 引用块中的内容行
+ * @param {object} [theme=defaultColorTheme] - 颜色主题对象
  * @param {number} [baseFontSize=16] - 基础字号
- * @returns {string} - The formatted HTML string for the blockquote.
+ * @returns {string} - 引用块的 HTML 字符串
  */
 export function formatBlockquote(contentLines, theme = defaultColorTheme, baseFontSize = 16) {
   return buildNestedQuotes(contentLines, 1, theme, baseFontSize);

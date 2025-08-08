@@ -1,5 +1,5 @@
 /**
- * @file src/utils/formatters/processing-strategies/list-strategy.js
+ * @file src/core/markdown/parser/strategies/list-strategy.js
  * @description 列表处理策略
  */
 

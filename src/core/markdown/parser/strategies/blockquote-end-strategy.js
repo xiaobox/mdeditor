@@ -1,5 +1,5 @@
 /**
- * @file src/utils/formatters/processing-strategies/blockquote-end-strategy.js
+ * @file src/core/markdown/parser/strategies/blockquote-end-strategy.js
  * @description 引用块结束检查策略
  */
 

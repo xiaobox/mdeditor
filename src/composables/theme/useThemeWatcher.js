@@ -1,5 +1,5 @@
 /**
- * @file src/composables/useThemeWatcher.js
+ * @file src/composables/theme/useThemeWatcher.js
  * @description 主题变化监听管理 Composable
  * 
  * 专门负责监听主题变化并触发相应的编辑器重新初始化逻辑

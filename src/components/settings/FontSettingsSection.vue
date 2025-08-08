@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { fontSettingsUtils } from '../../core/theme/presets/font-settings.js'
+import { fontSettingsUtils } from '../../core/theme/index.js'
 
 const props = defineProps({
   fontFamilyList: {

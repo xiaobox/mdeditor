@@ -11,7 +11,7 @@ import { markdown } from '@codemirror/lang-markdown';
 import { EditorState } from '@codemirror/state';
 import { indentUnit, indentOnInput } from '@codemirror/language';
 import { keymap } from '@codemirror/view';
-import { indentMore, indentLess, insertTab } from '@codemirror/commands';
+import { indentMore, indentLess } from '@codemirror/commands';
 import { EDITOR_CONFIG } from '../../config/constants/editor.js';
 
 /**
@@ -41,8 +41,11 @@ export function useEditorLifecycle({ editorState, editorEvents, editorTheme }) {
       keymap.of([
         {
           key: 'Tab',
-          run: indentMore,
-          shift: indentLess
+          run: indentMore
+        },
+        {
+          key: 'Shift-Tab',
+          run: indentLess
         },
         {
           key: 'Ctrl-]',

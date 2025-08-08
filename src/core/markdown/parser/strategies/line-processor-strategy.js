@@ -1,5 +1,5 @@
 /**
- * @file src/utils/formatters/processing-strategies/line-processor-strategy.js
+ * @file src/core/markdown/parser/strategies/line-processor-strategy.js
  * @description 行处理器策略（标题、分割线等）
  */
 

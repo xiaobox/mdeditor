@@ -1,14 +1,14 @@
 /**
- * @file src/utils/formatters/style-format-processors.js
- * @description 基础样式格式处理工具
+ * @file src/core/markdown/formatters/style.js
+ * @description 基础样式格式处理器
  * 
- * 专门处理 Markdown 中的基础样式格式，包括：
+ * 负责处理 Markdown 基础样式：
  * - 粗体文本（**text** 或 __text__）
  * - 斜体文本（*text* 或 _text_）
  * - 粗斜体组合（***text*** 或 ___text___）
  * - 删除线文本（~~text~~）
  * 
- * 从 text-processors.js 中提取出来，提高代码的模块化程度。
+ * 从内联处理管道中抽离，增强可维护性与复用性。
  */
 
 /**

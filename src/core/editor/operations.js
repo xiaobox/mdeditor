@@ -235,7 +235,7 @@ export const insertCode = (editorView) => {
 };
 
 /** 插入代码块 */
-export const insertCodeBlock = (editorView, language = 'javascript') => {
+export const insertCodeBlock = (editorView, language = EDITOR_OPERATIONS.DEFAULT_CODE_LANGUAGE) => {
   insertText(editorView, `${MARKDOWN_SYNTAX.CODE_BLOCK}${language}
 `, `
 ${MARKDOWN_SYNTAX.CODE_BLOCK}`, PLACEHOLDER_TEXT.CODE_BLOCK);
