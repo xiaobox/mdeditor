@@ -2,11 +2,13 @@
 
 > 一款专为极致书写体验与「一键复制为公众号格式」而生的现代化 Markdown 编辑器。界面精致、体验顺滑，所见即所得地预览与复制，帮助你高效创作优雅内容。
 
-[![Vue 3](https://img.shields.io/badge/Vue-3.x-42b883.svg)](https://vuejs.org/)  
-[![Vite 5](https://img.shields.io/badge/Vite-5.x-646CFF.svg)](https://vitejs.dev/)  
-[![CodeMirror 6](https://img.shields.io/badge/CodeMirror-6.x-0b87da.svg)](https://codemirror.net/6/)  
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)  
-[![Build](https://img.shields.io/github/actions/workflow/status/your-username/modern-md-editor/ci.yml?branch=main)](https://github.com/your-username/modern-md-editor/actions)
+<p align="center">
+  <a href="https://vuejs.org/"><img src="https://img.shields.io/badge/Vue-3.x-42b883.svg" alt="Vue 3" /></a>
+  <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-5.x-646CFF.svg" alt="Vite 5" /></a>
+  <a href="https://codemirror.net/6/"><img src="https://img.shields.io/badge/CodeMirror-6.x-0b87da.svg" alt="CodeMirror 6" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License" /></a>
+  <a href="https://github.com/your-username/modern-md-editor/actions"><img src="https://img.shields.io/github/actions/workflow/status/your-username/modern-md-editor/ci.yml?branch=main" alt="Build" /></a>
+</p>
 
 ## 项目简介
 
