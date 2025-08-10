@@ -61,6 +61,28 @@
   - 基于 `Vue 3 + Vite 5 + CodeMirror 6`。
   - 主题预加载（避免 FOUC）、性能防抖与缓存、模块化可扩展设计。
 
+## 技术栈与架构
+
+- **核心框架**
+  - **Vue 3**：组件化与响应式核心，使用 `<script setup>` 与组合式 API 实现清晰的 UI 与状态管理。
+  - **Vite 5**：极速开发服务器与构建工具，HMR 体验优秀，使用官方插件 `@vitejs/plugin-vue` 处理 `.vue`。
+- **编辑器**
+  - **CodeMirror 6 + vue-codemirror**：提供高性能文本编辑、快捷键与滚动事件。在 `src/composables/editor/` 封装编辑器的生命周期、操作与状态。
+- **Markdown 渲染管线**
+  - `src/core/markdown/parser/*`：解析协调器与多策略解析；`PreviewPane.vue` 调用 `parseMarkdown` 生成预览版与社交版 HTML。
+  - `src/core/markdown/post-processors/social-styler.js` 与 `adapters/*`：为 HTML 注入内联样式并进行主题化适配，兼容公众号等粘贴环境。
+- **复制链路**
+  - `src/core/editor/copy-formats.js`：一键生成社交版/Markdown 两种复制格式。
+  - `src/core/editor/clipboard.js`：Clipboard API 优先，失败降级到 `execCommand`；模拟社交平台容器，处理字体/行高/字距等细节。
+- **主题系统**
+  - `src/core/theme/manager.js`：集中管理并写入 CSS 变量；`theme-loader.js` 首屏预注入，避免 FOUC；`styles/themes/*` 与 `core/theme/presets/*` 提供预设。
+- **样式基线**
+  - `github-markdown-css`：为 Markdown 预览提供一致的基础排版，结合自定义 CSS 变量与主题系统统一风格。
+- **测试体系**
+  - **Vitest + @vue/test-utils + jsdom**：单元测试与覆盖率统计（脚本：`test`、`test:ui`、`test:coverage`）。
+- **目录分层**
+  - `components/`（UI） · `composables/`（复用逻辑） · `core/`（编辑器/解析/主题/复制） · `config/`（常量与工具栏） · `styles/`（全局与组件样式）。
+
 ## 环境要求
 
 - **Node.js**：≥ 18（推荐 18/20 LTS）
@@ -188,6 +210,25 @@ const { success, message } = await copyMarkdownFormat(markdownText)
 ## 支持我们
 如果本项目对你有所帮助，可以通过以下方式支持我们的持续开发。
 
-![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/imagescc16a59f8b43da4a3ad3ce201f46fc9d.jpg)
 
-> 如果这个项目对你有帮助，欢迎 Star ⭐️ 支持！也欢迎提交 Issue/PR 一起把它打磨得更好。
+<table style="margin: 0 auto">
+  <tbody>
+    <tr>
+      <td align="center" style="width: 260px">
+        <img
+          src="https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/imagescc16a59f8b43da4a3ad3ce201f46fc9d.jpg"
+          style="width: 200px"
+        /><br />
+      </td>
+      <td align="center" style="width: 260px">
+        <img
+          src="https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images2d585d78e23826f6698ddd4edec5d9c2.jpg"
+          style="width: 200px"
+        /><br />
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+---
+如果这个项目对你有帮助，欢迎 Star ⭐️ 支持！也欢迎提交 Issue/PR 一起把它打磨得更好。
