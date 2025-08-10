@@ -13,7 +13,7 @@ import { formatBlockquote } from '../formatters/legacy.js';
 import { getThemesSafe } from '../../../shared/utils/theme.js';
 import { cleanReferenceLinks } from '../formatters/text.js';
 import { FormatterContext } from './context.js';
-import { WeChatStyler } from '../post-processors/wechat-styler.js';
+import { SocialStyler } from '../post-processors/social-styler.js';
 
 
 
@@ -241,8 +241,10 @@ function _parseMarkdownInternal(markdownText, options = {}) {
   result += coordinator.finalize(); // 处理任何未结束的块
 
   // 使用 WeChat 后处理器应用字体样式和平台兼容性处理
-  result = WeChatStyler.process(result, {
+  result = SocialStyler.process(result, {
     fontSettings,
+    themeSystem,
+    colorTheme, // 传递颜色主题，便于内联主色样式
     isPreview: options.isPreview
   });
 

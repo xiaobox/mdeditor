@@ -34,7 +34,7 @@
     </div>
 
     <!-- 预览容器 -->
-    <div class="preview-container" :class="`viewport-${currentViewportMode}`">
+    <div class="preview-container" :class="['preview-container', `viewport-${currentViewportMode}`, `theme-system-${currentLayoutId}`]">
       <!-- 渲染预览模式 -->
       <div ref="previewContent"
            class="preview-rendered markdown-body modern-markdown"
@@ -120,7 +120,9 @@ export default {
         [`viewport-${currentViewportMode.value}`]: true,
         'viewport-mobile': currentViewportMode.value === 'mobile',
         'viewport-tablet': currentViewportMode.value === 'tablet',
-        'viewport-desktop': currentViewportMode.value === 'desktop'
+        'viewport-desktop': currentViewportMode.value === 'desktop',
+        // 挂载排版主题系统类，便于在CSS中按主题覆盖样式
+        [`theme-system-${currentLayoutId.value}`]: true
       }
     }
 

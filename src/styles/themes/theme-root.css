@@ -1,0 +1,65 @@
+/**
+ * 主题根样式（Theme Root）
+ * - 定义全局主题变量（--theme-* 与 --markdown-* 初始值）
+ * - 汇总引入各“主题系统”样式文件（theme-system-*.css）
+ * - 不直接包含具体 Markdown 排版规则
+ */
+
+/* ===== 主题系统样式（分文件维护） ===== */
+@import './theme-system-default.css';
+@import './theme-system-breeze.css';
+
+
+/* ===== 全局CSS变量定义 ===== */
+:root {
+  /* 字体设置 */
+  --theme-font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  --theme-code-font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+
+  /* Markdown字体设置 - 初始值，会被主题管理器动态覆盖 */
+  --markdown-font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  --markdown-font-size: 16px;
+  --markdown-line-height: 1.6;
+
+  /* 主色调 - 默认值，运行时由 theme-loader/manager 覆盖 */
+  --theme-primary: #312C20;
+  --theme-primary-hover: #2A251B;
+  --theme-primary-light: rgba(49, 44, 32, 0.08);
+  --theme-primary-lighter: rgba(49, 44, 32, 0.04);
+  --theme-primary-dark: #231E16;
+
+  /* 透明度变体（运行时也会覆盖/生成） */
+  --theme-primary-15: rgba(49, 44, 32, 0.15);
+  --theme-primary-20: rgba(49, 44, 32, 0.20);
+  --theme-primary-25: rgba(49, 44, 32, 0.25);
+  --theme-primary-40: rgba(49, 44, 32, 0.40);
+  --theme-primary-60: rgba(49, 44, 32, 0.60);
+
+  /* 基础颜色 */
+  --theme-bg-primary: #FEFEFE;
+  --theme-bg-secondary: #F8F9FA;
+  --theme-bg-tertiary: #F1F3F4;
+  --theme-text-primary: #2C3E50;
+  --theme-text-secondary: #5D6D7E;
+  --theme-text-tertiary: #85929E;
+  --theme-border-light: #E1E4E8;
+  --theme-border-medium: #D1D5DA;
+
+  /* 代码块配色 */
+  --theme-code-bg: #F6F8FA;
+  --theme-code-border: #E1E4E8;
+  --theme-code-text: #24292E;
+
+  /* 向后兼容变量（逐步淘汰） */
+  --bg-primary: var(--theme-bg-primary);
+  --bg-secondary: var(--theme-bg-secondary);
+  --bg-tertiary: var(--theme-bg-tertiary);
+  --text-primary: var(--theme-text-primary);
+  --text-secondary: var(--theme-text-secondary);
+  --text-tertiary: var(--theme-text-tertiary);
+  --border-light: var(--theme-border-light);
+  --border-medium: var(--theme-border-medium);
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+}

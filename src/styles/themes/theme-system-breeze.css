@@ -1,0 +1,186 @@
+/* 主题系统：清风排版（Breeze）
+ * 说明：所有样式均作用于 class "theme-system-breeze" 作用域内，
+ * 不影响其他主题系统。需要预览容器或正文容器挂载该类。
+ */
+
+/* 预览容器背景（清爽渐变） */
+.preview-container.theme-system-breeze {
+  background: #f6f3ff;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--theme-primary) 6%, #ffffff) 0%,
+    color-mix(in oklab, var(--theme-primary) 10%, #ffffff) 100%
+  );
+}
+
+/* 预览容器背景兜底：当主题类挂在正文上时（使用 :has 选择器） */
+.preview-container:has(.theme-system-breeze) {
+  background: #f6f3ff;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--theme-primary) 6%, #ffffff) 0%,
+    color-mix(in oklab, var(--theme-primary) 10%, #ffffff) 100%
+  );
+}
+/* 页面根背景兜底（适配有些容器没有专门类名的情况） */
+body:has(.theme-system-breeze) {
+  background: #f6f3ff;
+}
+
+.theme-system-breeze.modern-markdown {
+  /* 正文白卡容器 */
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 20px;
+  font-family: var(--markdown-font-family, var(--theme-font-family));
+  font-size: var(--markdown-font-size);
+  line-height: var(--markdown-line-height) !important;
+  letter-spacing: var(--markdown-letter-spacing);
+  background: color-mix(in oklab, #ffffff 96%, var(--theme-primary) 4%);
+  border: 1px solid var(--theme-border-light);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(var(--theme-primary-rgb), 0.08);
+}
+
+/* 让常见文本元素显式继承全局行高，避免其他规则覆盖 */
+.theme-system-breeze.modern-markdown p,
+.theme-system-breeze.modern-markdown li,
+.theme-system-breeze.modern-markdown blockquote,
+.theme-system-breeze.modern-markdown table,
+.theme-system-breeze.modern-markdown th,
+.theme-system-breeze.modern-markdown td {
+  line-height: var(--markdown-line-height) !important;
+}
+
+/* 段落 */
+.theme-system-breeze.modern-markdown p {
+  margin: 1.2em 0;
+}
+
+/* 链接 */
+.theme-system-breeze.modern-markdown a {
+  color: var(--theme-primary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-bottom-color 0.2s ease;
+}
+.theme-system-breeze.modern-markdown a:hover {
+  border-bottom-color: var(--theme-primary);
+}
+
+/* 标题层级 */
+.theme-system-breeze.modern-markdown h1 {
+  display: inline-block;
+  margin: 2.6em auto 1.8em;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: var(--theme-primary);
+  color: #fff !important;
+  font-size: var(--markdown-font-size) !important;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(var(--theme-primary-rgb), 0.22);
+}
+.theme-system-breeze.modern-markdown h1 { display: block; text-align: center; }
+.theme-system-breeze.modern-markdown h1 { width: max-content; }
+.theme-system-breeze.modern-markdown h1::after { content: none !important; }
+
+.theme-system-breeze.modern-markdown h2 {
+  position: relative;
+  margin: 1.8em 0 1.1em;
+  font-size: calc(var(--markdown-font-size) * 1.5) !important;
+  font-weight: 700;
+  line-height: 1.35;
+  padding-left: 16px;
+}
+.theme-system-breeze.modern-markdown h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 1.2em;
+  border-radius: 3px;
+  background: var(--theme-primary);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--theme-primary) 20%, #ffffff);
+}
+
+.theme-system-breeze.modern-markdown h3 {
+  position: relative;
+  margin: 1.2em 0 0.8em;
+  font-size: calc(var(--markdown-font-size) * 1.22) !important;
+  font-weight: 600;
+  padding-left: 12px;
+}
+.theme-system-breeze.modern-markdown h3::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 1.1em;
+  border-radius: 2px;
+  background: color-mix(in oklab, var(--theme-primary) 60%, #000);
+}
+
+.theme-system-breeze.modern-markdown h4 {
+  margin: 1em 0 0.6em;
+  font-weight: 600;
+  font-size: calc(var(--markdown-font-size) * 1.08) !important;
+  padding-left: 10px;
+  border-left: 3px solid color-mix(in oklab, var(--theme-primary) 35%, #000);
+}
+
+.theme-system-breeze.modern-markdown strong { color: color-mix(in oklab, var(--theme-primary) 80%, #000); }
+
+.theme-system-breeze.modern-markdown blockquote a { color: var(--theme-primary); text-decoration: none; border-bottom: 1px solid transparent; transition: border-bottom-color 0.2s ease; }
+.theme-system-breeze.modern-markdown blockquote a:hover { border-bottom-color: var(--theme-primary); }
+
+.theme-system-breeze.modern-markdown ul,
+.theme-system-breeze.modern-markdown ol { margin: 1.1em 0; padding-left: 1.4em; }
+.theme-system-breeze.modern-markdown li { margin: 0.5em 0; }
+.theme-system-breeze.modern-markdown ul li::marker { color: color-mix(in oklab, var(--theme-primary) 70%, #000); }
+
+.theme-system-breeze.modern-markdown blockquote {
+  margin: 1.2em 0;
+  padding: 0.9em 1em 0.9em 1.1em;
+  border-left: 3px solid var(--theme-border-medium);
+  background-color: var(--theme-bg-secondary);
+  color: var(--theme-text-secondary);
+  font-style: normal;
+  border-radius: 8px;
+}
+
+.theme-system-breeze.modern-markdown pre {
+  margin: 1.2em 0;
+  padding: 0.9em 1em;
+  border: 1px solid var(--theme-code-border);
+  border-radius: var(--radius-md);
+  background: var(--theme-code-bg);
+}
+
+.theme-system-breeze.modern-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--theme-border-light);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+.theme-system-breeze.modern-markdown thead th { background: color-mix(in oklab, var(--theme-primary) 6%, #ffffff); color: var(--theme-text-primary); font-weight: 600; }
+.theme-system-breeze.modern-markdown th,
+.theme-system-breeze.modern-markdown td { padding: 10px 12px; border-top: 1px solid var(--theme-border-light); }
+
+.theme-system-breeze.modern-markdown hr {
+  position: relative; height: 1px; border: none; background: linear-gradient(90deg, transparent, var(--theme-border-light), transparent); margin: 2em 0;
+}
+.theme-system-breeze.modern-markdown hr::after {
+  content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 8px; height: 8px; border-radius: 50%; background: color-mix(in oklab, var(--theme-primary) 24%, #ffffff); border: 1px solid var(--theme-border-light);
+}
+
+.theme-system-breeze.modern-markdown img { display: block; margin: 1rem auto; border-radius: 12px; border: 1px solid var(--theme-border-light); box-shadow: 0 4px 14px rgba(0,0,0,0.06); max-width: 100%; height: auto; }
+
+

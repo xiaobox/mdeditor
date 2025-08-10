@@ -289,8 +289,9 @@ export function useSettingsPanel(props, emit) {
     if (selectedThemeSystemId.value !== currentLayoutId.value) {
       setLayout(selectedThemeSystemId.value)
       setTimeout(() => {
-        const systemName = selectedThemeSystemId.value === 'default' ? '默认主题' : '主题系统'
-        emit('show-notification', `主题风格已更新为${systemName}`, 'success')
+        const selected = layoutList.value.find(i => i.id === selectedThemeSystemId.value)
+        const systemName = selected?.name || selectedThemeSystemId.value
+        emit('show-notification', `主题风格已更新为「${systemName}」`, 'success')
       }, delay)
       delay += 100 // 每个通知间隔100ms
     }

@@ -57,6 +57,45 @@ export const themeSystems = {
       },
     },
   }),
+
+  // 新增：简洁内容分发排版（面向移动端图文平台的清爽样式）
+  breeze: createThemeSystem({
+    id: 'breeze',
+    name: '清风排版',
+    description: '面向移动端图文平台的清爽排版：舒适行高、自然间距与温和装饰',
+    supportedColors: ['meihei', 'chijin', 'ehuang', 'conglv', 'shiliuhong', 'ganziqing'],
+    layout: {
+      maxWidth: '720px',
+      padding: '24px',
+      lineHeight: '1.8',
+      paragraphSpacing: '1.2em'
+    },
+    typography: {
+      fontFamily: 'PingFang SC, Microsoft YaHei, Arial, sans-serif',
+      fontSize: {
+        base: '17px',
+        h1: '30px',
+        h2: '24px',
+        h3: '20px'
+      },
+      fontWeight: {
+        normal: '400',
+        bold: '700'
+      }
+    },
+    // 复制到社交平台的样式适配配置（供适配器读取，避免硬编码）
+    copy: {
+      headings: {
+        h1: { pill: true, marginTop: '2.2em', marginBottom: '1.6em' },
+        h2: { deco: { widthPx: 6, heightEm: 1.2, radiusPx: 3 }, fontScale: 1.5, lineHeight: '1.35em', marginTop: '1.8em', marginBottom: '1.1em' },
+        h3: { deco: { widthPx: 4, heightEm: 1.1, radiusPx: 2 }, fontScale: 1.22, marginTop: '1.2em', marginBottom: '0.8em' },
+        h4: { deco: { widthPx: 3, heightEm: 1.05, radiusPx: 2 }, fontScale: 1.08, marginTop: '1em', marginBottom: '0.6em' }
+      },
+      link: { underline: false },
+      innerCard: { borderRadius: 12, padding: '24px 20px' },
+      table: { headerShade: 0.06, borderAlpha: 0.18 }
+    }
+  }),
 };
 
 /** 默认的排版主题系统 */
@@ -88,6 +127,6 @@ export const getThemeSystemList = () => {
  * 主题系统预设 - 简化为单一默认主题
  */
 export const themeSystemPresets = {
-  all: ['default'],
-  default: ['default'], // 统一默认主题
+  all: ['default', 'breeze'],
+  default: ['default', 'breeze'],
 };
