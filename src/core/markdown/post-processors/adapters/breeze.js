@@ -58,13 +58,28 @@ function stripLeadingDecorativeSpan(html, tag) {
 }
 
 function ensureDecorativeSpan(html, tag, config, color) {
-  const tagOpenRe = new RegExp(`<${tag}([^>]*)style="([^"]*)"([^>]*)>([\\s\\S]*?)<\\/${tag}>`, 'gi')
+  const tagOpenRe = new RegExp(`<${tag}([^>]*)style=\"([^\"]*)\"([^>]*)>([\\s\\S]*?)<\/${tag}>`, 'gi')
   return html.replace(tagOpenRe, (m, pre, style, post, inner) => {
     const cleaned = sanitizeHeadingInlineStyle(style, { marginTop: config.marginTop, marginBottom: config.marginBottom })
-    const innerStripped = inner.replace(/^(\s*)<span([^>]*)style="([^"]*?\bwidth\s*:\s*\d+px\b[^"]*)"([^>]*)><\/span>(\s*)/i, '$1')
-    const deco = `display: inline-block; vertical-align: middle; width: ${config.widthPx}px; height: ${config.heightEm}em; margin-right: 0.5em; border-radius: ${config.radiusPx}px; background: ${color};`
-    const textWrap = `display: inline-block; vertical-align: middle;`
-    return `<${tag}${pre}style="${cleaned};"${post}><span style="${deco}"></span><span style="${textWrap}">${innerStripped}</span></${tag}>`
+    // 去掉开头已有的装饰 span（如果有）
+    const innerStripped = inner.replace(/^(\s*)<span([^>]*)style=\"([^\"]*?\bwidth\s*:\s*\d+px\b[^\"]*)\"([^>]*)><\/span>(\s*)/i, '$1')
+
+    const decoBar = [
+      'display: block;',
+      `width: ${config.widthPx}px;`,
+      `height: ${config.heightEm}em;`,
+      `border-radius: ${config.radiusPx}px;`,
+      `background: ${color};`,
+      'box-shadow: 0 0 6px rgba(0,0,0,0.08);'
+    ].join(' ')
+
+    // 使用 table 布局保证多行缩进与左侧装饰条稳定存在
+    const containerStyle = 'display: table; width: 100%;'
+    const leftCellStyle = 'display: table-cell; vertical-align: middle; width: 1px;'
+    const rightCellStyle = 'display: table-cell; vertical-align: middle; padding-left: 0.5em;'
+
+    const content = `<span style=\"${leftCellStyle}\"><span style=\"${decoBar}\">&#8203;</span></span><span style=\"${rightCellStyle}\">${innerStripped}</span>`
+    return `<${tag}${pre}style=\"${cleaned}; ${containerStyle}\"${post}>${content}</${tag}>`
   })
 }
 
@@ -155,9 +170,9 @@ export const breezeCopyAdapter = {
     const copyCfg = (system && system.copy) || {}
     const headingsCfg = copyCfg.headings || {}
     const headingCfg = {
-      h2: { widthPx: 6, heightEm: 1.2, radiusPx: 3, marginTop: '1.8em', marginBottom: '1.1em', ...((headingsCfg.h2||{}).deco||{}), ...(headingsCfg.h2||{}) },
-      h3: { widthPx: 4, heightEm: 1.1, radiusPx: 2, marginTop: '1.2em', marginBottom: '0.8em', ...((headingsCfg.h3||{}).deco||{}), ...(headingsCfg.h3||{}) },
-      h4: { widthPx: 3, heightEm: 1.05, radiusPx: 2, marginTop: '1em', marginBottom: '0.6em', ...((headingsCfg.h4||{}).deco||{}), ...(headingsCfg.h4||{}) }
+      h2: { widthPx: 6, heightEm: 1.2, radiusPx: 3, paddingLeftPx: 16, marginTop: '1.8em', marginBottom: '1.1em', ...((headingsCfg.h2||{}).deco||{}), ...(headingsCfg.h2||{}) },
+      h3: { widthPx: 4, heightEm: 1.1, radiusPx: 2, paddingLeftPx: 12, marginTop: '1.2em', marginBottom: '0.8em', ...((headingsCfg.h3||{}).deco||{}), ...(headingsCfg.h3||{}) },
+      h4: { widthPx: 3, heightEm: 1.05, radiusPx: 2, paddingLeftPx: 10, marginTop: '1em', marginBottom: '0.6em', ...((headingsCfg.h4||{}).deco||{}), ...(headingsCfg.h4||{}) }
     }
 
     const primaryRgb = hexToRgb(primary) || { r: 88, g: 101, b: 242 }

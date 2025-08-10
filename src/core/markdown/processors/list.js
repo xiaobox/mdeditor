@@ -28,8 +28,9 @@ export const LIST_TYPES = {
 export class ListProcessor {
   constructor() {
     this.reset();
-    // 列表基础缩进常量
-    this.BASE_INDENT = 10; // 基础缩进10px
+    // 列表基础缩进常量（统一提升，保持有序/无序一致）
+    this.BASE_INDENT = 16; // 基础缩进16px
+    this.ORDERED_BASE_INDENT = 16; // 与无序一致
     this.NESTED_INDENT = 20; // 嵌套层级缩进20px
     // 列表样式常量
     this.LIST_MARGIN_TOP = 8; // 列表项上边距
@@ -223,8 +224,8 @@ export class ListProcessor {
     // 改进颜色选择逻辑，确保跟随主题色
     const colors = this.getListColors(theme);
     const color = colors[Math.min(depth, colors.length - 1)];
-    // 使用类常量计算缩进
-    const marginLeft = this.BASE_INDENT + (depth * this.NESTED_INDENT);
+    // 使用统一基础缩进
+    const marginLeft = this.ORDERED_BASE_INDENT + (depth * this.NESTED_INDENT);
 
     // 获取字体设置
     const { fontSize, lineHeight } = this.getFontSettings(fontSettings);
