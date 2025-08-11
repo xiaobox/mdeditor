@@ -175,7 +175,7 @@
   padding: 0.2rem 0.4rem;
   border-radius: var(--radius-sm);
   font-family: var(--theme-code-font-family);
-  font-size: calc(var(--markdown-font-size, 16px) * 0.9);
+  font-size: 14px;
   border: 1px solid var(--theme-code-border);
 }
 

@@ -66,8 +66,8 @@ export function processInlineCode(text, theme, baseFontSize = 16) {
 
   return text.replace(REGEX_PATTERNS.CODE, (_, code) => {
     const escapedCode = escapeHtml(code);
-    // 内联代码字号通常比正文小一些
-    const codeFontSize = Math.max(12, Math.round(baseFontSize * 0.875)); // 约87.5%的正文字号
+    // 内联代码字号固定为 14px，保持与代码块一致
+    const codeFontSize = 14;
     // 使用主题色的社交平台兼容样式
     const codeHtml = `<code style="background-color: ${theme.inlineCodeBg}; color: ${theme.inlineCodeText}; padding: 2px 4px; border-radius: 3px; font-family: Consolas, monospace; font-size: ${codeFontSize}px; border: 1px solid ${theme.inlineCodeBorder};">${escapedCode}</code>`;
 

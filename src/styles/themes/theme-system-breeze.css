@@ -162,6 +162,24 @@ body:has(.theme-system-breeze) {
   background: var(--theme-code-bg);
 }
 
+/* 代码文本统一固定为 14px */
+.theme-system-breeze.modern-markdown code {
+  font-family: var(--theme-code-font-family);
+  font-size: 14px;
+  background-color: var(--theme-code-bg);
+  color: var(--theme-code-text);
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--theme-code-border);
+}
+
+.theme-system-breeze.modern-markdown pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+}
+
 .theme-system-breeze.modern-markdown table {
   width: 100%;
   border-collapse: collapse;

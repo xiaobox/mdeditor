@@ -200,7 +200,7 @@ const { success, message } = await copyMarkdownFormat(markdownText)
 
 ## 许可证
 
-- 默认采用 **MIT** 许可证。若仓库尚未包含 `LICENSE` 文件，建议补充添加。
+- 默认采用 **MIT** 许可证。
 
 ## 联系与致谢
 

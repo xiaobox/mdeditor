@@ -50,8 +50,8 @@ export function formatCodeBlock(content, language, theme = defaultColorTheme, co
   const safeCodeTheme = codeTheme || getCodeStyle('mac');
   const highlightedContent = highlightCode(trimmedContent, language, safeCodeTheme);
 
-  // 代码块字号通常比正文小一些
-  const codeFontSize = Math.max(12, Math.round(baseFontSize * 0.875)); // 约87.5%的正文字号
+  // 代码块字号固定为 14px（预览与复制保持一致）
+  const codeFontSize = 14;
 
   const preStyle = `
     background: ${safeCodeTheme.background} ${!isPreview ? '!important' : ''};
@@ -106,13 +106,6 @@ export function formatCodeBlock(content, language, theme = defaultColorTheme, co
       const trafficLightSize = 12; // 固定12px，接近真实Mac红绿灯大小
       const labelSize = Math.max(11, Math.round(baseFontSize * 0.75)); // 标签稍微跟随字体，但保持相对较小
       const spacing = 6; // 固定间距，保持一致性
-
-
-
-
-
-
-
 
       headerContent = `<span class="mac-traffic-light-red" style="color: #ff5f56 !important; margin-right: ${spacing}px !important; font-size: ${trafficLightSize}px !important; line-height: 1 !important; display: inline !important; width: auto !important; height: auto !important;">●</span><span class="mac-traffic-light-yellow" style="color: #ffbd2e !important; margin-right: ${spacing}px !important; font-size: ${trafficLightSize}px !important; line-height: 1 !important; display: inline !important; width: auto !important; height: auto !important;">●</span><span class="mac-traffic-light-green" style="color: #27ca3f !important; margin-right: ${spacing * 2}px !important; font-size: ${trafficLightSize}px !important; line-height: 1 !important; display: inline !important; width: auto !important; height: auto !important;">●</span><span class="mac-code-label" style="font-size: ${labelSize}px !important; color: #8b949e !important; line-height: 1 !important; display: inline !important;">${language || 'code'}</span>`;
     } else {

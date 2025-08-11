@@ -256,10 +256,6 @@ export default {
       }
     }
 
-    // HTML语法高亮功能已移除
-
-
-
     // 监听markdown内容变化 - 不使用immediate，等待初始化完成
     watch(() => props.markdown, () => {
       processMarkdown()
