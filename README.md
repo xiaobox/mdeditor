@@ -232,3 +232,7 @@ const { success, message } = await copyMarkdownFormat(markdownText)
 
 ---
 如果这个项目对你有帮助，欢迎 Star ⭐️ 支持！也欢迎提交 Issue/PR 一起把它打磨得更好。
+
+## Star History
+
+![Star History Chart](https://api.star-history.com/svg?repos=xiaobox/mdeditor&type=Date)
