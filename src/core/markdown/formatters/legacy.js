@@ -39,63 +39,118 @@ function formatInlineTextInternal(text, theme = defaultColorTheme, baseFontSize 
  * 格式化代码块，包含语法高亮和主题样式
  * @param {string} content - 代码内容
  * @param {string} language - 编程语言
- * @param {object} [theme=defaultColorTheme] - 颜色主题对象
+ * @param {object} [_unusedTheme=defaultColorTheme] - （兼容保留，未使用）颜色主题对象
  * @param {object|null} [codeTheme=null] - 代码样式主题对象
  * @param {boolean} [isPreview=false] - 是否为预览模式
  * @param {number} [baseFontSize=16] - 基础字号
  * @returns {string} - 格式化后的代码块 HTML 字符串
  */
-export function formatCodeBlock(content, language, theme = defaultColorTheme, codeTheme = null, isPreview = false, baseFontSize = 16) {
+export function formatCodeBlock(content, language, _unusedTheme = defaultColorTheme, codeTheme = null, isPreview = false, baseFontSize = 16) {
   const trimmedContent = content.trim();
   const safeCodeTheme = codeTheme || getCodeStyle('mac');
   const highlightedContent = highlightCode(trimmedContent, language, safeCodeTheme);
+
+  // 复制到社交（如公众号）时，为保持与预览一致的排版，仍使用原始高亮内容
+  const contentForCopy = highlightedContent;
+
+
+  // 条件 !important 标记，便于维护
+  const imp = !isPreview ? '!important' : '';
 
   // 代码块字号固定为 14px（预览与复制保持一致）
   const codeFontSize = 14;
 
   const preStyle = `
-    background: ${safeCodeTheme.background} ${!isPreview ? '!important' : ''};
-    border-radius: 12px ${!isPreview ? '!important' : ''};
-    ${safeCodeTheme.hasHeader ? `padding: 0 ${!isPreview ? '!important' : ''};` : `padding: 24px ${!isPreview ? '!important' : ''};`}
-    overflow-x: auto ${!isPreview ? '!important' : ''};
-    font-size: ${codeFontSize}px ${!isPreview ? '!important' : ''};
-    line-height: 1.3 ${!isPreview ? '!important' : ''};
-    border: none ${!isPreview ? '!important' : ''};
-    position: relative ${!isPreview ? '!important' : ''};
-    font-family: Consolas, monospace ${!isPreview ? '!important' : ''};
-    margin: 32px 0 ${!isPreview ? '!important' : ''};
-    font-weight: 400 ${!isPreview ? '!important' : ''};
-    color: ${safeCodeTheme.color} ${!isPreview ? '!important' : ''};
-    box-sizing: border-box ${!isPreview ? '!important' : ''};
-    display: block ${!isPreview ? '!important' : ''};
-    min-height: auto ${!isPreview ? '!important' : ''};
-    height: auto ${!isPreview ? '!important' : ''};
-    max-height: none ${!isPreview ? '!important' : ''};
+    background: ${safeCodeTheme.background} ${imp};
+    border-radius: 12px ${imp};
+    ${safeCodeTheme.hasHeader ? `padding: 0 ${imp};` : `padding: 24px ${imp};`}
+    overflow: hidden ${imp};
+    font-size: ${codeFontSize}px ${imp};
+    line-height: 1.3 ${imp};
+    border: none ${imp};
+    position: relative ${imp};
+    font-family: Consolas, monospace ${imp};
+    margin: 32px 0 ${imp};
+    font-weight: 400 ${imp};
+    color: ${safeCodeTheme.color} ${imp};
+    box-sizing: border-box ${imp};
+    display: block ${imp};
+    color-scheme: light ${imp};
+    min-height: auto ${imp};
+    height: auto ${imp};
+    max-height: none ${imp};
     ${!isPreview ? 'vertical-align: top !important;' : ''}
   `.replace(/\s+/g, ' ').trim();
 
+  // 仅代码内容的滚动区域（保证 header 固定）
+  const scrollAreaStyle = `
+    overflow-x: auto ${imp};
+    overflow-y: hidden ${imp};
+    width: 100% ${imp};
+    color-scheme: light ${imp};
+    box-sizing: border-box ${imp};
+    ${safeCodeTheme.hasHeader ? `padding: 12px 24px 20px 24px ${imp};` : `padding: 24px ${imp};`}
+    -webkit-overflow-scrolling: touch ${imp};
+  `.replace(/\s+/g, ' ').trim();
+
   const codeStyle = `
+    background: transparent ${imp};
+    border: none ${imp};
+    font-family: Consolas, monospace ${imp};
+    font-size: ${codeFontSize}px ${imp};
+    line-height: 1.3 ${imp};
+    color: ${safeCodeTheme.color} ${imp};
+    display: block ${imp};
+    width: 100% ${imp};
+    overflow-x: auto ${imp};
+    overflow-y: hidden ${imp};
+    color-scheme: light ${imp};
+    -webkit-overflow-scrolling: touch ${imp};
+    white-space: pre ${imp};
+    text-indent: 0 ${imp};
+    word-spacing: normal ${imp};
+    letter-spacing: normal ${imp};
+    margin: 0 ${imp};
+    padding: 0 ${imp};
+    box-sizing: border-box ${imp};
+    min-height: auto ${imp};
+    height: auto ${imp};
+    max-height: none ${imp};
+    ${!isPreview ? 'vertical-align: top !important;' : ''}
+  `.replace(/\s+/g, ' ').trim();
+
+  // 宽度撑开器：用于在社交平台上逼出真实内容宽度，从而出现横向滚动
+  const expanderStyle = `
+    display: inline-block !important;
+    min-width: max-content !important;
+    width: auto !important;
+    max-width: none !important;
+  `.replace(/\s+/g, ' ').trim();
+
+  // 复制到社交路径下的 code 样式：让 code 根据内容收缩，从而与撑开器配合
+  const codeStyleCopy = `
     background: transparent ${!isPreview ? '!important' : ''};
     border: none ${!isPreview ? '!important' : ''};
     font-family: Consolas, monospace ${!isPreview ? '!important' : ''};
     font-size: ${codeFontSize}px ${!isPreview ? '!important' : ''};
     line-height: 1.3 ${!isPreview ? '!important' : ''};
     color: ${safeCodeTheme.color} ${!isPreview ? '!important' : ''};
-    display: block ${!isPreview ? '!important' : ''};
-    white-space: pre-wrap ${!isPreview ? '!important' : ''};
-    word-wrap: break-word ${!isPreview ? '!important' : ''};
+    display: inline-block ${!isPreview ? '!important' : ''};
+    width: auto ${!isPreview ? '!important' : ''};
+    max-width: none ${!isPreview ? '!important' : ''};
+    white-space: pre ${!isPreview ? '!important' : ''};
     word-spacing: normal ${!isPreview ? '!important' : ''};
     letter-spacing: normal ${!isPreview ? '!important' : ''};
+    -webkit-overflow-scrolling: touch ${!isPreview ? '!important' : ''};
+    text-indent: 0 ${!isPreview ? '!important' : ''};
     margin: 0 ${!isPreview ? '!important' : ''};
-    ${safeCodeTheme.hasHeader ? `padding: 12px 24px 20px 24px ${!isPreview ? '!important' : ''};` : `padding: 24px ${!isPreview ? '!important' : ''};`}
+    padding: 0 ${!isPreview ? '!important' : ''};
     box-sizing: border-box ${!isPreview ? '!important' : ''};
-    min-height: auto ${!isPreview ? '!important' : ''};
-    height: auto ${!isPreview ? '!important' : ''};
-    max-height: none ${!isPreview ? '!important' : ''};
-    ${!isPreview ? 'vertical-align: top !important;' : ''}
+    vertical-align: top ${!isPreview ? '!important' : ''};
   `.replace(/\s+/g, ' ').trim();
 
-  let decorations = '';
+
+  let headerElement = '';
 
   if (safeCodeTheme.hasHeader) {
     let headerContent;
@@ -124,7 +179,7 @@ export function formatCodeBlock(content, language, theme = defaultColorTheme, co
       protectedHeaderStyle = protectedHeaderStyle.replace(/padding:\s*[^;]+;/g, `padding: ${headerPadding}px 20px;`);
     }
 
-    decorations += `
+    headerElement = `
       <div style="${protectedHeaderStyle}">
         ${headerContent}
       </div>
@@ -148,16 +203,100 @@ export function formatCodeBlock(content, language, theme = defaultColorTheme, co
       [data-syntax="number"], [data-syntax="number"] font { color: ${safeCodeTheme.syntaxHighlight.number} !important; }
       [data-syntax="function"], [data-syntax="function"] font { color: ${safeCodeTheme.syntaxHighlight.function} !important; }
 
-      /* 颜色属性选择器 - 最后的保护 */
-      [data-color="${safeCodeTheme.syntaxHighlight.keyword}"] { color: ${safeCodeTheme.syntaxHighlight.keyword} !important; }
-      [data-color="${safeCodeTheme.syntaxHighlight.string}"] { color: ${safeCodeTheme.syntaxHighlight.string} !important; }
-      [data-color="${safeCodeTheme.syntaxHighlight.comment}"] { color: ${safeCodeTheme.syntaxHighlight.comment} !important; }
-      [data-color="${safeCodeTheme.syntaxHighlight.number}"] { color: ${safeCodeTheme.syntaxHighlight.number} !important; }
-      [data-color="${safeCodeTheme.syntaxHighlight.function}"] { color: ${safeCodeTheme.syntaxHighlight.function} !important; }
-    </style>
-  ` : '';
+      /* 滚动条样式 - 确保在微信环境中也能正常显示 */
+      .hljs.code__pre,
+      pre[style*="overflow-x: auto"] > div[style*="overflow-x: auto"],
+      div[style*="overflow-x: auto"] {
+        scrollbar-width: thin !important;
+        scrollbar-color: rgba(255, 255, 255, 0.3) transparent !important;
+      }
 
-  return `${syntaxProtectionCSS}<pre style="${preStyle}">${decorations}<code style="${codeStyle}">${highlightedContent}</code></pre>`;
+      .hljs.code__pre::-webkit-scrollbar,
+      pre[style*="overflow-x: auto"] > div[style*="overflow-x: auto"]::-webkit-scrollbar,
+      div[style*="overflow-x: auto"]::-webkit-scrollbar {
+        height: 8px !important;
+        background: transparent !important;
+      }
+
+      .hljs.code__pre::-webkit-scrollbar-thumb,
+      pre[style*="overflow-x: auto"] > div[style*="overflow-x: auto"]::-webkit-scrollbar-thumb,
+      div[style*="overflow-x: auto"]::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3) !important;
+        border-radius: 4px !important;
+        border: none !important;
+      }
+
+      .hljs.code__pre::-webkit-scrollbar-thumb:hover,
+      pre[style*="overflow-x: auto"] > div[style*="overflow-x: auto"]::-webkit-scrollbar-thumb:hover,
+      div[style*="overflow-x: auto"]::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5) !important;
+      }
+
+      .hljs.code__pre::-webkit-scrollbar-track,
+      pre[style*="overflow-x: auto"] > div[style*="overflow-x: auto"]::-webkit-scrollbar-track,
+      div[style*="overflow-x: auto"]::-webkit-scrollbar-track {
+        background: transparent !important;
+      }
+    </style>
+  ` : `
+    <style>
+      /* 滚动条样式 - 确保在微信环境中也能正常显示 */
+      .hljs.code__pre,
+      pre[style*="overflow-x: auto"] > div[style*="overflow-x: auto"],
+      div[style*="overflow-x: auto"] {
+        scrollbar-width: thin !important;
+        scrollbar-color: rgba(255, 255, 255, 0.3) transparent !important;
+      }
+
+      .hljs.code__pre::-webkit-scrollbar,
+      pre[style*="overflow-x: auto"] > div[style*="overflow-x: auto"]::-webkit-scrollbar,
+      div[style*="overflow-x: auto"]::-webkit-scrollbar {
+        height: 8px !important;
+        background: transparent !important;
+      }
+
+      .hljs.code__pre::-webkit-scrollbar-thumb,
+      pre[style*="overflow-x: auto"] > div[style*="overflow-x: auto"]::-webkit-scrollbar-thumb,
+      div[style*="overflow-x: auto"]::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3) !important;
+        border-radius: 4px !important;
+        border: none !important;
+      }
+
+      .hljs.code__pre::-webkit-scrollbar-thumb:hover,
+      pre[style*="overflow-x: auto"] > div[style*="overflow-x: auto"]::-webkit-scrollbar-thumb:hover,
+      div[style*="overflow-x: auto"]::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5) !important;
+      }
+
+      .hljs.code__pre::-webkit-scrollbar-track,
+      pre[style*="overflow-x: auto"] > div[style*="overflow-x: auto"]::-webkit-scrollbar-track,
+      div[style*="overflow-x: auto"]::-webkit-scrollbar-track {
+        background: transparent !important;
+      }
+    </style>
+  `;
+
+
+
+  // 输出结构
+  if (isPreview) {
+    // 预览结构：pre 作为容器（隐藏垂直滚动），header 固定，代码内容外包一层水平滚动容器
+    if (safeCodeTheme.hasHeader) {
+      return `${syntaxProtectionCSS}<pre class="hljs code__pre" style="${preStyle}">${headerElement}<div style="${scrollAreaStyle}"><code style="${codeStyle}">${highlightedContent}</code></div></pre>`;
+    } else {
+      return `${syntaxProtectionCSS}<pre class="hljs code__pre" style="${preStyle}"><div style="${scrollAreaStyle}"><code style="${codeStyle}">${highlightedContent}</code></div></pre>`;
+    }
+  } else {
+    // 复制到社交结构：在滚动层内加入“宽度撑开器”，并使用逐行包裹的 renderedCodeContent
+    const expanderOpen = `<span style="${expanderStyle}">`;
+    const expanderClose = `</span>`;
+    if (safeCodeTheme.hasHeader) {
+      return `${syntaxProtectionCSS}<pre class="hljs code__pre" style="${preStyle}">${headerElement}<div style="${scrollAreaStyle}">${expanderOpen}<code style="${codeStyleCopy}">${contentForCopy}</code>${expanderClose}</div></pre>`;
+    } else {
+      return `${syntaxProtectionCSS}<pre class="hljs code__pre" style="${preStyle}"><div style="${scrollAreaStyle}">${expanderOpen}<code style="${codeStyleCopy}">${contentForCopy}</code>${expanderClose}</div></pre>`;
+    }
+  }
 }
 
 /**
@@ -204,7 +343,7 @@ function generateBlockquoteStyle(theme, level, baseFontSize = 16) {
   const blockquoteStyles = getBlockquoteStyles(baseFontSize);
   const styleConfig = blockquoteStyles[`level${level}`] || blockquoteStyles.default;
   const shadowOpacity = level <= 3 ? ['1A', '14', '0F'][level - 1] || '0A' : '0A';
-  
+
   return `
     border-left: 4px solid ${theme.primary};
     background: linear-gradient(135deg, ${theme.primary}14 0%, ${theme.primary}0A 50%, ${theme.primary}14 100%);
@@ -227,20 +366,20 @@ function generateBlockquoteStyle(theme, level, baseFontSize = 16) {
  */
 function processQuoteLine(line) {
   const trimmedLine = line.trim();
-  
+
   if (!trimmedLine.startsWith('>')) {
     return { isQuote: false, content: line, level: 0 };
   }
 
   let level = 0;
   let content = trimmedLine;
-  
+
   // 计算引用层级
   while (content.startsWith('>')) {
     level++;
     content = content.substring(1).trim();
   }
-  
+
   return { isQuote: true, content, level };
 }
 
