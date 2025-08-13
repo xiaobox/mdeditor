@@ -37,9 +37,13 @@ export function processLinks(text, theme) {
 export function processImages(text, theme) {
   return text.replace(REGEX_PATTERNS.IMAGE, (_, altText, url) => {
     const cleanUrl = url.trim();
-    const cleanAlt = altText || '图片';
+    const hasAlt = typeof altText === 'string' && altText.trim().length > 0;
+    const cleanAlt = hasAlt ? altText.trim() : '图片';
 
-    return `<img src="${cleanUrl}" alt="${cleanAlt}" style="max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 2px 8px ${theme.shadowColor}; margin: 8px 0; display: block;" loading="lazy">`;
+    const safeAlt = sanitizeAttribute(cleanAlt);
+    const captionAttr = hasAlt ? ' data-md-caption="true"' : '';
+
+    return `<img src="${cleanUrl}" alt="${safeAlt}"${captionAttr} style="max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 2px 8px ${theme.shadowColor}; margin: 8px 0; display: block;" loading="lazy">`;
   });
 }
 

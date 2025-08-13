@@ -167,13 +167,13 @@ const INLINE_FORMAT_PROCESSORS = [
     condition: () => true
   },
   {
-    name: 'links',
-    process: (text, theme, handleEscapes, baseFontSize) => processLinks(text, theme),
+    name: 'images',
+    process: (text, theme, handleEscapes, baseFontSize) => processImages(text, theme),
     condition: () => true
   },
   {
-    name: 'images',
-    process: (text, theme, handleEscapes, baseFontSize) => processImages(text, theme),
+    name: 'links',
+    process: (text, theme, handleEscapes, baseFontSize) => processLinks(text, theme),
     condition: () => true
   },
   {

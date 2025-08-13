@@ -30,6 +30,15 @@ function addInlineStyles(html, fontFamily, fontSize, lineHeight, letterSpacing =
     .replace(/<b(?![^>]*style=)/gi, `<b style="${baseStyle} font-weight: ${boldWeight};"`)
     .replace(/<em(?![^>]*style=)/gi, `<em style="${baseStyle} font-weight: ${normalWeight}; font-style: italic;"`)
     .replace(/<i(?![^>]*style=)/gi, `<i style="${baseStyle} font-weight: ${normalWeight}; font-style: italic;"`)
+    // 为带有 data-md-caption 的图片包裹 figure + figcaption
+    .replace(/<img([^>]*?)data-md-caption="true"([^>]*?)>/gi, (m, pre, post) => {
+      const altMatch = m.match(/alt="([^"]*)"/i)
+      const alt = altMatch ? altMatch[1] : ''
+      const img = `<img${pre}data-md-caption="true"${post}>`
+      const figureStyle = `${baseStyle} text-align: center; margin: 1em 0;`
+      const captionStyle = `${baseStyle} display: block; font-size: ${Math.max(12, Math.round(fontSize * 0.875))}px; color: #666; margin-top: 6px;`
+      return `<figure style="${figureStyle}">${img}<figcaption style="${captionStyle}">${alt}</figcaption></figure>`
+    })
 
   const enforce = (inputHtml, tag) => {
     const re = new RegExp(`<${tag}([^>]*?)style="([^"]*)"([^>]*)>`, 'gi')
@@ -103,6 +112,24 @@ export class SocialStyler {
   static process(html, options = {}) {
     if (!html) return ''
     const { fontSettings, themeSystem, colorTheme, isPreview = false } = options
+
+    // 预览模式：仅为带说明的图片添加图注包裹，不进行整体字体/段落样式注入
+    if (isPreview) {
+      const fontFamily = FONT_FAMILY_MAP[fontSettings?.fontFamily] || FONT_FAMILY_MAP['microsoft-yahei']
+      const fontSize = fontSettings?.fontSize || 16
+      const baseStyle = `font-family: ${fontFamily}; color: #333; letter-spacing: ${typeof fontSettings?.letterSpacing === 'number' ? fontSettings.letterSpacing : 0}px;`
+      const out = html.replace(/<img([^>]*?)data-md-caption="true"([^>]*?)>/gi, (m, pre, post) => {
+        const altMatch = m.match(/alt="([^"]*)"/i)
+        const alt = altMatch ? altMatch[1] : ''
+        const img = `<img${pre}data-md-caption="true"${post}>`
+        const figureStyle = `${baseStyle} text-align: center; margin: 1em 0;`
+        const captionStyle = `${baseStyle} display: block; font-size: ${Math.max(12, Math.round(fontSize * 0.875))}px; color: #666; margin-top: 6px;`
+        return `<figure style="${figureStyle}">${img}<figcaption style="${captionStyle}">${alt}</figcaption></figure>`
+      })
+      return out
+    }
+
+    // 复制到公众号等平台：注入字体/行高等样式，并进行主题适配，同时包裹图注
     if (!isPreview && fontSettings) {
       let out = wrapWithFontStyles(html, fontSettings)
       const primary = (colorTheme && colorTheme.primary) ? colorTheme.primary : '#5865F2'
