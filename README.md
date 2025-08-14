@@ -24,21 +24,31 @@
 
 
 ###  一键复制公众号格式 
-  - ![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810145119169.png)
+
+![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810145119169.png)
 
 
 ###  编辑 + 预览双栏
-  - ![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810144536506.png)
+
+![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810144536506.png)
+
 ###  预览窗口（桌面 / 平板 / 手机）
-  - ![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810144616512.png)
+
+![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810144616512.png)
+
+### 支持 mermaid 
+
+![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250814231133156.png)
 
 ###  设置面板（主题 / 代码样式 / 字体 / 间距）
-  - ![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810144902477.png)
-  - ![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810144832875.png)
-  - ![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810144933681.png)
-  - ![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810144947233.png)
-  - ![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810145007195.png)
-  - ![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810145031310.png)
+
+![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810144902477.png)
+![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810144832875.png)
+![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810144933681.png)
+![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810144947233.png)
+![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810145007195.png)
+![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810145031310.png)
+
 ###  丰富的主题色
   - ![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810144355636.png)
 
