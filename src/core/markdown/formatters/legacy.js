@@ -47,6 +47,18 @@ function formatInlineTextInternal(text, theme = defaultColorTheme, baseFontSize 
  */
 export function formatCodeBlock(content, language, _unusedTheme = defaultColorTheme, codeTheme = null, isPreview = false, baseFontSize = 16) {
   const trimmedContent = content.trim();
+  // Mermaid：不要进行代码高亮，直接输出容器，避免破坏语法
+  const lang = (language || '').toString().trim().toLowerCase();
+  if (lang === 'mermaid') {
+    // 转义 <>&，保证源码作为文本传给 mermaid 解析
+    const escaped = trimmedContent
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    const blockMargin = `${Math.max(8, Math.round(baseFontSize))}px`;
+    // 说明：增加 font-size: 0 以彻底消除在部分平台（如公众号编辑器）中内联 SVG 的基线留白
+    return `<div class="mermaid-block" style="margin: ${blockMargin} 0; line-height: 0; font-size: 0;"><div class="mermaid">${escaped}</div></div>`;
+  }
   const safeCodeTheme = codeTheme || getCodeStyle('mac');
   const highlightedContent = highlightCode(trimmedContent, language, safeCodeTheme);
 

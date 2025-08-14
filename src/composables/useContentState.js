@@ -137,6 +137,52 @@ const user = 'World';
 greet(user);
 \`\`\`
 
+
+### Mermaid 复杂图示例
+\`\`\`mermaid
+flowchart TB
+  %% 子图与泳道
+  subgraph Cluster_A [订单流转域]
+    direction TB
+    A[用户下单] --> B{库存检查}
+    B -- 库存充足 --> C[预占库存]
+    B -- 库存不足 --> D[下发缺货通知]
+    C --> E{支付结果}
+    E -- 成功 --> F[生成订单]
+    E -- 失败 --> G[释放库存]
+  end
+
+  subgraph Cluster_B [履约域]
+    direction LR
+    F --> H[拣货打包]
+    H --> I{发货方式}
+    I -- 自营 --> J[自营配送]
+    I -- 第三方 --> K[三方物流]
+  end
+
+  %% 跨域编排
+  J --> L[签收]
+  K --> L
+  L --> M{是否售后}
+  M -- 否 --> N[订单完成]
+  M -- 是 --> O[售后流程]
+
+  %% 样式与连线定义
+  classDef critical fill:#ffe6e6,stroke:#ff4d4f,stroke-width:1px,color:#a8071a
+  classDef ok fill:#e6fffb,stroke:#36cfc9,stroke-width:1px,color:#006d75
+  classDef neutral fill:#f6ffed,stroke:#73d13d,stroke-width:1px,color:#135200
+
+  class B,O critical
+  class C,F,H ok
+  class A,N neutral
+
+  linkStyle 0 stroke:#1890ff,stroke-width:2px
+  linkStyle 3 stroke:#fa8c16,stroke-dasharray: 5 3
+
+  %% 子图外说明
+  R[/监控面板/]:::ok --> B
+\`\`\`
+
 ---
 
 ## 6️⃣ 表格测试

@@ -129,7 +129,58 @@ async function copyWithClipboardAPI(html, plainText) {
 }
 
 /**
- * 尝试使用传统的 execCommand 进行复制。
+ * 尝试使用传统的 execCommand 进行复制（拦截 copy 事件，无需改变选区）。
+ * 这种方式可以最大程度避免页面滚动/抖动。
+ * @private
+ */
+function copyWithExecCommandViaListener(html, plainText) {
+  return new Promise((resolve, reject) => {
+    let succeeded = false;
+    const onCopy = (e) => {
+      try {
+        e.clipboardData.setData('text/html', html);
+        e.clipboardData.setData('text/plain', plainText || html.replace(/<[^>]*>/g, ''));
+        e.preventDefault();
+        succeeded = true;
+      } catch (_) {}
+    };
+    document.addEventListener('copy', onCopy, true);
+
+    // 某些浏览器要求有选区才能触发 copy；使用 1x1 的隐藏编辑节点，尽量避免滚动
+    const ghost = document.createElement('div');
+    ghost.setAttribute('contenteditable', 'true');
+    ghost.style.cssText = `
+      position: fixed; top: 0; left: 0; width: 1px; height: 1px;
+      opacity: 0; overflow: hidden; pointer-events: none; z-index: -1;
+      contain: strict; transform: translateZ(0);
+    `;
+    ghost.textContent = '.';
+    document.body.appendChild(ghost);
+
+    const prevScrollX = window.scrollX; const prevScrollY = window.scrollY;
+    const range = document.createRange();
+    range.selectNodeContents(ghost);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    try {
+      const ok = document.execCommand('copy');
+      if (!ok && !succeeded) throw new Error('execCommand returned false.');
+      resolve(true);
+    } catch (err) {
+      reject(err);
+    } finally {
+      selection.removeAllRanges();
+      if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+      if (typeof window.scrollTo === 'function') window.scrollTo(prevScrollX, prevScrollY);
+      document.removeEventListener('copy', onCopy, true);
+    }
+  });
+}
+
+/**
+ * 尝试使用传统的 execCommand 进行复制（选区方式，作为最终兜底）。
  * @private
  */
 function copyWithExecCommand() {
@@ -173,50 +224,56 @@ export async function copyToSocialClean(html, fontSettings = null) {
         }
       }
 
-      // 如果纯API失败，才使用DOM方式
-      const container = createRichTextContainer(html, fontSettings);
-
-      // 使用最小化的DOM操作
-      container.style.cssText = `
-        position: fixed !important;
-        top: -9999px !important;
-        left: -9999px !important;
-        width: 1px !important;
-        height: 1px !important;
-        opacity: 0 !important;
-        overflow: hidden !important;
-        pointer-events: none !important;
-        z-index: -9999 !important;
-        visibility: hidden !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        border: none !important;
-        outline: none !important;
-        transform: scale(0) !important;
-        display: block !important;
-      `;
-
-      document.body.appendChild(container);
-
+      // 如果纯API失败，优先采用“copy事件监听”方式，不产生选区/不插入DOM，避免页面抖动
       try {
-        // 尝试现代API
-        if (navigator.clipboard && navigator.clipboard.write) {
-          await copyWithClipboardAPI(container.outerHTML, container.textContent);
-        } else {
-          // 降级到传统方法
+        const plainText = html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+        await copyWithExecCommandViaListener(html, plainText);
+        return true;
+      } catch (_) {
+        // 仍失败时，最后使用选区兜底（此路径才创建/插入容器）
+        const container = createRichTextContainer(html, fontSettings);
+        container.style.cssText = `
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 1px !important;
+          height: 1px !important;
+          opacity: 0 !important;
+          overflow: hidden !important;
+          pointer-events: none !important;
+          z-index: -9999 !important;
+          visibility: hidden !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          border: none !important;
+          outline: none !important;
+          transform: translate(-9999px, -9999px) !important;
+          display: block !important;
+        `;
+        document.body.appendChild(container);
+        try {
+          const prevScrollX = window.scrollX;
+          const prevScrollY = window.scrollY;
+          const prevActive = document.activeElement;
+
           const range = document.createRange();
           range.selectNodeContents(container);
           const selection = window.getSelection();
           selection.removeAllRanges();
           selection.addRange(range);
-          copyWithExecCommand();
-          selection.removeAllRanges();
-        }
-        return true;
-      } finally {
-        // 立即清理DOM
-        if (document.body.contains(container)) {
-          document.body.removeChild(container);
+
+          try {
+            copyWithExecCommand();
+          } finally {
+            selection.removeAllRanges();
+            if (typeof window.scrollTo === 'function') window.scrollTo(prevScrollX, prevScrollY);
+            try { prevActive?.focus?.(); } catch (_) {}
+          }
+          return true;
+        } finally {
+          if (document.body.contains(container)) {
+            document.body.removeChild(container);
+          }
         }
       }
     };

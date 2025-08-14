@@ -18,6 +18,8 @@
     "@codemirror/theme-one-dark": "^6.1.2",
     "codemirror": "^6.0.1",
     "github-markdown-css": "^5.8.1",
+    "mermaid": "^11.9.0",
+    "svgo": "^4.0.0",
     "vue": "^3.3.8",
     "vue-codemirror": "^6.1.1"
   },

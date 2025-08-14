@@ -47,9 +47,10 @@
 </template>
 
 <script>
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { parseMarkdown } from '../core/markdown/parser/coordinator.js'
 import { useGlobalThemeManager } from '../composables/index.js'
+import mermaid from 'mermaid'
 
 export default {
   name: 'PreviewPane',
@@ -209,7 +210,7 @@ export default {
     }
 
     // 处理Markdown解析和转换
-    const processMarkdown = () => {
+    const processMarkdown = async () => {
       if (!props.markdown) {
         renderedHtml.value = ''
         socialHtml.value = ''
@@ -239,6 +240,95 @@ export default {
           isPreview: true
         })
         renderedHtml.value = previewFormatted
+
+        // 等待DOM更新后再渲染 Mermaid
+        await nextTick()
+        try {
+          mermaid.initialize({
+            startOnLoad: false,
+            securityLevel: 'strict',
+            deterministicIds: true,
+            deterministicIDSeed: 'preview-mermaid',
+            flowchart: {
+              htmlLabels: false, // 重要：避免使用 foreignObject，以适配公众号
+              useMaxWidth: true
+            },
+            themeVariables: {
+              fontFamily: '"Microsoft YaHei", "微软雅黑", Arial, sans-serif'
+            }
+          })
+
+          // 快速合法性检查：首个有效行必须是已知图类型指令
+          const isLikelyMermaid = (def) => {
+            const lines = (def || '').split(/\r?\n/).map(l => l.trim()).filter(Boolean)
+            // 过滤掉可能的 init 指令与注释
+            const first = lines.find(l => !/^%%/.test(l) && !/^%%\{.*\}%%$/.test(l)) || ''
+            const starters = [
+              'graph', 'flowchart', 'sequenceDiagram', 'classDiagram', 'stateDiagram',
+              'erDiagram', 'gantt', 'journey', 'pie', 'gitGraph', 'mindmap', 'timeline',
+              'requirementDiagram', 'sankey', 'xychart-beta', 'block-beta', 'zenuml'
+            ]
+            return starters.some(s => first.startsWith(s))
+          }
+
+          // 先清理已渲染的 SVG/占位符，避免重复堆积
+          const containerEl = document.querySelector('.preview-rendered')
+          if (containerEl) {
+            // 清理上一次渲染插入的 SVG 与错误提示块，避免越堆越多
+            containerEl.querySelectorAll('.mermaid svg, .mermaid-error, .mermaid-error-hidden').forEach(n => n.remove())
+
+            // 为 mermaid.render 提供离屏 sandbox，阻断其往 body 追加错误节点
+            const sandbox = document.createElement('div')
+            sandbox.style.position = 'fixed'
+            sandbox.style.left = '-99999px'
+            sandbox.style.top = '-99999px'
+            sandbox.style.width = '0'
+            sandbox.style.height = '0'
+            sandbox.style.overflow = 'hidden'
+            document.body.appendChild(sandbox)
+
+            try {
+              // 按块渲染；对每个 mermaid 源只保留一个渲染结果或一个错误提示
+              const blocks = Array.from(containerEl.querySelectorAll('.mermaid'))
+              for (let i = 0; i < blocks.length; i++) {
+                const el = blocks[i]
+                const def = (el.textContent || '').trim()
+                // 非法/非 mermaid 指令的片段直接跳过，避免 mermaid 注入错误卡片
+                if (!isLikelyMermaid(def)) continue
+                if (!def) continue
+                try {
+                  const id = `mmd-prev-${i}-${Math.random().toString(36).slice(2)}`
+                  const { svg } = await mermaid.render(id, def, undefined, sandbox)
+                  const wrap = document.createElement('div')
+                  wrap.innerHTML = svg
+                  const hasError = wrap.querySelector('.error-icon') || /Syntax error/i.test(wrap.textContent || '')
+                  const svgEl = wrap.querySelector('svg')
+                  if (!hasError && svgEl) {
+                    // 正常渲染：替换为 SVG
+                    el.replaceWith(svgEl)
+                  } else {
+                    // 屏蔽错误卡片：不在页面显示，放置一个隐藏占位符
+                    const ph = document.createElement('div')
+                    ph.className = 'mermaid-error-hidden'
+                    ph.style.display = 'none'
+                    el.replaceWith(ph)
+                  }
+                } catch (perr) {
+                  console.warn('Mermaid 单块渲染失败（预览继续）:', perr)
+                  // 渲染异常时也隐藏该块，避免显示错误卡片或原始源码
+                  const ph = document.createElement('div')
+                  ph.className = 'mermaid-error-hidden'
+                  ph.style.display = 'none'
+                  el.replaceWith(ph)
+                }
+              }
+            } finally {
+              sandbox.remove()
+            }
+          }
+        } catch (merr) {
+          console.warn('Mermaid 渲染失败:', merr)
+        }
 
         // 3. 发送给父组件
         emit('html-generated', socialFormatted)
@@ -315,7 +405,8 @@ export default {
       viewportModes,
       getCurrentModeInfo,
       getPreviewClasses,
-      handleScroll
+      handleScroll,
+      currentLayoutId
     }
   }
 }
