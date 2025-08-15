@@ -23,7 +23,7 @@
 ## 效果预览
 
 
-###  一键复制公众号格式 
+###  一键复制公众号格式
 
 ![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810145119169.png)
 
@@ -36,7 +36,7 @@
 
 ![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810144616512.png)
 
-### 支持 mermaid 
+### 支持 mermaid
 
 ![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250814231133156.png)
 
@@ -127,6 +127,50 @@ npm run test
 npm run test:ui
 npm run test:coverage
 ```
+
+## Docker 一键部署
+
+你可以直接使用我们在 Docker Hub 上的公共镜像一键部署（支持 AMD64/ARM64）：
+
+- 方式一：Docker（推荐最简）
+
+```bash
+# 拉取并运行（默认暴露到本机 8080）
+docker run -d --name mdeditor -p 8080:80 helongisno1/mdeditor:latest
+
+# 访问
+open http://localhost:8080
+```
+
+- 方式二：Docker Compose
+
+```yaml
+version: "3.9"
+services:
+  mdeditor:
+    image: helongisno1/mdeditor:latest
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+```
+
+```bash
+docker compose up -d
+open http://localhost:8080
+```
+
+提示：在 macOS 上如果你使用 OrbStack，容器会有一个形如 <容器名>.orb.local 的本地域名。
+例如首次运行若未指定 --name，Docker 会分配随机容器名（如 elegant_feynman），
+则可在浏览器看到 elegant_feynman.orb.local 之类的域名。这只是本机可用的开发域名，
+并非公网域名；生产环境仍建议通过你自己的域名反向代理或直接使用服务器 IP:端口 访问。
+
+如需自定义容器名（便于记忆的本地域名）：
+
+```bash
+docker run -d --name mdeditor -p 8080:80 helongisno1/mdeditor:latest
+# 现在本地也可通过 http://mdeditor.orb.local 访问（OrbStack 提供的本地域名解析）
+```
+
 
 ## 快速上手（应用运行）
 

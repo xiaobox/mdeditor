@@ -7,6 +7,23 @@
 ## [Unreleased]
 - 计划：完善单元测试覆盖、增加更多主题/代码样式预设、支持导出图片/PDF、提供中英文双语文档
 
+
+## [1.0.2] - 2025-08-15
+
+### Added
+- 支持 Mermaid 流程图/时序图等渲染，预览与复制链路均可用（参见提交 cdb219d）
+- 支持 Docker 一键部署：提供多阶段构建的 Dockerfile、.dockerignore、Docker Hub 公共镜像与 GitHub Actions 自动发布流程
+
+### Fixed
+- 代码块缺少横向滚动条的问题，长行代码现在可横向滚动（8b84299）
+- 含 alt 的图片被当作链接导致显示异常；同时为带 alt 的图片新增图注显示（b296c47）
+- Breeze（清风）主题：标题装饰稳定性、列表缩进统一（b926f33）
+- 平板预览背景色与其他模式不一致（bcf3dc7）
+
+### Docs/CI
+- README：新增 Mermaid 展示、完善文档与截图，新增 Docker 一键部署使用说明
+- CI：新增 Docker 多架构构建与推送 Workflow（推送到 helongisno1/mdeditor）
+
 ## [1.0.0] - 2025-08-10
 
 ### Added
