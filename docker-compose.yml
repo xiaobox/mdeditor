@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  mdeditor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mdeditor:latest
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    # No volumes needed in prod; uncomment below for live local dev serving build output
+    # volumes:
+    #   - ./dist:/usr/share/nginx/html:ro
+
