@@ -1,5 +1,7 @@
 # Modern MD Editor · 社交平台友好型 Markdown 编辑器
 
+[简体中文](./README.md) | [English](./README.en.md)
+
 > 一款专为极致书写体验与「一键复制为公众号格式」而生的现代化 Markdown 编辑器。界面精致、体验顺滑，所见即所得地预览与复制，帮助你高效创作优雅内容。
 
 <p align="center">
