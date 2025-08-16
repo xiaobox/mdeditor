@@ -282,5 +282,4 @@ If you find this project useful, please give it a Star ⭐️! Issues/PRs are we
 
 ## Star History
 
-![Star History Chart](https://api.star-history.com/svg?repos=xiaobox/mdeditor&type=Date)
-
+[![Star History Chart](https://api.star-history.com/svg?repos=xiaobox/mdeditor&type=Date)](https://www.star-history.com/#xiaobox/mdeditor&Date)
