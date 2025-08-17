@@ -1,8 +1,15 @@
 <template>
   <header class="app-header">
     <div class="header-left">
-      <h1>Modern MD Editor</h1>
-      <span class="header-subtitle">现代化 Markdown 编辑器</span>
+      <div class="brand">
+        <div class="logo" :title="logoAlt || '项目 Logo'">
+          <img v-if="logoSrc" :src="logoSrc" :alt="logoAlt || '项目 Logo'" class="logo-img" />
+          <div v-else class="logo-placeholder">MD</div>
+        </div>
+        <div class="brand-text">
+          <h1>Modern MD Editor</h1>
+        </div>
+      </div>
     </div>
     <div class="header-right">
       <!-- 视图切换按钮组 -->
@@ -97,6 +104,15 @@ defineProps({
   hasContent: {
     type: Boolean,
     default: false
+  },
+  // 可选：Logo 图片地址与替代文本
+  logoSrc: {
+    type: String,
+    default: ''
+  },
+  logoAlt: {
+    type: String,
+    default: ''
   }
 })
 

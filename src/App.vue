@@ -7,6 +7,8 @@
       :copy-format-options="copyFormatOptions"
       :selected-copy-format="selectedCopyFormat"
       :has-content="hasContent"
+      logo-src="/logo.svg"
+      logo-alt="Modern MD Editor"
       @open-github="openGithub"
       @toggle-settings="toggleSettingsPanel"
       @set-view-mode="setViewMode"

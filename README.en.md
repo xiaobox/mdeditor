@@ -1,8 +1,11 @@
-# Modern MD Editor · Social-platform-friendly Markdown Editor
+<p align="center">
+  <a href="./public/logo.svg" target="_blank">
+    <img src="./public/logo.svg" alt="Modern MD Editor Logo" width="120" />
+  </a>
+</p>
 
-[English](./README.en.md) | [简体中文](./README.md)
-
-> A modern Markdown editor designed for an exquisite writing experience and one-click HTML output tailored for WeChat Official Accounts and social platforms. Elegant UI, smooth interactions, WYSIWYG preview and copy — craft beautiful content efficiently.
+<h1 align="center">Modern MD Editor</h1>
+<p align="center">Social‑platform‑friendly Markdown Editor</p>
 
 <p align="center">
   <a href="https://vuejs.org/"><img src="https://img.shields.io/badge/Vue-3.x-42b883.svg" alt="Vue 3" /></a>
@@ -12,6 +15,12 @@
   <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/npm-%3E%3D9-CB3837?logo=npm&logoColor=white" alt="npm >=9" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License" /></a>
 </p>
+
+<p align="center">
+  <a href="./README.en.md">English</a> · <a href="./README.md">简体中文</a>
+</p>
+
+> A modern Markdown editor designed for an exquisite writing experience and one-click HTML output tailored for WeChat Official Accounts and social platforms. Elegant UI, smooth interactions, WYSIWYG preview and copy — craft beautiful content efficiently.
 
 ## Introduction
 
