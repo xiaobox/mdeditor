@@ -1,0 +1,49 @@
+name: Deploy to Vercel on Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Trigger Vercel Deployment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      # 方式一：使用 Vercel Deploy Hook（推荐，最少权限）
+      - name: Trigger Vercel Deploy Hook
+        if: ${{ success() }}
+        run: |
+          curl -X POST "$VERCEL_DEPLOY_HOOK_URL"
+        env:
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+
+      # 方式二（可选）：使用 Vercel CLI 直接部署（需要设置多个机密）
+      # - name: Deploy with Vercel CLI
+      #   if: ${{ success() && env.VERCEL_ORG_ID != '' }}
+      #   run: |
+      #     npm i -g vercel@latest
+      #     vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+      #     vercel build --prod
+      #     vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+      #   env:
+      #     VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      #     VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      #     VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
