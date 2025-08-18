@@ -8,9 +8,9 @@ let mainWindow;
 function createWindow() {
   // 创建浏览器窗口
   mainWindow = new BrowserWindow({
-    width: 1200,
+    width: 1201,
     height: 800,
-    minWidth: 800,
+    minWidth: 1201,
     minHeight: 600,
     webPreferences: {
       nodeIntegration: false,
@@ -151,7 +151,7 @@ function createMenu() {
             mainWindow.webContents.send('menu-save-file');
           }
         },
-
+        
         { type: 'separator' },
         {
           label: '退出',
