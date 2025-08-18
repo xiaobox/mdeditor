@@ -18,5 +18,8 @@ export { useUIState } from './useUIState.js';
 export { useNotification } from './useNotification.js';
 export { useClipboard } from './useClipboard.js';
 
+// Electron集成相关组合式API
+export { useElectron } from './useElectron.js';
+
 // 为向后兼容性保留的别名导出
 export { useEditor as useMarkdownEditor } from './editor/index.js';

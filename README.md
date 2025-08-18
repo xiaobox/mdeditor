@@ -98,6 +98,41 @@
 ## 环境要求
 
 - **Node.js**：≥ 18（推荐 18/20 LTS）
+
+## 🖥️ 桌面应用支持
+
+这个项目现在支持 **Electron 桌面应用**！你可以：
+
+- 🚀 **快速启动**: `npm run electron:dev` - 同时启动开发服务器和桌面应用
+- 📱 **原生体验**: 享受完整的桌面应用体验，包括菜单栏、快捷键等
+- 💾 **本地文件**: 支持本地文件的打开、编辑、保存等操作
+- 🔧 **跨平台**: 支持 macOS、Windows 和 Linux
+
+### 桌面应用功能
+
+- **文件操作**: 打开文件（支持 .md、.markdown、.txt 等格式）、保存文件
+- **快捷键**: Cmd/Ctrl+O（打开）、Cmd/Ctrl+S（保存）
+- **菜单栏**: 完整的应用菜单（文件、编辑、视图、帮助）
+- **窗口管理**: 支持调整大小、全屏等
+- **日志记录**: 详细的操作日志，便于调试和了解应用状态
+
+### 快速开始
+
+```bash
+# 开发模式（同时启动 Vite 服务器和 Electron）
+npm run electron:dev
+
+# 构建桌面应用
+npm run build:electron
+
+# 打包应用
+npm run package
+
+# 制作安装包（macOS）
+npm run make:mac
+```
+
+详细说明请查看 [Electron 集成文档](./ELECTRON_README.md)
 - **包管理器**：npm / pnpm / yarn 均可
 - **浏览器**：现代浏览器（Chrome/Edge/Safari/Firefox 最新版本）
 
