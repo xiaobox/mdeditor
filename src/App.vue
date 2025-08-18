@@ -7,6 +7,8 @@
       :copy-format-options="copyFormatOptions"
       :selected-copy-format="selectedCopyFormat"
       :has-content="hasContent"
+      logo-src="/logo.svg"
+      logo-alt="Modern MD Editor"
       @open-github="openGithub"
       @toggle-settings="toggleSettingsPanel"
       @set-view-mode="setViewMode"
@@ -14,6 +16,9 @@
       @copy-format-select="handleCopyFormatSelect"
       @update:selected-copy-format="selectedCopyFormat = $event"
     />
+
+    <!-- 隐藏文件输入：用于导入 .md -->
+    <input ref="fileInputRef" type="file" accept=".md,text/markdown,.txt" style="display:none" @change="handleFileChosen" />
 
     <!-- 主内容区域 -->
     <AppMain
@@ -24,6 +29,7 @@
       @clear-content="clearContent"
       @load-sample="loadSample"
       @html-generated="updateHtmlContent"
+      @import-markdown="triggerImportMd"
     />
 
     <!-- 应用底部 -->
@@ -59,10 +65,13 @@
       :show="showMarkdownGuide"
       @close="closeGuide"
     />
+
+
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { useAppState, useElectron } from './composables/index.js'
 import { useGlobalThemeManager } from './composables/index.js'
 import { nextTick } from 'vue'
@@ -76,7 +85,6 @@ import MarkdownGuide from './components/MarkdownGuide.vue'
 const {
   // 状态
   markdownContent,
-  htmlContent,
   showSettingsPanel,
   showMarkdownGuide,
   syncScrollEnabled,
@@ -87,7 +95,6 @@ const {
 
   // 计算属性
   hasContent,
-  isHtmlReady,
   characterCount,
   lineCount,
   wordCount,
@@ -105,7 +112,6 @@ const {
   toggleSyncScroll,
   setViewMode,
   showNotification,
-  removeNotification,
   handleCopyFormatSelect,
   openGithub
 } = useAppState()
@@ -160,7 +166,37 @@ nextTick(() => {
 })
 
 // 初始化主题管理器（全局单例内部已自动调用 initialize）
+useGlobalThemeManager()
 
+// 导入：隐藏文件输入
+const fileInputRef = ref(null)
+const triggerImportMd = () => fileInputRef.value && fileInputRef.value.click()
+
+const handleFileChosen = async (e) => {
+  const file = e.target.files && e.target.files[0]
+  // 允许重复选择同一个文件
+  e.target.value = ''
+  if (!file) return
+  if (!/\.(md|markdown)$/i.test(file.name) && !/text\/markdown|text\/plain/.test(file.type)) {
+    showNotification('仅支持导入 .md 文件', 'warning')
+    return
+  }
+  try {
+    const text = await file.text()
+    updateMarkdownContent(text)
+    showNotification(`已导入：${file.name}`, 'success')
+  } catch (err) {
+    showNotification(`导入失败：${err.message}`, 'error')
+  }
+}
+
+// 基于第一行 H1 自动生成文件名（导出功能移除后不再使用，可保留以备后续扩展）
+// const makeExportFilename = () => {
+//   const md = markdownContent.value || ''
+//   const h1Match = md.match(/^#\s+(.+?)\s*$/m)
+//   const raw = (h1Match && h1Match[1]) || 'markdown-preview'
+//   return raw.replace(/[\\/:*?"<>|]/g, '').replace(/\s+/g, ' ').trim().slice(0, 80) || 'markdown-preview'
+// }
 
 </script>
 

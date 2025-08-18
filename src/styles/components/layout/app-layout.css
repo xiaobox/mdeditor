@@ -161,7 +161,7 @@
 }
 /* 主题切换动画 */
 * {
-  transition: background-color var(--transition-normal), 
+  transition: background-color var(--transition-normal),
               color var(--transition-normal),
               border-color var(--transition-normal);
 }

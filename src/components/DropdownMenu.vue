@@ -7,8 +7,11 @@
       :disabled="disabled"
     >
       <slot name="trigger">
-        <svg viewBox="0 0 24 24" width="18" height="18">
-          <path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/>
+        <svg :viewBox="triggerViewBox || '0 0 24 24'" width="18" height="18">
+          <template v-if="Array.isArray(triggerIcon)">
+            <path v-for="(d, i) in triggerIcon" :key="i" fill="currentColor" :d="d" />
+          </template>
+          <path v-else fill="currentColor" :d="triggerIcon || 'M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z'"/>
         </svg>
         <span>{{ triggerText }}</span>
         <svg class="dropdown-arrow" :class="{ 'dropdown-arrow-open': isOpen }" viewBox="0 0 24 24" width="14" height="14">
@@ -16,22 +19,25 @@
         </svg>
       </slot>
     </button>
-    
+
     <Transition name="dropdown">
       <div v-if="isOpen" class="dropdown-menu" :class="menuClass">
-        <div 
-          v-for="(option, index) in options" 
+        <div
+          v-for="(option, index) in options"
           :key="option.value || index"
           class="dropdown-item"
-          :class="{ 
+          :class="{
             'dropdown-item-active': option.value === selectedValue,
-            'dropdown-item-disabled': option.disabled 
+            'dropdown-item-disabled': option.disabled
           }"
           @click="selectOption(option)"
         >
           <div class="dropdown-item-content">
             <svg v-if="option.icon" class="dropdown-item-icon" :viewBox="option.viewBox || '0 0 24 24'" width="16" height="16">
-              <path fill="currentColor" :d="option.icon"/>
+              <template v-if="Array.isArray(option.icon)">
+                <path v-for="(d, idx) in option.icon" :key="idx" fill="currentColor" :d="d" />
+              </template>
+              <path v-else fill="currentColor" :d="option.icon"/>
             </svg>
             <span class="dropdown-item-text">{{ option.label }}</span>
             <svg v-if="option.value === selectedValue" class="dropdown-item-check" viewBox="0 0 24 24" width="16" height="16">
@@ -73,6 +79,15 @@ const props = defineProps({
   disabled: {
     type: Boolean,
     default: false
+  },
+  // 可选：用于自定义触发器默认图标（也可通过 slot 手动传入）
+  triggerIcon: {
+    type: [String, Array],
+    default: null
+  },
+  triggerViewBox: {
+    type: String,
+    default: '0 0 24 24'
   }
 })
 
@@ -93,7 +108,7 @@ const toggleDropdown = () => {
 
 const selectOption = (option) => {
   if (option.disabled) return
-  
+
   selectedValue.value = option.value
   emit('update:modelValue', option.value)
   emit('select', option)
@@ -341,6 +356,42 @@ onUnmounted(() => {
     -6px -6px 12px rgba(255, 255, 255, 0.8),
     0 0 0 3px rgba(var(--theme-primary-rgb), 0.3);
 }
+
+  /* 小按钮风格（与 AppMain 的 .btn-small 视觉一致） */
+  .dropdown-trigger.btn-small {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    gap: 0;
+    border: 1px solid var(--theme-border-light);
+    border-radius: 6px;
+    background: var(--theme-bg-primary);
+    color: var(--theme-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .dropdown-trigger.btn-small:hover:not(:disabled) {
+    background: var(--theme-bg-secondary);
+    color: var(--theme-text-primary);
+    border-color: var(--theme-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .dropdown-trigger.btn-small:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .dropdown-trigger.btn-small:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
 
 
 </style>

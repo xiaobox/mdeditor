@@ -20,6 +20,12 @@
               <path fill="currentColor" d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
             </svg>
           </button>
+          <!-- 新增：导入 .md（更新图标） -->
+          <button @click="$emit('import-markdown')" class="btn-small" title="导入 .md 文件">
+            <svg viewBox="0 0 1024 1024" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+              <path d="M628.1 357.9h107.4c2.8 0 5.7 0.7 8.1 2.4 18.4 13.1 18.2 34.3 6.4 46.3L532.4 627.5c-11.1 11.2-29.2 11.4-40.4 0.3l-0.3-0.3-217.6-220.9c-11.1-11.3-10.9-29.4 0.4-40.4 5.3-5.2 12.5-8.2 19.9-8.2H396V142.3c0-7.9 6.4-14.3 14.3-14.3h203.5c7.9 0 14.3 6.4 14.3 14.3v215.6zM283.4 652.4v87.5c0 7.9 6.4 14.3 14.3 14.3h428.8c7.9 0 14.3-6.4 14.3-14.3v-87.5c0-7.9 6.4-14.3 14.3-14.3H898c7.9 0 14.3 6.4 14.3 14.3V914c0 7.9-6.4 14.3-14.3 14.3H126.2c-7.9 0-14.3-6.4-14.3-14.3V652.4c0-7.9 6.4-14.3 14.3-14.3h142.9c7.9 0 14.3 6.4 14.3 14.3z" fill="currentColor"></path>
+            </svg>
+          </button>
         </div>
       </div>
       <MarkdownEditor
@@ -39,9 +45,7 @@
           </svg>
           预览
         </h3>
-        <div class="panel-actions">
-          <!-- 预留扩展功能位置 -->
-        </div>
+        <div class="panel-actions"></div>
       </div>
 
       <PreviewPane
@@ -57,8 +61,9 @@
 <script setup>
 import MarkdownEditor from '../MarkdownEditor.vue'
 import PreviewPane from '../PreviewPane.vue'
+import { } from 'vue'
 
-defineProps({
+const props = defineProps({
   markdownContent: {
     type: String,
     required: true
@@ -73,11 +78,12 @@ defineProps({
   }
 })
 
-defineEmits([
+const emit = defineEmits([
   'update:markdown-content',
   'clear-content',
   'load-sample',
-  'html-generated'
+  'html-generated',
+  'import-markdown'
 ])
 </script>
 
@@ -122,7 +128,7 @@ defineEmits([
   background: #f8f8f8;
   border-bottom: 1px solid #e0e0e0;
   position: relative;
-  overflow: hidden;
+  overflow: visible; /* 允许下拉菜单溢出显示 */
 }
 
 .panel-header h3 {

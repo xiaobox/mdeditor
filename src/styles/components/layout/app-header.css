@@ -18,8 +18,56 @@
   gap: 4px;
 }
 
+/* 品牌区（Logo + 标题） */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  
+}
+
+/* 放大 LOGO */
+.logo {
+  width: clamp(40px, 6.5vw, 52px);
+  height: clamp(40px, 6.5vw, 52px);
+  border-radius: 12px;
+  background: var(--theme-primary-15);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.logo-placeholder {
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--theme-primary);
+  letter-spacing: -0.02em;
+}
+
+/* 缩小标题字号，增强平衡 */
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .header-left h1 {
-  font-size: 26px;
+  font-size: 20px;
+}
+
+
+
+.header-left h1 {
+  font-size: 18px;
   font-weight: 800;
   background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-hover) 100%);
   background-clip: text;
@@ -27,14 +75,14 @@
   -webkit-text-fill-color: transparent;
   color: var(--theme-primary);
   margin: 0;
-  letter-spacing: -0.8px;
+  letter-spacing: -0.4px;
   position: relative;
   transition: all 0.3s ease;
 }
 
 .header-left h1:hover {
   transform: translateY(-1px);
-  filter: brightness(1.1);
+  filter: brightness(1.06);
 }
 
 .header-left h1::after {
@@ -42,17 +90,17 @@
   position: absolute;
   bottom: -2px;
   left: 0;
-  width: 60px;
-  height: 3px;
+  width: 36px;
+  height: 2px;
   background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
   border-radius: 2px;
-  opacity: 0.6;
+  opacity: 0.45;
   transition: all 0.3s ease;
 }
 
 .header-left h1:hover::after {
-  opacity: 0.8;
-  width: 80px;
+  opacity: 0.7;
+  width: 56px;
 }
 
 .header-subtitle {
