@@ -19,6 +19,9 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 
+// 导入主题预加载器（必须在其他样式之前导入，防止主题闪烁）
+import './core/theme/theme-loader.js';
+
 // 导入全局 CSS
 // `theme-root.css` 定义主题变量与按系统引入
 import './styles/themes/theme-root.css';

@@ -99,6 +99,9 @@ body {
   color: var(--text-primary);
   line-height: 1.5;
   overflow-x: hidden;
+  /* 防止输入时高度变化导致的抖动 */
+  height: 100vh;
+  overflow-y: hidden;
 }
 
 /* ===== 基础工具组件 ===== */

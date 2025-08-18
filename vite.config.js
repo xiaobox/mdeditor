@@ -29,9 +29,12 @@
 
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+const isElectron = process.env.ELECTRON === 'true';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    // Electron构建：使用相对路径 './'，解决file://协议下的路径问题
+  base: isElectron ? './' : '/',
   // 插件配置
   plugins: [
     // Vue 插件，用于支持 .vue 单文件组件
