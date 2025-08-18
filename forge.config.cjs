@@ -1,11 +1,12 @@
 const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
-
+const path = require('path')
 module.exports = {
   packagerConfig: {
     asar: true,
-    name: 'Markdown编辑器',
+    name: 'Modern MD Editor',
     executableName: 'markdown-editor',
+    icon: path.join(__dirname, 'public', 'logo'), // 不需要文件扩展名，Forge 会自动添加
     ignore: [
       /^\/(?!dist|electron|package\.json|node_modules)/,
       /node_modules\/.*\/test/,
@@ -26,7 +27,8 @@ module.exports = {
       name: '@electron-forge/maker-dmg',
       config: {
         format: 'ULFO',
-        arch: ['arm64', 'x64']
+        arch: ['arm64', 'x64'],
+        icon: path.join(__dirname, 'public', 'logo.icns') // macOS 需要 ICNS 格式
       }
     },
     // macOS ZIP 压缩包 (ARM64 + Intel)
@@ -41,7 +43,9 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        name: 'Markdown编辑器'
+        name: 'Markdown编辑器',
+        setupIcon: path.join(__dirname, 'public', 'logo.ico'), // 指定 setup 图标
+        iconUrl: 'file://' + path.join(__dirname, 'public', 'logo.ico') // 指定安装包图标
       }
     },
     // Windows ZIP 压缩包
