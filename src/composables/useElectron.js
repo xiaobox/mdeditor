@@ -34,11 +34,35 @@ export function useElectron() {
     console.log('🎉 菜单监听器设置完成');
   }
   
+  // 设置文件内容更新监听器
+  const setupFileUpdateListener = (callback) => {
+    console.log('🎧 开始设置文件内容更新监听器...');
+    
+    if (!isElectron.value || !window.electronAPI) {
+      console.log('❌ 无法设置文件更新监听器：不在Electron环境中或electronAPI不可用');
+      return
+    }
+    
+    if (!window.electronAPI.onFileContentUpdated) {
+      console.error('❌ onFileContentUpdated 方法不可用');
+      return
+    }
+    
+    if (callback) {
+      console.log('📁 设置文件内容更新监听器...');
+      window.electronAPI.onFileContentUpdated(callback);
+      console.log('✅ 文件内容更新监听器设置成功');
+    }
+    
+    console.log('🎉 文件内容更新监听器设置完成');
+  }
+  
   // 清理监听器
   const cleanupMenuListeners = () => {
     if (isElectron.value && window.electronAPI) {
       window.electronAPI.removeAllListeners('menu-open-file')
       window.electronAPI.removeAllListeners('menu-save-file')
+      window.electronAPI.removeAllListeners('file-content-updated')
     }
   }
 
@@ -118,6 +142,7 @@ export function useElectron() {
     
     // 方法
     setupMenuListeners,
+    setupFileUpdateListener,
     openFile,
     saveFile,
   }
