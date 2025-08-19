@@ -5,6 +5,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // 文件操作
   saveFile: (content, filePath) => ipcRenderer.invoke('save-file', { content, filePath }),
   
+  // 文件内容更新监听
+  onFileContentUpdated: (callback) => ipcRenderer.on('file-content-updated', callback),
+  
   // 菜单事件监听
   onMenuOpenFile: (callback) => ipcRenderer.on('menu-open-file', callback),
   onMenuSaveFile: (callback) => ipcRenderer.on('menu-save-file', callback),

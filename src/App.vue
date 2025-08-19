@@ -120,7 +120,9 @@ const {
 const {
   openFile,
   saveFile,
-  setupMenuListeners
+  setupMenuListeners,
+  setupFileUpdateListener,
+  currentFilePath
 } = useElectron()
 
 // 设置菜单监听器
@@ -163,6 +165,41 @@ nextTick(() => {
       }
     }
   })
+  
+  // 设置文件内容更新监听器
+  setupFileUpdateListener((event, { filePath, content }) => {
+    console.log('📨 收到文件内容更新事件');
+    console.log('📂 文件路径:', filePath);
+    console.log('📄 新内容长度:', content.length);
+    
+    // 检查是否是当前打开的文件
+    if (currentFilePath.value === filePath) {
+      console.log('🔄 更新当前文件内容...');
+      
+      // 检查内容是否真的发生了变化
+      if (markdownContent.value !== content) {
+        // 更新编辑器内容
+        updateMarkdownContent(content);
+        console.log('✅ 编辑器内容已自动更新');
+        
+        // 显示更新通知
+        const fileName = filePath.split('/').pop() || filePath.split('\\').pop();
+        showNotification(`文件已更新: ${fileName}`);
+        
+        // 可选：记录更新日志
+        console.log('📝 文件内容更新记录:', {
+          filePath,
+          oldLength: markdownContent.value.length,
+          newLength: content.length,
+          timestamp: new Date().toISOString()
+        });
+      } else {
+        console.log('ℹ️ 内容相同，无需更新');
+      }
+    } else {
+      console.log('ℹ️ 不是当前打开的文件，忽略更新:', filePath);
+    }
+  });
 })
 
 // 初始化主题管理器（全局单例内部已自动调用 initialize）
