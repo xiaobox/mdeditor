@@ -7,12 +7,12 @@ const IpcManager = require('./modules/ipcManager.cjs');
 const WindowManager = require('./modules/windowManager.cjs');
 
 // 开发环境热重载
-if (process.env.NODE_ENV === 'development') {
-  require('electron-reloader')(module, {
-    debug: true,
-    watchRenderer: true
-  });
-}
+// if (process.env.NODE_ENV === 'development') {
+//   require('electron-reloader')(module, {
+//     debug: true,
+//     watchRenderer: true
+//   });
+// }
 
 // 创建模块实例
 const windowManager = new WindowManager();

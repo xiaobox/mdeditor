@@ -61,7 +61,8 @@
 ![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810145031310.png)
 
 ###  丰富的主题色
-  - ![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810144355636.png)
+
+![](https://xiaobox-public-images.oss-cn-beijing.aliyuncs.com/images20250810144355636.png)
 
 ## 项目特性
 
@@ -108,7 +109,7 @@
 
 - **Node.js**：≥ 18（推荐 18/20 LTS）
 
-## 🖥️ 桌面应用支持
+## 桌面应用支持
 
 这个项目现在支持 **Electron 桌面应用**！你可以：
 

@@ -108,6 +108,41 @@
 - Package manager: npm / pnpm / yarn
 - Browser: modern Chrome/Edge/Safari/Firefox
 
+## Desktop App Support
+
+This project now ships with an Electron desktop app. You can:
+
+- 🚀 Quick launch: `npm run electron:dev` — starts the Vite dev server and the desktop app together
+- 📱 Native experience: full desktop UX with menus and shortcuts
+- 💾 Local files: open, edit and save local files
+- 🔧 Cross‑platform: macOS, Windows and Linux
+
+### Desktop app features
+
+- File operations: open files (.md, .markdown, .txt, etc.), save files
+- Shortcuts: Cmd/Ctrl+O (open), Cmd/Ctrl+S (save)
+- Menu bar: complete app menus (File, Edit, View, Help)
+- Window management: resizing, fullscreen, etc.
+- Logging: detailed logs to help debug and understand app state
+
+### Quick start
+
+```bash
+# Dev mode (starts Vite server + Electron together)
+npm run electron:dev
+
+# Build the desktop app assets
+npm run build:electron
+
+# Package the app
+npm run package
+
+# Make an installer (macOS)
+npm run make:mac
+```
+
+See the full guide in the Electron integration doc: [ELECTRON_README.md](./ELECTRON_README.md)
+
 ## Install & Run Locally
 
 ```bash
