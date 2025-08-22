@@ -6,43 +6,36 @@
  */
 
 import { getThemeCopyAdapter } from './adapters/index.js'
+import { calculateLineHeight as calcLH } from '../../../shared/utils/typography.js'
 
 function addInlineStyles(html, fontFamily, fontSize, lineHeight, letterSpacing = 0) {
   const lh = parseFloat(lineHeight)
-  const lineHeightCss = Number.isFinite(lh) ? String(lineHeight) : (/[empx%]/i.test(String(lineHeight)) ? String(lineHeight) : '1.6')
+  const fallback = calcLH(fontSize, lh)
+  const lineHeightCss = Number.isFinite(lh) ? String(lineHeight) : (/[empx%]/i.test(String(lineHeight)) ? String(lineHeight) : fallback)
   const baseStyle = `font-family: ${fontFamily}; color: #333; letter-spacing: ${letterSpacing}px;`
   const normalWeight = '400'
   const boldWeight = '700'
-  const semiBoldWeight = '600'
+
 
   let out = html
     .replace(/<section(?![^>]*style=)/gi, `<section style="${baseStyle} line-height: ${lineHeightCss} !important;"`)
-    .replace(/<p(?![^>]*style=)/gi, `<p style="${baseStyle} font-size: ${fontSize}px; line-height: ${lineHeightCss} !important; margin: 1.5em 8px; font-weight: ${normalWeight};"`)
-    .replace(/<h1(?![^>]*style=)/gi, `<h1 style="${baseStyle} font-size: ${fontSize}px; line-height: 1.3em !important; font-weight: ${boldWeight}; margin: 1.8em 0 1.5em; text-align: center;"`)
-    .replace(/<h2(?![^>]*style=)/gi, `<h2 style="${baseStyle} font-size: ${Math.round(fontSize * 1.5)}px; line-height: 1.4em !important; font-weight: ${semiBoldWeight}; margin: 2em 0 1.5em;"`)
-    .replace(/<h3(?![^>]*style=)/gi, `<h3 style="${baseStyle} font-size: ${Math.round(fontSize * 1.3)}px; line-height: ${lineHeightCss} !important; font-weight: ${semiBoldWeight}; margin: 1.5em 0 1em;"`)
-    .replace(/<h4(?![^>]*style=)/gi, `<h4 style="${baseStyle} font-size: ${Math.round(fontSize * 1.1)}px; line-height: ${lineHeightCss} !important; font-weight: ${semiBoldWeight}; margin: 1em 0 0.6em;"`)
-    .replace(/<li(?![^>]*style=)/gi, `<li style="${baseStyle} font-size: ${fontSize}px; line-height: ${lineHeightCss} !important; font-weight: ${normalWeight}; margin: 0.5em 0;"`)
-    .replace(/<blockquote(?![^>]*style=)/gi, `<blockquote style="${baseStyle} font-size: ${fontSize}px; line-height: ${lineHeightCss} !important; margin: 1.5em 8px; padding: 1em 1em 1em 2em; border-left: 3px solid #dbdbdb; background-color: #f8f8f8; font-weight: ${normalWeight};"`)
-    .replace(/<ul(?![^>]*style=)/gi, `<ul style="${baseStyle} font-size: ${fontSize}px; line-height: ${lineHeightCss} !important; margin: 1.5em 8px; padding-left: 25px; font-weight: ${normalWeight};"`)
-    .replace(/<ol(?![^>]*style=)/gi, `<ol style="${baseStyle} font-size: ${fontSize}px; line-height: ${lineHeightCss} !important; margin: 1.5em 8px; padding-left: 25px; font-weight: ${normalWeight};"`)
     .replace(/<strong(?![^>]*style=)/gi, `<strong style="${baseStyle} font-weight: ${boldWeight};"`)
     .replace(/<b(?![^>]*style=)/gi, `<b style="${baseStyle} font-weight: ${boldWeight};"`)
     .replace(/<em(?![^>]*style=)/gi, `<em style="${baseStyle} font-weight: ${normalWeight}; font-style: italic;"`)
     .replace(/<i(?![^>]*style=)/gi, `<i style="${baseStyle} font-weight: ${normalWeight}; font-style: italic;"`)
     // 为带有 data-md-caption 的图片包裹 figure + figcaption
-    .replace(/<img([^>]*?)data-md-caption="true"([^>]*?)>/gi, (m, pre, post) => {
-      const altMatch = m.match(/alt="([^"]*)"/i)
+    .replace(/<img([^>]*?)data-md-caption=\"true\"([^>]*?)>/gi, (m, pre, post) => {
+      const altMatch = m.match(/alt=\"([^\"]*)\"/i)
       const alt = altMatch ? altMatch[1] : ''
-      const img = `<img${pre}data-md-caption="true"${post}>`
+      const img = `<img${pre}data-md-caption=\"true\"${post}>`
       const figureStyle = `${baseStyle} text-align: center; margin: 1em 0;`
       const captionStyle = `${baseStyle} display: block; font-size: ${Math.max(12, Math.round(fontSize * 0.875))}px; color: #666; margin-top: 6px;`
-      return `<figure style="${figureStyle}">${img}<figcaption style="${captionStyle}">${alt}</figcaption></figure>`
+      return `<figure style=\"${figureStyle}\">${img}<figcaption style=\"${captionStyle}\">${alt}</figcaption></figure>`
     })
 
   const enforce = (inputHtml, tag) => {
     const re = new RegExp(`<${tag}([^>]*?)style="([^"]*)"([^>]*)>`, 'gi')
-    return inputHtml.replace(re, (m, pre, style, post) => {
+    return inputHtml.replace(re, (_m, pre, style, post) => {
       let updated = style
       if (/line-height\s*:/i.test(updated)) {
         updated = updated.replace(/line-height\s*:\s*[^;]*;?/gi, `line-height: ${lineHeightCss} !important;`)
@@ -76,12 +69,7 @@ const FONT_FAMILY_MAP = {
   'system-safe': 'Microsoft YaHei, Arial, sans-serif'
 }
 
-function calculateLineHeight(fontSize, explicitLineHeight) {
-  if (typeof explicitLineHeight === 'number' && isFinite(explicitLineHeight) && explicitLineHeight > 0) return String(explicitLineHeight)
-  if (fontSize <= 14) return '1.7'
-  if (fontSize <= 18) return '1.6'
-  return '1.5'
-}
+// moved to utils/typography.js
 
 function hexToRgb(hex) {
   if (!hex) return null
@@ -96,11 +84,12 @@ export function wrapWithFontStyles(html, fontSettings) {
   if (!fontSettings || !html) return html
   const fontFamily = FONT_FAMILY_MAP[fontSettings.fontFamily] || FONT_FAMILY_MAP['microsoft-yahei']
   const fontSize = fontSettings.fontSize || 16
-  const lineHeight = calculateLineHeight(fontSize, fontSettings.lineHeight)
+  const lineHeight = calcLH(fontSize, fontSettings.lineHeight)
   const letterSpacing = typeof fontSettings.letterSpacing === 'number' ? fontSettings.letterSpacing : 0
   const styledHtml = addInlineStyles(html, fontFamily, fontSize, lineHeight, letterSpacing)
   const lh2 = parseFloat(lineHeight)
-  const lhCss = Number.isFinite(lh2) ? String(lineHeight) : (/[empx%]/i.test(String(lineHeight)) ? String(lineHeight) : '1.6')
+  const fallback = calcLH(fontSize, lh2)
+  const lhCss = Number.isFinite(lh2) ? String(lineHeight) : (/[empx%]/i.test(String(lineHeight)) ? String(lineHeight) : fallback)
   return `<section data-role="outer" class="rich_media_content" style="font-family: ${fontFamily}; font-size: ${fontSize}px; line-height: ${lhCss} !important; letter-spacing: ${letterSpacing}px; font-weight: 400; color: #333; margin: 0; padding: 0;">
 <section data-role="inner" style="font-family: ${fontFamily}; font-size: ${fontSize}px; line-height: ${lhCss} !important; letter-spacing: ${letterSpacing}px; font-weight: 400; color: #333;">
 ${styledHtml}
