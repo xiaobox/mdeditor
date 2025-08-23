@@ -19,7 +19,7 @@ export function useUIState() {
   const showSettingsPanel = ref(false)
   const showMarkdownGuide = ref(false)
   const syncScrollEnabled = ref(true) // 默认启用同步滚动
-  const viewMode = ref('both') // 'both', 'editor', 'preview'
+  const viewMode = ref('both') // 'both', 'editor', 'preview', 'wysiwyg'
 
   // 设置面板控制方法
   const toggleSettingsPanel = () => {

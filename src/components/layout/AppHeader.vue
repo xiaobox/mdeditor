@@ -17,7 +17,7 @@
         <button
           :class="['view-toggle-btn', { 'active': viewMode === 'both' }]"
           @click="$emit('set-view-mode', 'both')"
-          title="显示编辑器和预览"
+          title="编辑器 + 预览"
         >
           <svg viewBox="0 0 24 24" width="16" height="16">
             <path fill="currentColor" d="M3,3H11V5H3V3M13,3H21V5H13V3M3,7H11V9H3V7M13,7H21V9H13V7M3,11H11V13H3V11M13,11H21V13H13V11M3,15H11V17H3V15M13,15H21V17H13V15M3,19H11V21H3V19Z"/>
@@ -33,12 +33,12 @@
           </svg>
         </button>
         <button
-          :class="['view-toggle-btn', { 'active': viewMode === 'preview' }]"
-          @click="$emit('set-view-mode', 'preview')"
-          title="仅显示预览"
+          :class="['view-toggle-btn', { 'active': viewMode === 'wysiwyg' }]"
+          @click="$emit('set-view-mode', 'wysiwyg')"
+          title="所见即所得（可编辑）"
         >
           <svg viewBox="0 0 24 24" width="16" height="16">
-            <path fill="currentColor" d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z"/>
+            <path fill="currentColor" d="M3 5h18v2H3V5m0 4h18v2H3V9m0 4h10v2H3v-2z"/>
           </svg>
         </button>
       </div>

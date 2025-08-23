@@ -36,22 +36,23 @@
       />
     </div>
 
-    <!-- 右侧：预览面板 -->
-    <div v-if="viewMode === 'both' || viewMode === 'preview'" class="preview-panel">
+    <!-- 右侧：预览/WYSIWYG 面板 -->
+    <div v-if="viewMode === 'both' || viewMode === 'preview' || viewMode === 'wysiwyg'" class="preview-panel">
       <div class="panel-header">
         <h3>
           <svg viewBox="0 0 24 24" width="20" height="20">
             <path fill="currentColor" d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z"/>
           </svg>
-          预览
+          {{ viewMode === 'wysiwyg' ? '所见即所得' : '预览' }}
         </h3>
         <div class="panel-actions"></div>
       </div>
 
-      <PreviewPane
-        :markdown="markdownContent"
-        :sync-scroll-enabled="syncScrollEnabled"
-        @html-generated="$emit('html-generated', $event)"
+      <component
+        :is="viewMode === 'wysiwyg' ? WysiwygPane : PreviewPane"
+        v-bind="viewMode === 'wysiwyg' ? { modelValue: markdownContent } : { markdown: markdownContent, syncScrollEnabled }"
+        @update:model-value="(val) => $emit('update:markdown-content', val)"
+        @html-generated="(val) => viewMode !== 'wysiwyg' && $emit('html-generated', val)"
         class="preview-content"
       />
     </div>
@@ -61,6 +62,7 @@
 <script setup>
 import MarkdownEditor from '../MarkdownEditor.vue'
 import PreviewPane from '../PreviewPane.vue'
+import WysiwygPane from '../WysiwygPane.vue'
 import { } from 'vue'
 
 const props = defineProps({

@@ -20,6 +20,16 @@
   justify-content: center;
 }
 
+
+/* WYSIWYG 单窗模式：布局与“仅显示编辑器”一致 */
+.app-main.view-mode-wysiwyg {
+  justify-content: center;
+}
+.app-main.view-mode-wysiwyg .preview-panel {
+  max-width: 1200px;
+  min-width: 600px;
+}
+
 .app-main.view-mode-editor .editor-panel,
 .app-main.view-mode-preview .preview-panel {
   max-width: 1200px;
