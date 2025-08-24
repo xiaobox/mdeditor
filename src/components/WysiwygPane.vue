@@ -25,11 +25,12 @@ import { useGlobalThemeManager } from '../composables/index.js'
 import { Editor, defaultValueCtx, rootCtx } from '@milkdown/core'
 import { commonmark } from '@milkdown/preset-commonmark'
 import { gfm } from '@milkdown/preset-gfm'
-import { diagram } from '@milkdown/plugin-diagram'
 import { clipboard } from '@milkdown/plugin-clipboard'
 import { history } from '@milkdown/plugin-history'
 import { listener, listenerCtx } from '@milkdown/plugin-listener'
 import { replaceAll, getMarkdown } from '@milkdown/utils'
+import { prism } from '@milkdown/plugin-prism'
+import '../plugins/prism-setup.js'
 
 export default {
   name: 'WysiwygPane',
@@ -78,7 +79,8 @@ export default {
 
     const getPreviewClasses = () => {
       return {
-        [`theme-system-${currentLayoutId.value}`]: true
+        [`theme-system-${currentLayoutId.value}`]: true,
+        [`code-style-${currentCodeStyle.value?.id || 'default'}`]: true
       }
     }
 
@@ -92,7 +94,7 @@ export default {
         })
         .use(commonmark)
         .use(gfm)
-        .use(diagram)
+        .use(prism)
         .use(history)
         .use(clipboard)
         .use(listener)
@@ -150,6 +152,7 @@ export default {
     onMounted(async () => {
       initialize()
       await createEditor()
+      setupInlineCodeObserver()
     })
 
     onBeforeUnmount(() => {
@@ -158,7 +161,66 @@ export default {
         editor.destroy()
       }
       editorRef.value = null
+      if (inlineCodeObserver) {
+        inlineCodeObserver.disconnect()
+        inlineCodeObserver = null
+      }
     })
+
+
+
+    // WYSIWYG 表格兼容处理：使“语法”列中的转义反引号整体以 code 呈现
+    let inlineCodeObserver = null
+
+    const normalizeWysiwygTables = () => {
+      const root = editorRoot.value
+      if (!root) return
+      const cells = root.querySelectorAll('.wysiwyg-rendered table td, .wysiwyg-rendered table th')
+      cells.forEach((cell) => {
+        // 若单元格已是“仅一个 <code>...</code> 且没有其他文本”的情况，直接跳过
+        if (cell.children.length === 1 && cell.children[0].tagName?.toLowerCase() === 'code') {
+          const onlyCode = (cell.textContent || '').trim() === (cell.children[0].textContent || '').trim()
+          if (onlyCode) return
+        }
+
+        const plain = (cell.textContent || '').trim()
+        const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
+        // 模式1：标准形式 \`text\`
+        const m1 = plain.match(/^\\`([^`]+)\\`$/)
+        if (m1) {
+          cell.innerHTML = `<code>\`${esc(m1[1])}\`</code>`
+          return
+        }
+
+        // 模式2：Milkdown 断裂形式 "\\" + text + "``"（光标在末尾时尤为常见）
+        // e.g. "\\code``" 或 "\\ code``" -> <code>`code`</code>
+        const m2 = plain.match(/^\\\s*([^`]+)``$/)
+        if (m2) {
+          cell.innerHTML = `<code>\`${esc(m2[1].trim())}\`</code>`
+          return
+        }
+
+        // 模式3：包含 \` 且至少两个反引号 —— 将整格包裹为 code 胶囊（用于更宽泛的兼容）
+        const backticks = (plain.match(/`/g) || []).length
+        if (/\\`/.test(plain) && backticks >= 2) {
+          cell.innerHTML = `<code>${esc(plain)}</code>`
+          return
+        }
+      })
+    }
+
+    const setupInlineCodeObserver = () => {
+      const root = editorRoot.value
+      if (!root || inlineCodeObserver) return
+      inlineCodeObserver = new MutationObserver(() => {
+        requestAnimationFrame(normalizeWysiwygTables)
+      })
+      inlineCodeObserver.observe(root, { childList: true, characterData: true, subtree: true })
+      // 初始执行一次
+      normalizeWysiwygTables()
+    }
+
 
     return {
       editorRoot,
@@ -206,6 +268,31 @@ export default {
   border-collapse: collapse;
 }
 
+/* 表头与单元格样式（WYSIWYG 与预览页对齐） */
+.wysiwyg-rendered :deep(th),
+.wysiwyg-rendered :deep(td) {
+  border: 1px solid var(--theme-border-light) !important;
+  padding: 8px 12px !important;
+  font-size: var(--markdown-font-size, 16px) !important;
+  font-family: var(--markdown-font-family, var(--theme-font-family)) !important;
+  line-height: var(--markdown-line-height, 1.6) !important;
+  color: var(--theme-text-primary) !important;
+}
+
+.wysiwyg-rendered :deep(th) {
+  background-color: var(--theme-bg-secondary) !important;
+  font-weight: 600 !important;
+}
+/* 保障表头加粗的多重兜底（适配 Milkdown 结构差异） */
+.wysiwyg-rendered :deep(thead th),
+.wysiwyg-rendered :deep(tr:first-child > th),
+.wysiwyg-rendered :deep(tr:first-child > td) {
+  font-weight: 600 !important;
+  background-color: var(--theme-bg-secondary) !important;
+}
+/* ProseMirror 在单元格内包裹 p，导致 th 的字重被覆盖，这里强制加粗 */
+.wysiwyg-rendered :deep(th > p) { font-weight: 600 !important; margin: 0 !important; }
+
 /* 强调文本样式 - 与预览页面保持一致 */
 .wysiwyg-rendered :deep(strong),
 .wysiwyg-rendered :deep(b) {
@@ -219,26 +306,110 @@ export default {
   color: var(--theme-text-secondary) !important;
 }
 
-/* 行内代码样式 - 与预览页面保持一致 */
+/* 行内代码样式 - 对齐预览页的颜色主题（使用 inline-code 变量） */
 .wysiwyg-rendered :deep(code:not(pre code)) {
-  background-color: var(--theme-code-bg) !important;
-  color: var(--theme-code-text) !important;
+  background-color: var(--theme-inline-code-bg) !important;
+  color: var(--theme-inline-code-text) !important;
   padding: 0.2rem 0.4rem !important;
   border-radius: var(--radius-sm) !important;
   font-family: var(--theme-code-font-family) !important;
   font-size: 14px !important;
-  border: 1px solid var(--theme-code-border) !important;
+  border: 1px solid var(--theme-inline-code-border) !important;
 }
 
 /* 代码块样式 */
 .wysiwyg-rendered :deep(pre) {
-  background-color: var(--theme-code-bg) !important;
-  color: var(--theme-code-text) !important;
-  padding: 1rem !important;
-  border-radius: var(--radius-md) !important;
+  background: var(--code-bg, var(--theme-code-bg)) !important;
+  color: var(--code-color, var(--theme-code-text)) !important;
+  padding: var(--code-padding, 16px) !important;
+  border-radius: var(--code-border-radius, var(--radius-md)) !important;
   overflow-x: auto !important;
   margin: 1.5rem 0 !important;
-  border: 1px solid var(--theme-code-border) !important;
+  border: var(--code-border, 1px solid var(--theme-code-border)) !important;
+  position: relative !important;
+}
+
+/* Mac-style header bar & traffic lights (pure CSS, no DOM changes) */
+.wysiwyg-rendered.code-style-mac :deep(pre)::before {
+  content: '';
+  display: block;
+  height: 28px;
+  margin: calc(var(--code-padding, 16px) * -1) calc(var(--code-padding, 16px) * -1) 12px calc(var(--code-padding, 16px) * -1); /* cancel pre padding dynamically */
+  border-radius: var(--code-border-radius, var(--radius-md)) var(--code-border-radius, var(--radius-md)) 0 0;
+  background: var(--code-bg, var(--theme-code-bg));
+  border-bottom: none;
+}
+
+.wysiwyg-rendered.code-style-mac :deep(pre)::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 20px;
+  width: 8px;   /* smaller: half size */
+  height: 8px;  /* smaller: half size */
+  border-radius: 50%;
+  background: #ff5f56; /* red */
+  /* increase spacing: double the offsets */
+  box-shadow: 14px 0 0 #ffbd2e, 28px 0 0 #27c93f; /* yellow, green */
+  opacity: 0.95;
+}
+
+/* GitHub style header */
+.wysiwyg-rendered.code-style-github :deep(pre)::before {
+  content: '';
+  display: block;
+  height: 32px;
+  margin: calc(var(--code-padding, 16px) * -1) calc(var(--code-padding, 16px) * -1) 12px calc(var(--code-padding, 16px) * -1);
+  border-radius: var(--code-border-radius, var(--radius-md)) var(--code-border-radius, var(--radius-md)) 0 0;
+  background: #f1f3f4;
+  border-bottom: 1px solid #d0d7de;
+}
+.wysiwyg-rendered.code-style-github :deep(pre)::after {
+  content: '📄 代码';
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  font-size: 12px;
+  color: #656d76;
+}
+
+/* VS Code style header */
+.wysiwyg-rendered.code-style-vscode :deep(pre)::before {
+  content: '';
+  display: block;
+  height: 32px;
+  margin: calc(var(--code-padding, 16px) * -1) calc(var(--code-padding, 16px) * -1) 12px calc(var(--code-padding, 16px) * -1);
+  border-radius: var(--code-border-radius, var(--radius-md)) var(--code-border-radius, var(--radius-md)) 0 0;
+  background: linear-gradient(135deg, #2d2d30 0%, #3c3c3c 100%);
+  border-bottom: 1px solid #3c3c3c;
+}
+.wysiwyg-rendered.code-style-vscode :deep(pre)::after {
+  content: '⚡ 代码片段';
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  font-size: 13px;
+  color: #cccccc;
+}
+
+/* Terminal style header */
+.wysiwyg-rendered.code-style-terminal :deep(pre)::before {
+  content: '';
+  display: block;
+  height: 28px;
+  margin: calc(var(--code-padding, 16px) * -1) calc(var(--code-padding, 16px) * -1) 12px calc(var(--code-padding, 16px) * -1);
+  border-radius: var(--code-border-radius, var(--radius-md)) var(--code-border-radius, var(--radius-md)) 0 0;
+  background: #1a1a1a;
+  border-bottom: 1px solid #333333;
+}
+.wysiwyg-rendered.code-style-terminal :deep(pre)::after {
+  content: '$ terminal';
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  font-size: 12px;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
 }
 
 .wysiwyg-rendered :deep(pre code) {
@@ -247,6 +418,8 @@ export default {
   border-radius: 0 !important;
   border: none !important;
   font-size: 14px !important;
+  /* Do not set explicit color here; allow Prism token colors to take effect */
+  font-family: var(--code-font-family, var(--theme-code-font-family)) !important;
 }
 
 /* 链接样式 - 与预览页面保持一致 */
@@ -374,7 +547,7 @@ export default {
   background-color: var(--theme-bg-primary) !important;
   margin-right: 0.5em;
   flex-shrink: 0;
-  position: static !important; 
+  position: static !important;
 }
 
 .wysiwyg-rendered :deep(li[data-item-type="task"][data-checked="true"])::before {
@@ -391,15 +564,25 @@ export default {
   opacity: 0.7 !important;
 }
 
-/* 引用块样式 - 适配 Default 主题 */
+/* 引用块样式 - 对齐预览页面（带斜向柔和渐变背景 + 左侧竖线圆弧效果） */
 .wysiwyg-rendered :deep(blockquote) {
   margin: 1.5rem 0 !important;
   padding: 1rem 1.5rem !important;
   border-left: 4px solid var(--theme-primary) !important;
-  background-color: var(--theme-bg-secondary) !important;
+  /* 与预览页 ThemeProcessor 输出保持一致的条纹渐变 */
+  background: linear-gradient(
+    135deg,
+    rgba(var(--theme-primary-rgb), 0.08) 0%,
+    rgba(var(--theme-primary-rgb), 0.04) 50%,
+    rgba(var(--theme-primary-rgb), 0.08) 100%
+  ) !important;
   color: var(--theme-text-secondary) !important;
   font-style: italic !important;
-  border-radius: 0 var(--radius-md) var(--radius-md) 0 !important;
+  /* 关键：为整个容器添加圆角，令左侧竖线呈“括号”圆弧端点 */
+  border-radius: var(--radius-md) !important;
+  /* 轻微投影，接近预览页 legacy 配置的 0 4px 16px */
+  box-shadow: 0 4px 16px rgba(var(--theme-primary-rgb), 0.10) !important;
+  position: relative;
 }
 
 .wysiwyg-rendered :deep(blockquote blockquote) {
@@ -407,7 +590,14 @@ export default {
   margin-bottom: 1rem !important;
   padding-left: 1.5rem !important;
   border-left-color: var(--theme-primary) !important;
-  background-color: var(--theme-bg-primary) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--theme-primary-rgb), 0.08) 0%,
+    rgba(var(--theme-primary-rgb), 0.04) 50%,
+    rgba(var(--theme-primary-rgb), 0.08) 100%
+  ) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: 0 2px 8px rgba(var(--theme-primary-rgb), 0.08) !important;
 }
 
 .wysiwyg-rendered :deep(blockquote p) {

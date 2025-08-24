@@ -33,9 +33,9 @@
     "@codemirror/view": "^6.38.1",
     "@milkdown/core": "^7.15.3",
     "@milkdown/plugin-clipboard": "^7.15.3",
-    "@milkdown/plugin-diagram": "^7.7.0",
     "@milkdown/plugin-history": "^7.15.3",
     "@milkdown/plugin-listener": "^7.15.3",
+    "@milkdown/plugin-prism": "^7.15.3",
     "@milkdown/preset-commonmark": "^7.15.3",
     "@milkdown/preset-gfm": "^7.15.3",
     "@milkdown/utils": "^7.15.3",
@@ -43,6 +43,7 @@
     "electron-squirrel-startup": "^1.0.1",
     "github-markdown-css": "^5.8.1",
     "mermaid": "^11.9.0",
+    "prismjs": "^1.30.0",
     "svgo": "^4.0.0",
     "vue": "^3.3.8",
     "vue-codemirror": "^6.1.1"

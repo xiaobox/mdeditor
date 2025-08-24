@@ -1,0 +1,198 @@
+/* Map Prism token colors to theme code syntax variables */
+/* Container scope to our rendered panes */
+/* Ensure both language and no-language code blocks get the proper colors */
+.preview-rendered pre,
+.wysiwyg-rendered pre,
+.preview-rendered pre[class*="language-"],
+.wysiwyg-rendered pre[class*="language-"],
+/* Apply also when language class is only on <code> */
+.wysiwyg-rendered pre:has(> code[class*="language-"]) {
+  background: var(--code-bg, var(--theme-code-bg));
+  color: var(--code-color, var(--theme-code-text));
+  border: 1px solid var(--code-border, var(--theme-code-border));
+  border-radius: var(--radius-md);
+}
+
+/* Make nested <code> inside <pre> inherit the pre color (fix dark theme contrast) */
+.preview-rendered pre code,
+.wysiwyg-rendered pre code {
+  color: inherit !important;
+}
+
+/* Base code font */
+.preview-rendered code[class*="language-"],
+.wysiwyg-rendered code[class*="language-"],
+.wysiwyg-rendered pre > code {
+  font-family: var(--theme-code-font-family);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Brightness control for token colors */
+:root, .preview-rendered, .wysiwyg-rendered {
+  /* Increase to make tokens brighter globally */
+  --code-brighten: 40%; /* about ~1.5-2x perceived brightness */
+  --_code-brighten-base: calc(100% - var(--code-brighten));
+
+  /* Derived, brightened token variables */
+  --code-syntax-keyword-b: color-mix(in oklab,
+    var(--code-syntax-keyword, var(--code-color, var(--theme-text-primary))) var(--_code-brighten-base),
+    white var(--code-brighten)
+  );
+  --code-syntax-string-b: color-mix(in oklab,
+    var(--code-syntax-string, var(--code-color, var(--theme-text-primary))) var(--_code-brighten-base),
+    white var(--code-brighten)
+  );
+  --code-syntax-comment-b: color-mix(in oklab,
+    var(--code-syntax-comment, var(--theme-text-tertiary)) var(--_code-brighten-base),
+    white calc(var(--code-brighten) * 0.6)
+  );
+  --code-syntax-number-b: color-mix(in oklab,
+    var(--code-syntax-number, var(--code-syntax-keyword, var(--code-color))) var(--_code-brighten-base),
+    white var(--code-brighten)
+  );
+  --code-syntax-function-b: color-mix(in oklab,
+    var(--code-syntax-function, var(--code-syntax-keyword, var(--code-color))) var(--_code-brighten-base),
+    white var(--code-brighten)
+  );
+  --code-syntax-operator-b: color-mix(in oklab,
+    var(--code-syntax-operator, var(--code-syntax-punctuation, var(--code-color))) var(--_code-brighten-base),
+    white var(--code-brighten)
+  );
+  --code-syntax-punctuation-b: color-mix(in oklab,
+    var(--code-syntax-punctuation, var(--code-color, var(--theme-text-primary))) var(--_code-brighten-base),
+    white var(--code-brighten)
+  );
+}
+
+/* Prism token -> our code style variables */
+/* Extra mappings to cover more Prism tokens (JS/TS, template, class, regex, etc.) */
+.wysiwyg-rendered .token.class-name,
+.wysiwyg-rendered code .token.class-name,
+.wysiwyg-rendered .token.function-variable,
+.wysiwyg-rendered code .token.function-variable {
+  color: var(--code-syntax-function-b, var(--code-syntax-keyword-b));
+}
+
+.wysiwyg-rendered .token.parameter,
+.wysiwyg-rendered code .token.parameter {
+  color: var(--code-syntax-function-b, var(--code-syntax-keyword-b));
+}
+
+.wysiwyg-rendered .token.template-string,
+.wysiwyg-rendered code .token.template-string,
+.wysiwyg-rendered .token.regex,
+.wysiwyg-rendered code .token.regex {
+  color: var(--code-syntax-string-b);
+}
+
+.wysiwyg-rendered .token.template-punctuation,
+.wysiwyg-rendered code .token.template-punctuation,
+.wysiwyg-rendered .token.interpolation-punctuation,
+.wysiwyg-rendered code .token.interpolation-punctuation {
+  color: var(--code-syntax-punctuation-b);
+}
+
+/* JS/TS specific extras */
+.wysiwyg-rendered .token.variable,
+.wysiwyg-rendered code .token.variable,
+.wysiwyg-rendered .token.this,
+.wysiwyg-rendered code .token.this,
+.wysiwyg-rendered .token.module,
+.wysiwyg-rendered code .token.module {
+  color: var(--code-syntax-keyword-b);
+}
+
+.wysiwyg-rendered .token.method,
+.wysiwyg-rendered code .token.method,
+.wysiwyg-rendered .token.property-access,
+.wysiwyg-rendered code .token.property-access {
+  color: var(--code-syntax-function-b, var(--code-syntax-keyword-b));
+}
+
+.wysiwyg-rendered .token.namespace,
+.wysiwyg-rendered code .token.namespace {
+  color: var(--code-syntax-function-b, var(--code-syntax-keyword-b));
+}
+.preview-rendered .token.comment,
+.wysiwyg-rendered .token.comment,
+.wysiwyg-rendered code .token.comment,
+.preview-rendered .token.prolog,
+.wysiwyg-rendered .token.prolog,
+.preview-rendered .token.doctype,
+.wysiwyg-rendered .token.doctype,
+.preview-rendered .token.cdata,
+.wysiwyg-rendered .token.cdata {
+  color: var(--code-syntax-comment-b, var(--theme-text-tertiary)) !important;
+}
+
+.preview-rendered .token.punctuation,
+.wysiwyg-rendered .token.punctuation {
+  color: var(--code-syntax-punctuation-b);
+}
+
+.preview-rendered .token.property,
+.wysiwyg-rendered .token.property,
+.preview-rendered .token.tag,
+.wysiwyg-rendered .token.tag,
+.preview-rendered .token.constant,
+.wysiwyg-rendered .token.constant,
+.preview-rendered .token.symbol,
+.wysiwyg-rendered .token.symbol,
+.preview-rendered .token.deleted,
+.wysiwyg-rendered .token.deleted,
+.preview-rendered .token.keyword,
+.wysiwyg-rendered .token.keyword,
+.wysiwyg-rendered code .token.keyword {
+  color: var(--code-syntax-keyword-b);
+}
+
+.preview-rendered .token.boolean,
+.wysiwyg-rendered .token.boolean,
+.preview-rendered .token.number,
+.wysiwyg-rendered .token.number {
+  color: var(--code-syntax-number-b, var(--code-syntax-keyword-b));
+}
+
+.preview-rendered .token.selector,
+.wysiwyg-rendered .token.selector,
+.preview-rendered .token.attr-name,
+.wysiwyg-rendered .token.attr-name,
+.preview-rendered .token.string,
+.wysiwyg-rendered .token.string,
+.wysiwyg-rendered code .token.string,
+.preview-rendered .token.char,
+.wysiwyg-rendered .token.char,
+.preview-rendered .token.builtin,
+.wysiwyg-rendered .token.builtin,
+.preview-rendered .token.inserted,
+.wysiwyg-rendered .token.inserted {
+  color: var(--code-syntax-string-b);
+}
+
+.preview-rendered .token.operator,
+.wysiwyg-rendered .token.operator,
+.preview-rendered .token.entity,
+.wysiwyg-rendered .token.entity,
+.preview-rendered .token.url,
+.wysiwyg-rendered .token.url {
+  color: var(--code-syntax-operator-b, var(--code-syntax-punctuation-b));
+}
+
+.preview-rendered .token.function,
+.wysiwyg-rendered .token.function {
+  color: var(--code-syntax-function-b, var(--code-syntax-keyword-b));
+}
+
+/* Bold/italic inline emphasis stays same */
+.preview-rendered .token.important,
+.wysiwyg-rendered .token.important { font-weight: bold; }
+.preview-rendered .token.italic,
+.wysiwyg-rendered .token.italic { font-style: italic; }
+
+/* Selection contrast */
+.preview-rendered pre[class*="language-"] ::selection,
+.wysiwyg-rendered pre[class*="language-"] ::selection {
+  background: var(--theme-primary-20);
+}
+

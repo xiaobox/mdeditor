@@ -204,7 +204,6 @@ flowchart TB
 |------|------|------|
 | **粗体** | \`**text**\` | **示例文本** |
 | *斜体* | \`*text*\` | *示例文本* |
-| \`代码\` | \`\\\`code\\\`\` | \`console.log()\` |
 | [链接](https://github.com) | \`[text](url)\` | [GitHub](https://github.com) |
 
 ---

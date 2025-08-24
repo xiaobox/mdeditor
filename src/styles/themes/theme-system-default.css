@@ -180,13 +180,13 @@
 }
 
 .theme-system-default.modern-markdown pre {
-  background-color: var(--theme-code-bg);
-  color: var(--theme-code-text);
+  background-color: var(--code-bg, var(--theme-code-bg));
+  color: var(--code-color, var(--theme-code-text));
   padding: 1rem;
   border-radius: var(--radius-md);
   overflow-x: auto;
   margin: 1.5rem 0;
-  border: 1px solid var(--theme-code-border);
+  border: 1px solid var(--code-border, var(--theme-code-border));
 }
 
 .theme-system-default.modern-markdown pre code {

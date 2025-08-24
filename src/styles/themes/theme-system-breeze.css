@@ -42,6 +42,14 @@ body:has(.theme-system-breeze) {
   box-shadow: 0 8px 24px rgba(var(--theme-primary-rgb), 0.08);
 }
 
+/* WYSIWYG 模式下：取消白卡容器的宽度限制，保持与默认主题一致的全宽显示 */
+.wysiwyg-rendered.theme-system-breeze.modern-markdown {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+}
+
+
 /* 让常见文本元素显式继承全局行高，避免其他规则覆盖 */
 .theme-system-breeze.modern-markdown p,
 .theme-system-breeze.modern-markdown li,
@@ -157,9 +165,9 @@ body:has(.theme-system-breeze) {
 .theme-system-breeze.modern-markdown pre {
   margin: 1.2em 0;
   padding: 0.9em 1em;
-  border: 1px solid var(--theme-code-border);
+  border: 1px solid var(--code-border, var(--theme-code-border));
   border-radius: var(--radius-md);
-  background: var(--theme-code-bg);
+  background: var(--code-bg, var(--theme-code-bg));
 }
 
 /* 代码文本统一固定为 14px */

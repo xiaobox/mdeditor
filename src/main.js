@@ -29,6 +29,7 @@ import './styles/themes/theme-root.css';
 import './styles/global.css';
 // `components/index.css` 作为组件样式的统一入口
 import './styles/components/index.css';
+import './styles/prism-variables.css';
 
 // 创建 Vue 应用实例
 const app = createApp(App);
