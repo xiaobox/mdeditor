@@ -98,6 +98,8 @@ export default {
         .use(history)
         .use(clipboard)
         .use(listener)
+        // Mermaid NodeView plugin
+        .use((await import('../plugins/mermaid-nodeview.js')).mermaidNodeViewPlugin)
         .config((ctx) => {
           const l = ctx.get(listenerCtx)
           l.focus(() => { hasFocus.value = true })
@@ -246,6 +248,42 @@ export default {
   padding: 16px;
   overflow: auto;
 }
+
+/* Mermaid NodeView styles */
+.wysiwyg-rendered :deep(.md-mermaid) {
+  position: relative;
+  margin: 0.75rem 0;
+  border-radius: 12px;
+  border: 1px solid var(--theme-border-light, #e5e7eb);
+  background: var(--theme-bg-primary, #fff);
+  overflow: hidden;
+}
+.wysiwyg-rendered :deep(.md-mermaid.is-selected) { outline: 2px solid #60a5fa; outline-offset: -2px; }
+.wysiwyg-rendered :deep(.md-mermaid__toolbar) {
+  display: flex;
+  justify-content: flex-end;
+  gap: .5rem;
+  padding: .25rem .5rem;
+  border-bottom: 1px solid var(--theme-border-light, #e5e7eb);
+  background: var(--theme-bg-secondary, #f9fafb);
+}
+.wysiwyg-rendered :deep(.md-mermaid__btn) {
+  font: inherit;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  cursor: pointer;
+}
+.wysiwyg-rendered :deep(.md-mermaid__btn:hover) { background: #f3f4f6; }
+.wysiwyg-rendered :deep(.md-mermaid__svg) { padding: 12px; overflow: auto; }
+.wysiwyg-rendered :deep(.md-mermaid__source) { margin: 0; padding: 8px 12px; overflow: auto; }
+.wysiwyg-rendered :deep(.md-mermaid__error) { color: #b91c1c; white-space: pre-wrap; }
+.wysiwyg-rendered :deep(.md-mermaid__empty) { color: #6b7280; padding: 12px; }
+.wysiwyg-rendered :deep(.md-mermaid__source) { display: none; }
+.wysiwyg-rendered :deep(.md-mermaid[data-editing="true"] .md-mermaid__svg) { display: none; }
+.wysiwyg-rendered :deep(.md-mermaid[data-editing="true"] .md-mermaid__source) { display: block; }
+
 
 /* HR 分隔线（WYSIWYG 对齐预览页当前样式） */
 .wysiwyg-rendered :deep(hr) {
