@@ -63,8 +63,11 @@
 
 ## Features
 
-- WYSIWYG preview
-  - Real-time rendering with two-way synced scrolling between editor and preview.
+- WYSIWYG preview & editing
+  - New editable mode: click the top view toggle button labeled "WYSIWYG (editable)" to enter rich-text editing; click again to switch back to "Editor" or "Edit + Preview".
+  - Built on Milkdown (preset-commonmark + preset-gfm) with Prism highlighting, and kept bidirectionally in sync with the Markdown text.
+  - Mermaid node view supported; table cells with backticks have targeted compatibility fixes for display and copy.
+  - Unified with the theme/code-style/typography system.
   - One-click viewport switch: desktop / tablet / mobile.
 - One-click copy as WeChat/social HTML
   - Automatic inline styles (font family/size, line height, letter spacing, palette).
@@ -87,6 +90,7 @@
   - Vite 5: Fast dev server and build with official @vitejs/plugin-vue.
 - Editor
   - CodeMirror 6 + vue-codemirror: high-performance editing, shortcuts and scroll sync. Encapsulated in `src/composables/editor/`.
+  - WYSIWYG (Milkdown): built with `@milkdown/core`, `preset-commonmark`, `preset-gfm`, `plugin-prism`, `plugin-history`, `plugin-clipboard`, plus a custom Mermaid NodeView; component: `src/components/WysiwygPane.vue`.
 - Markdown rendering pipeline
   - `src/core/markdown/parser/*`: parsing coordinator and strategies; `PreviewPane.vue` calls `parseMarkdown` to generate preview and social HTML.
   - `src/core/markdown/post-processors/social-styler.js` and `adapters/*`: inject inline styles and theme adaptations tailored for WeChat/social.
@@ -215,6 +219,7 @@ docker run -d --name mdeditor -p 8080:80 helongisno1/mdeditor:latest
 ## Quick Start (Using the App)
 
 - The app launches fully-functional: left editor, right preview, toolbar on top, view controls, and "Settings" on the top-right for theme & typography.
+- View toggle: click "WYSIWYG (editable)" to enter rich-text editing; click again to switch back to "Editor" or "Edit + Preview".
 - "Copy" dropdown on the top:
   - Choose "WeChat Format" to copy rich HTML and paste into WeChat/social editors.
   - Choose "MD Format" to copy plain Markdown text.
@@ -223,6 +228,7 @@ docker run -d --name mdeditor -p 8080:80 helongisno1/mdeditor:latest
 
 - Editor: `src/components/MarkdownEditor.vue`
 - Preview: `src/components/PreviewPane.vue`
+- WYSIWYG: `src/components/WysiwygPane.vue`
 - Settings panel: `src/components/SettingsPanel.vue`, `src/components/SettingsPanelTabbed.vue`
 - Toolbar config: `src/config/toolbar.js` (data-driven; add/reorder easily)
 - Copy features: `src/core/editor/copy-formats.js`, `src/core/editor/clipboard.js`

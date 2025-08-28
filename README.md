@@ -66,8 +66,11 @@
 
 ## 项目特性
 
-- **所见即所得预览**：
-  - 实时渲染，编辑区与预览区支持双向同步滚动。
+- **所见即所得预览与编辑（WYSIWYG）**：
+  - 新增「可编辑模式」：点击顶部「视图切换」中的「所见即所得（可编辑）」按钮进入富文本所见即所得编辑；再次点击可切回「编辑器」或「编辑 + 预览」。
+  - 基于 Milkdown（preset-commonmark + preset-gfm）与 Prism 高亮，并与 Markdown 文本双向同步。
+  - 支持 Mermaid 节点视图；表格内反引号在少数场景做了兼容处理，确保展示与复制兼容。
+  - 保持与主题/代码样式/排版系统一致。
   - 预览视口一键切换：`桌面 / 平板 / 手机`。
 - **一键复制为公众号/社交平台格式**：
   - 自动注入内联样式（字体、字号、行高、字距、配色）。
@@ -90,6 +93,7 @@
   - **Vite 5**：极速开发服务器与构建工具，HMR 体验优秀，使用官方插件 `@vitejs/plugin-vue` 处理 `.vue`。
 - **编辑器**
   - **CodeMirror 6 + vue-codemirror**：提供高性能文本编辑、快捷键与滚动事件。在 `src/composables/editor/` 封装编辑器的生命周期、操作与状态。
+  - **所见即所得（Milkdown）**：基于 `@milkdown/core`、`preset-commonmark`、`preset-gfm`、`plugin-prism`、`plugin-history`、`plugin-clipboard` 与自定义 Mermaid NodeView；组件：`src/components/WysiwygPane.vue`。
 - **Markdown 渲染管线**
   - `src/core/markdown/parser/*`：解析协调器与多策略解析；`PreviewPane.vue` 调用 `parseMarkdown` 生成预览版与社交版 HTML。
   - `src/core/markdown/post-processors/social-styler.js` 与 `adapters/*`：为 HTML 注入内联样式并进行主题化适配，兼容公众号等粘贴环境。
@@ -222,6 +226,7 @@ docker run -d --name mdeditor -p 8080:80 helongisno1/mdeditor:latest
 ## 快速上手（应用运行）
 
 - 启动后即是完整编辑器应用：左侧编辑、右侧预览，上方工具栏与视图控制，右上角「设置」进入主题与排版调节。
+- 顶部「视图切换」：点击「所见即所得（可编辑）」进入富文本所见即所得编辑；再次点击可切回「编辑器」或「编辑 + 预览」。
 - 顶部「复制」下拉：
   - 选择「公众号格式」即可一键复制为富文本 HTML，粘贴至微信公众号/社交平台编辑器。
   - 选择「MD 格式」复制为纯 Markdown 文本。
@@ -230,6 +235,7 @@ docker run -d --name mdeditor -p 8080:80 helongisno1/mdeditor:latest
 
 - **编辑器组件**：`src/components/MarkdownEditor.vue`
 - **预览组件**：`src/components/PreviewPane.vue`
+- **所见即所得组件**：`src/components/WysiwygPane.vue`
 - **设置面板**：`src/components/SettingsPanel.vue`、`src/components/SettingsPanelTabbed.vue`
 - **工具栏配置**：`src/config/toolbar.js`（数据驱动，便于新增/重排按钮）
 - **复制能力**：`src/core/editor/copy-formats.js`、`src/core/editor/clipboard.js`

@@ -5,6 +5,15 @@
 格式参考 Keep a Changelog，版本号遵循语义化版本（SemVer）。
 
 ## [Unreleased]
+
+### Added
+- 新增所见即所得编辑模式（WYSIWYG）：基于 Milkdown（commonmark + gfm），支持 Prism 代码高亮与 Mermaid 节点视图
+- 视图切换增加「所见即所得（可编辑）」选项，并与 Markdown 文本双向同步
+
+### Docs
+- README/README.en：补充 WYSIWYG 说明、架构细节与快速上手指引
+
+### Planned
 - 计划：完善单元测试覆盖、增加更多主题/代码样式预设、支持导出图片/PDF、提供中英文双语文档
 
 
