@@ -4,7 +4,7 @@
       class="apply-button"
       @click="$emit('apply')"
     >
-      应用设置
+      {{ $t('settings.footer.apply') }}
     </button>
   </div>
 </template>

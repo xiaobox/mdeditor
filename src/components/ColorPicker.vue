@@ -21,7 +21,7 @@
 
     <!-- 预设颜色快速选择 -->
     <div class="preset-colors">
-      <div class="preset-colors-title">快速选择</div>
+      <div class="preset-colors-title">{{ $t('settings.colorPicker.quickPick') }}</div>
       <div class="preset-colors-grid">
         <button
           v-for="color in presetColors"
@@ -42,9 +42,9 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
           </svg>
-          主题预览
+          {{ $t('settings.colorPicker.previewTitle') }}
         </div>
-        <div class="preview-subtitle">查看您的颜色主题效果</div>
+        <div class="preview-subtitle">{{ $t('settings.colorPicker.previewSubtitle') }}</div>
       </div>
 
       <div class="preview-content">
@@ -52,10 +52,10 @@
         <div class="preview-card">
           <div class="preview-card-body">
             <div class="preview-text" :style="{ color: generatedTheme.textPrimary }">
-              这是正文文本的效果
+              {{ $t('settings.colorPicker.textSample') }}
             </div>
             <div class="preview-primary" :style="{ color: generatedTheme.primary }">
-              这是主色调的效果
+              {{ $t('settings.colorPicker.primarySample') }}
             </div>
             <code class="preview-code" :style="{
               backgroundColor: generatedTheme.inlineCodeBg,
@@ -75,13 +75,13 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M18 6L6 18M6 6l12 12"/>
         </svg>
-        取消
+        {{ $t('common.cancel') }}
       </button>
       <button class="action-btn action-btn-primary" @click="onConfirm" :disabled="!isValidColor">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M20 6L9 17l-5-5"/>
         </svg>
-        {{ confirmText }}
+        {{ confirmLabel }}
       </button>
     </div>
   </div>
@@ -89,7 +89,10 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { ColorThemeGenerator } from '../core/theme/index.js'
+
+const { t } = useI18n()
 
 const props = defineProps({
   initialColor: {
@@ -102,7 +105,7 @@ const props = defineProps({
   },
   confirmText: {
     type: String,
-    default: '确认'
+    default: ''
   }
 })
 
@@ -110,6 +113,9 @@ const emit = defineEmits(['confirm', 'cancel', 'colorChange'])
 
 // 响应式数据
 const selectedColor = ref(props.initialColor)
+
+// 确认按钮文案：优先使用传入 props，否则使用通用 OK
+const confirmLabel = computed(() => props.confirmText || t('common.ok'))
 
 // 预设颜色
 const presetColors = [

@@ -1,0 +1,190 @@
+{
+  "common": {
+    "appName": "Modern MD Editor",
+    "ok": "确定",
+    "cancel": "取消",
+    "backToTop": "回到顶部"
+  },
+  "header": {
+    "brandTitle": "Modern MD Editor",
+    "view": {
+      "both": "编辑器 + 预览",
+      "editor": "仅显示编辑器",
+      "wysiwyg": "所见即所得（可编辑）"
+    },
+    "settings": "设置",
+    "guide": "语法指南",
+    "copy": "复制",
+    "github": "GitHub",
+    "language": "语言"
+  },
+  "main": {
+    "editor": {
+      "title": "Markdown 编辑器",
+      "clear": "清空内容",
+      "loadSample": "加载示例",
+      "importMd": "导入 .md 文件"
+    },
+    "preview": {
+      "wysiwyg": "所见即所得",
+      "preview": "预览",
+      "syncScroll": "同步滚动"
+    }
+  },
+  "footer": {
+    "characters": "{count} 字符",
+    "lines": "{count} 行",
+    "words": "{count} 词",
+    "minutes": "{count} 分钟"
+  },
+  "settings": {
+    "header": {
+      "title": "设置",
+      "subtitle": "个性化定制您的编辑器体验"
+    },
+    "nav": {
+      "quick": "快速导航",
+      "themeSystem": "主题系统",
+      "colorTheme": "主题色",
+      "codeStyle": "代码样式",
+      "font": "字体",
+      "fontSize": "字号",
+      "spacing": "间距"
+    },
+    "footer": {
+      "apply": "应用设置"
+    },
+    "color": { "customColor": "自定义颜色", "pickAny": "选择任意颜色" },
+    "font": { "family": "字体族" },
+    "spacing": { "letter": "字间距", "line": "行间距" },
+    "code": { "preview": "代码" },
+    "colorPicker": {
+      "quickPick": "快速选择",
+      "previewTitle": "主题预览",
+      "previewSubtitle": "查看您的颜色主题效果",
+      "textSample": "这是正文文本的效果",
+      "primarySample": "这是主色调的效果"
+    },
+    "fontSize": {
+      "unitPx": "px",
+      "presets": {
+        "12": "小号 (12px)",
+        "14": "较小 (14px)",
+        "16": "标准 (16px)",
+        "18": "较大 (18px)",
+        "20": "大号 (20px)",
+        "22": "特大 (22px)",
+        "24": "超大 (24px)"
+      }
+    },
+    "fontFamily": {
+      "items": {
+        "microsoft-yahei": { "name": "微软雅黑", "description": "公众号兼容性最佳" },
+        "pingfang-sc": { "name": "苹方", "description": "Apple 设备优选" },
+        "hiragino-sans": { "name": "冬青黑体", "description": "Mac 经典中文字体" },
+        "arial": { "name": "Arial", "description": "通用西文字体" },
+        "system-safe": { "name": "系统安全字体", "description": "社交平台安全组合" }
+      }
+    },
+    "themeSystem": {
+      "items": {
+        "default": { "name": "默认主题", "description": "现代化 Markdown 统一排版" },
+        "breeze": { "name": "清风排版", "description": "面向移动端图文的清爽排版" }
+      }
+    },
+    "colorTheme": {
+      "items": {
+        "chijin": { "name": "洋红", "description": "鲜艳明亮如玫瑰般绚烂" },
+        "dianlan": { "name": "紫棠", "description": "深沉神秘，高贵典雅" },
+        "ehuang": { "name": "杏黄", "description": "温润典雅，如秋日暖阳" },
+        "conglv": { "name": "葱绿", "description": "清新自然，生机盎然" },
+        "shiliuhong": { "name": "石榴红", "description": "热情醒目，绚烂夺目" },
+        "meihei": { "name": "煤黑", "description": "深沉稳重，典雅内敛" },
+        "ganziqing": { "name": "绀青绀紫", "description": "神秘优雅，古朴高贵" },
+        "xuanse": { "name": "玄色", "description": "赤黑相间，深邃幽远" }
+      }
+    },
+    "codeStyle": {
+      "items": {
+        "mac": { "name": "Mac 风格", "description": "经典 macOS 终端风格" },
+        "github": { "name": "GitHub 风格", "description": "清爽的浅色代码块" },
+        "vscode": { "name": "VS Code 风格", "description": "现代深色代码主题" },
+        "terminal": { "name": "终端风格", "description": "复古黑底绿字终端" }
+      }
+    }
+  },
+  "guide": {
+    "title": "Markdown 语法指南",
+    "subtitle": "快速掌握 Markdown 语法，提升写作效率",
+    "sections": {
+      "basic": "基础语法",
+      "lists": "列表",
+      "linksImages": "链接和图片",
+      "code": "代码块",
+      "table": "表格",
+      "misc": "其他语法"
+    },
+    "h1": "一级标题",
+    "h2": "二级标题",
+    "h3": "三级标题",
+    "bold": "粗体",
+    "italic": "斜体",
+    "strikethrough": "删除线",
+    "quote": "引用",
+    "inlineCode": "行内代码",
+    "unorderedList": "无序列表",
+    "orderedList": "有序列表",
+    "taskList": "任务列表",
+    "done": "已完成",
+    "todo": "待完成",
+    "link": "链接",
+    "image": "图片",
+    "imagePreview": "图片预览",
+    "codeBlock": "代码块",
+    "tableTitle": "表格",
+    "column1": "列 1",
+    "column2": "列 2",
+    "column3": "列 3",
+    "content1": "内容 1",
+    "content2": "内容 2",
+    "content3": "内容 3",
+    "hr": "分割线",
+    "escape": "转义字符",
+    "samples": {
+      "item1": "项目 1",
+      "item2": "项目 2",
+      "subitem": "子项目",
+      "first": "第一项",
+      "second": "第二项",
+      "third": "第三项",
+      "quoteText": "引用文本",
+      "text": "文本",
+      "linkText": "链接文本",
+      "altText": "描述文本"
+    }
+  },
+  "toolbar": {
+    "h1": "一级标题",
+    "h2": "二级标题",
+    "h3": "三级标题",
+    "bold": "粗体 (Ctrl+B)",
+    "italic": "斜体 (Ctrl+I)",
+    "strikethrough": "删除线",
+    "link": "插入链接 (Ctrl+K)",
+    "image": "插入图片",
+    "code": "行内代码",
+    "codeBlock": "代码块",
+    "quote": "引用",
+    "list": "无序列表",
+    "orderedList": "有序列表",
+    "table": "插入表格",
+    "horizontalRule": "分割线"
+  },
+  "copyFormat": {
+    "social": "公众号格式",
+    "markdown": "MD 格式"
+  }
+
+
+
+}

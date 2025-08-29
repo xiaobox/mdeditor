@@ -291,6 +291,21 @@ const { success, message } = await copyMarkdownFormat(markdownText)
 - **外部链接**：`src/config/constants/links.js`（如仓库地址）
 
 
+### 国际化（i18n）
+
+本项目支持多语言界面，目前内置：`zh-CN`、`en`。
+
+- 语言切换：右上角 Header 的下拉，使用国旗图标表示当前语言（🇨🇳 / 🇬🇧）。
+- 语言记忆：切换会持久化到 localStorage，下次自动生效。
+- 默认语言：优先读取 localStorage；否则默认 `zh-CN`。
+- 复制菜单：复制格式下拉（社交/Markdown）支持国际化，语言切换后会自动刷新菜单文案。
+- 技术实现：`vue-i18n@9`，插件位于 `src/plugins/i18n.js`，语言包位于 `src/locales/`。
+- 新增语言指南：
+  1. 在 `src/locales/` 新增 `<locale>.json`
+  2. 在 `src/plugins/i18n.js` 中引入并注册 `messages`
+  3. 在 Header 的语言下拉 `languageOptions` 中补充可选项
+
+
 
 ## 贡献指南
 

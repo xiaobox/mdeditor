@@ -7,7 +7,7 @@
           <div v-else class="logo-placeholder">MD</div>
         </div>
         <div class="brand-text">
-          <h1>Modern MD Editor</h1>
+          <h1>{{ $t('header.brandTitle') }}</h1>
         </div>
       </div>
     </div>
@@ -17,7 +17,7 @@
         <button
           :class="['view-toggle-btn', { 'active': viewMode === 'both' }]"
           @click="$emit('set-view-mode', 'both')"
-          title="编辑器 + 预览"
+          :title="$t('header.view.both')"
         >
           <svg viewBox="0 0 24 24" width="16" height="16">
             <path fill="currentColor" d="M3,3H11V5H3V3M13,3H21V5H13V3M3,7H11V9H3V7M13,7H21V9H13V7M3,11H11V13H3V11M13,11H21V13H13V11M3,15H11V17H3V15M13,15H21V17H13V15M3,19H11V21H3V19Z"/>
@@ -26,7 +26,7 @@
         <button
           :class="['view-toggle-btn', { 'active': viewMode === 'editor' }]"
           @click="$emit('set-view-mode', 'editor')"
-          title="仅显示编辑器"
+          :title="$t('header.view.editor')"
         >
           <svg viewBox="0 0 24 24" width="16" height="16">
             <path fill="currentColor" d="M14.6,16.6L19.2,12L14.6,7.4L16,6L22,12L16,18L14.6,16.6M9.4,16.6L4.8,12L9.4,7.4L8,6L2,12L8,18L9.4,16.6Z"/>
@@ -35,7 +35,7 @@
         <button
           :class="['view-toggle-btn', { 'active': viewMode === 'wysiwyg' }]"
           @click="$emit('set-view-mode', 'wysiwyg')"
-          title="所见即所得（可编辑）"
+          :title="$t('header.view.wysiwyg')"
         >
           <svg viewBox="0 0 24 24" width="16" height="16">
             <path fill="currentColor" d="M3 5h18v2H3V5m0 4h18v2H3V9m0 4h10v2H3v-2z"/>
@@ -51,39 +51,79 @@
         <svg viewBox="0 0 24 24" width="16" height="16">
           <path fill="currentColor" d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
         </svg>
-        <span>设置</span>
+        <span>{{ $t('header.settings') }}</span>
       </button>
 
       <button class="header-btn" @click="$emit('show-guide')">
         <svg viewBox="0 0 24 24" width="16" height="16">
           <path fill="currentColor" d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/>
         </svg>
-        <span>语法指南</span>
+        <span>{{ $t('header.guide') }}</span>
       </button>
 
       <DropdownMenu
         :options="copyFormatOptions"
         :model-value="selectedCopyFormat"
-        trigger-text="复制"
+        :trigger-text="$t('header.copy')"
         trigger-class="header-btn"
         :disabled="!hasContent"
         @update:model-value="$emit('update:selected-copy-format', $event)"
         @select="$emit('copy-format-select', $event)"
       />
 
+      <!-- 语言切换器 -->
+      <DropdownMenu
+        :options="languageOptions"
+        :model-value="currentLocale"
+        trigger-class="header-btn"
+        @update:model-value="onLocaleChange"
+      >
+        <template #trigger>
+          <span :title="$t('header.language')" style="display:inline-flex;align-items:center;gap:6px;color:var(--theme-primary)">
+            <svg class="icon" viewBox="0 0 1024 1024" width="18" height="18" aria-hidden="true">
+              <path d="M399.189333 232.32h228.778667v82.645333h-92.842667c-20.309333 88.32-67.456 165.546667-127.488 230.144 55.125333 53.077333 115.498667 99.968 171.690667 134.4 0 0-31.146667 65.152-36.266667 74.666667-64.341333-38.570667-133.12-91.733333-195.370666-152.021333-84.736 71.808-185.472 124.672-278.869334 155.818666L42.666667 679.552c83.2-27.733333 172.714667-74.666667 247.722666-137.216C228.010667 472.064 174.933333 392.832 150.784 314.965333H55.68V232.32H306.773333l-33.664-67.370667L347.050667 128l52.138666 104.32zM238.506667 314.965333c21.845333 54.229333 61.312 113.066667 111.829333 170.368 46.250667-50.602667 81.408-107.776 99.456-170.368H238.506667z m548.48 181.248h-95.402667l-190.72 413.312h95.36l58.666667-127.146666h168.746666l58.709334 127.146666h95.36l-190.72-413.312z m-47.701334 103.338667l46.208 100.138667h-92.416l46.208-100.138667z" fill="currentColor"></path>
+            </svg>
+            <svg class="dropdown-arrow" viewBox="0 0 24 24" width="14" height="14">
+              <path fill="currentColor" d="M7,10L12,15L17,10H7Z"/>
+            </svg>
+          </span>
+        </template>
+      </DropdownMenu>
 
-      <button class="header-btn" @click="$emit('open-github')" title="查看源码">
+
+
+      <button class="header-btn" @click="$emit('open-github')" :title="$t('header.github')">
         <svg viewBox="0 0 24 24" width="16" height="16">
           <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"/>
         </svg>
-        <span>GitHub</span>
+        <span>{{ $t('header.github') }}</span>
       </button>
     </div>
   </header>
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import DropdownMenu from '../DropdownMenu.vue'
+import { i18n, setI18nLocale } from '../../plugins/i18n.js'
+
+function getLocale() {
+  const l = i18n.global.locale
+  return typeof l === 'string' ? l : l.value
+}
+
+const languageOptions = [
+  { label: '中文', value: 'zh-CN', emoji: '🇨🇳' },
+  { label: 'English', value: 'en', emoji: '🇺🇸' }
+]
+
+
+const currentLocale = computed(() => getLocale())
+
+
+function onLocaleChange(val) {
+  setI18nLocale(val)
+}
 
 defineProps({
   showSettingsPanel: {
@@ -99,7 +139,7 @@ defineProps({
     required: true
   },
   selectedCopyFormat: {
-    type: Object,
+    type: [String, Object],
     default: null
   },
   hasContent: {
@@ -130,3 +170,4 @@ const emit = defineEmits([
 <style scoped>
 @import '../../styles/components/layout/app-header.css';
 </style>
+

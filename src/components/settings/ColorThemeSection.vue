@@ -6,7 +6,7 @@
           <path fill="currentColor" d="M17.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,9A1.5,1.5 0 0,1 19,10.5A1.5,1.5 0 0,1 17.5,12M14.5,8A1.5,1.5 0 0,1 13,6.5A1.5,1.5 0 0,1 14.5,5A1.5,1.5 0 0,1 16,6.5A1.5,1.5 0 0,1 14.5,8M9.5,8A1.5,1.5 0 0,1 8,6.5A1.5,1.5 0 0,1 9.5,5A1.5,1.5 0 0,1 11,6.5A1.5,1.5 0 0,1 9.5,8M6.5,12A1.5,1.5 0 0,1 5,10.5A1.5,1.5 0 0,1 6.5,9A1.5,1.5 0 0,1 8,10.5A1.5,1.5 0 0,1 6.5,12M12,3A9,9 0 0,0 3,12A9,9 0 0,0 12,21A8.5,8.5 0 0,0 16.5,19C15.9,18.7 15.2,18.4 14.5,18.1C13.3,17.6 12,17 12,17C12,17 13.3,17.6 14.5,18.1C15.2,18.4 15.9,18.7 16.5,19A8.5,8.5 0 0,0 12,3Z"/>
         </svg>
       </div>
-      <h3>主题色</h3>
+      <h3>{{ $t('settings.nav.colorTheme') }}</h3>
     </div>
 
     <div class="theme-grid">
@@ -21,8 +21,8 @@
         <div class="theme-preview">
           <div class="theme-color-bar" :style="{ backgroundColor: theme.primary }"></div>
           <div class="theme-content">
-            <div class="theme-title" :style="{ color: theme.primary }">{{ theme.name }}</div>
-            <div class="theme-description">{{ theme.description }}</div>
+            <div class="theme-title" :style="{ color: theme.primary }">{{ tn(`settings.colorTheme.items.${theme.id}.name`, theme.name) }}</div>
+            <div class="theme-description">{{ tn(`settings.colorTheme.items.${theme.id}.description`, theme.description) }}</div>
           </div>
         </div>
 
@@ -57,8 +57,8 @@
               </svg>
             </div>
             <div class="custom-text">
-              <div class="custom-title">自定义颜色</div>
-              <div class="custom-subtitle">选择任意颜色</div>
+              <div class="custom-title">{{ $t('settings.color.customColor') }}</div>
+              <div class="custom-subtitle">{{ $t('settings.color.pickAny') }}</div>
             </div>
           </div>
 
@@ -88,6 +88,10 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
+const { t, te } = useI18n()
+const tn = (key, fallback) => (te(key) ? t(key) : fallback)
+
 defineProps({
   builtinColorThemes: {
     type: Array,

@@ -6,12 +6,12 @@
           <path fill="currentColor" d="M9,4V7H14V4H16V7H17A1,1 0 0,1 18,8V18A1,1 0 0,1 17,19H7A1,1 0 0,1 6,18V8A1,1 0 0,1 7,7H8V4H9M8,9V17H16V9H8Z"/>
         </svg>
       </div>
-      <h3>字体</h3>
+      <h3>{{ $t('settings.nav.font') }}</h3>
     </div>
 
     <!-- 字体族选择 -->
     <div class="font-setting-group">
-      <label class="font-setting-label">字体族</label>
+      <label class="font-setting-label">{{ $t('settings.font.family') }}</label>
       <div class="font-family-grid">
         <div
           v-for="font in fontFamilyList"
@@ -21,11 +21,11 @@
           @click="$emit('select-font-family', font.id)"
         >
           <div class="font-family-preview" :style="getFontPreviewStyle(font.id)">
-            <div class="font-preview-text">Aa 字体</div>
+            <div class="font-preview-text">Aa</div>
           </div>
           <div class="font-family-info">
-            <div class="font-family-name">{{ font.name }}</div>
-            <div class="font-family-description">{{ font.description }}</div>
+            <div class="font-family-name">{{ tn(`settings.fontFamily.items.${font.id}.name`, font.name) }}</div>
+            <div class="font-family-description">{{ tn(`settings.fontFamily.items.${font.id}.description`, font.description) }}</div>
           </div>
           <div class="font-family-check" v-if="selectedFontFamily === font.id">
             <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
@@ -41,6 +41,10 @@
 
 <script setup>
 import { fontSettingsUtils } from '../../core/theme/index.js'
+import { useI18n } from 'vue-i18n'
+
+const { t, te } = useI18n()
+const tn = (key, fallback) => (te(key) ? t(key) : fallback)
 
 const props = defineProps({
   fontFamilyList: {

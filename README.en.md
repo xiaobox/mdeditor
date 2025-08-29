@@ -283,6 +283,21 @@ const { success, message } = await copyMarkdownFormat(markdownText)
 - Editor base config: `src/config/constants/editor.js`
 - External links: `src/config/constants/links.js`
 
+## Internationalization (i18n)
+
+The app supports multiple UI languages; currently built-ins are: `zh-CN` and `en`.
+
+- Switcher: top-right in the Header, indicated by a flag icon (🇨🇳 / 🇬🇧).
+- Persistence: the selected language is stored in localStorage and applied on next launch.
+- Default locale: prefers localStorage; otherwise defaults to `zh-CN`.
+- Copy dropdown: the copy-format menu (Social/Markdown) is internationalized and will auto-refresh labels on locale change.
+- Implementation: `vue-i18n@9`. Plugin at `src/plugins/i18n.js`, locale files under `src/locales/`.
+- Add a new language:
+  1. Add `<locale>.json` under `src/locales/`
+  2. Import and register it in `src/plugins/i18n.js`
+  3. Add an option in the Header’s `languageOptions`
+
+
 ## Contributing
 
 - Contributions welcome: bug fixes, feature proposals, docs, examples.

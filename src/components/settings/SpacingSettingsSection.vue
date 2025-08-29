@@ -6,13 +6,13 @@
           <path fill="currentColor" d="M3 11h18v2H3v-2m6-6h6v2H9V5m0 14h6v2H9v-2"/>
         </svg>
       </div>
-      <h3>间距</h3>
+      <h3>{{ $t('settings.nav.spacing') }}</h3>
     </div>
 
     <!-- 字间距设置卡片 -->
     <div class="font-size-card">
       <div class="font-setting-group">
-        <label class="font-setting-label">字间距</label>
+        <label class="font-setting-label">{{ $t('settings.spacing.letter') }}</label>
         <div class="font-size-top-section">
           <!-- 左侧滑块区域 -->
           <div class="font-size-slider-area">
@@ -40,7 +40,7 @@
                 <span class="size-unit">px</span>
               </div>
               <div class="preview-char" :style="{ letterSpacing: letterSpacing + 'px' }">
-                字间距
+                {{ $t('settings.spacing.letter') }}
               </div>
             </div>
           </div>
@@ -51,7 +51,7 @@
     <!-- 行间距设置卡片 -->
     <div class="font-size-card">
       <div class="font-setting-group">
-        <label class="font-setting-label">行间距</label>
+        <label class="font-setting-label">{{ $t('settings.spacing.line') }}</label>
         <div class="font-size-top-section">
           <!-- 左侧滑块区域 -->
           <div class="font-size-slider-area">
@@ -79,7 +79,7 @@
                 <span class="size-unit"></span>
               </div>
               <div class="preview-char" :style="{ lineHeight: lineHeight }">
-                行<br>间<br>距
+                {{ $t('settings.spacing.line') }}
               </div>
             </div>
           </div>

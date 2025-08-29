@@ -6,7 +6,7 @@
           <path fill="currentColor" d="M11,7A2,2 0 0,1 13,9V17A2,2 0 0,1 11,19H9A2,2 0 0,1 7,17V9A2,2 0 0,1 9,7H11M9,9V17H11V9H9M12,2A2,2 0 0,1 14,4V6H12V4H10V6H8V4A2,2 0 0,1 10,2H12Z"/>
         </svg>
       </div>
-      <h3>字号</h3>
+      <h3>{{ $t('settings.nav.fontSize') }}</h3>
     </div>
 
     <!-- 字号设置卡片 -->
@@ -34,13 +34,13 @@
           <div class="preview-display">
             <div class="preview-info">
               <span class="current-size">{{ selectedFontSize }}</span>
-              <span class="size-unit">px</span>
+              <span class="size-unit">{{ $t('settings.fontSize.unitPx') }}</span>
             </div>
             <div
               class="preview-char"
               :style="getFontSizePreviewStyle()"
             >
-              文
+              A
             </div>
           </div>
         </div>
@@ -56,7 +56,7 @@
         :class="{ active: selectedFontSize === preset.value }"
         @click="$emit('update-font-size', preset.value)"
       >
-        {{ preset.label }}
+        {{ $t(`settings.fontSize.presets.${preset.value}`) }}
       </button>
     </div>
   </section>

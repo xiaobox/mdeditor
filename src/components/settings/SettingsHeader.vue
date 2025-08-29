@@ -7,8 +7,8 @@
         </svg>
       </div>
       <div class="header-text">
-        <h2>设置</h2>
-        <p>个性化定制您的编辑器体验</p>
+        <h2>{{ $t('settings.header.title') }}</h2>
+        <p>{{ $t('settings.header.subtitle') }}</p>
       </div>
     </div>
     <button class="close-btn" @click="$emit('close')">

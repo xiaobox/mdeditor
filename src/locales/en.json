@@ -1,0 +1,188 @@
+{
+  "common": {
+    "appName": "Modern MD Editor",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "backToTop": "Back to top"
+  },
+  "header": {
+    "brandTitle": "Modern MD Editor",
+    "view": {
+      "both": "Editor + Preview",
+      "editor": "Editor Only",
+      "wysiwyg": "WYSIWYG (Editable)"
+    },
+    "settings": "Settings",
+    "guide": "Markdown Guide",
+    "copy": "Copy",
+    "github": "GitHub",
+    "language": "Language"
+  },
+  "main": {
+    "editor": {
+      "title": "Markdown Editor",
+      "clear": "Clear content",
+      "loadSample": "Load sample",
+      "importMd": "Import .md file"
+    },
+    "preview": {
+      "wysiwyg": "WYSIWYG",
+      "preview": "Preview",
+      "syncScroll": "Sync scroll"
+    }
+  },
+  "footer": {
+    "characters": "{count} chars",
+    "lines": "{count} lines",
+    "words": "{count} words",
+    "minutes": "{count} min"
+  },
+  "settings": {
+    "header": {
+      "title": "Settings",
+      "subtitle": "Personalize your editor experience"
+    },
+    "nav": {
+      "quick": "Quick Nav",
+      "themeSystem": "Theme System",
+      "colorTheme": "Color Theme",
+      "codeStyle": "Code Style",
+      "font": "Font",
+      "fontSize": "Font Size",
+      "spacing": "Spacing"
+    },
+    "fontSize": {
+      "unitPx": "px",
+      "presets": {
+        "12": "Small (12px)",
+        "14": "Smaller (14px)",
+        "16": "Normal (16px)",
+        "18": "Larger (18px)",
+        "20": "Large (20px)",
+        "22": "XL (22px)",
+        "24": "XXL (24px)"
+      }
+    },
+    "fontFamily": {
+      "items": {
+        "microsoft-yahei": { "name": "Microsoft YaHei", "description": "WeChat-friendly Chinese font" },
+        "pingfang-sc": { "name": "PingFang SC", "description": "Preferred on Apple devices" },
+        "hiragino-sans": { "name": "Hiragino Sans", "description": "Classic Mac Chinese font" },
+        "arial": { "name": "Arial", "description": "Universal Latin font" },
+        "system-safe": { "name": "System Safe", "description": "Safe combination for public platforms" }
+      }
+    },
+    "footer": {
+      "apply": "Apply Settings"
+    },
+    "color": { "customColor": "Custom color", "pickAny": "Pick any color" },
+    "font": { "family": "Font family" },
+    "spacing": { "letter": "Letter spacing", "line": "Line spacing" },
+    "code": { "preview": "Preview" },
+    "colorPicker": {
+      "quickPick": "Quick pick",
+      "previewTitle": "Preview",
+      "previewSubtitle": "See how the theme looks",
+      "textSample": "This is body text",
+      "primarySample": "This is the primary color"
+    },
+    "themeSystem": {
+      "items": {
+        "default": { "name": "Default", "description": "Unified modern layout for Markdown" },
+        "breeze": { "name": "Breeze", "description": "Clean layout optimized for mobile content distribution" }
+      }
+    },
+    "colorTheme": {
+      "items": {
+        "chijin": { "name": "Magenta", "description": "Bright, vivid like a rose" },
+        "dianlan": { "name": "Dark Purple", "description": "Deep and elegant" },
+        "ehuang": { "name": "Apricot", "description": "Warm and gentle like autumn sun" },
+        "conglv": { "name": "Scallion Green", "description": "Fresh and lively like spring" },
+        "shiliuhong": { "name": "Pomegranate Red", "description": "Passionate and vivid" },
+        "meihei": { "name": "Coal Black", "description": "Deep and dignified" },
+        "ganziqing": { "name": "Indigo", "description": "Mystic elegance" },
+        "xuanse": { "name": "Dark Crimson", "description": "Profound with red tone" }
+      }
+    },
+    "codeStyle": {
+      "items": {
+        "mac": { "name": "Mac Style", "description": "Classic macOS terminal look" },
+        "github": { "name": "GitHub Style", "description": "Clean GitHub-like code block" },
+        "vscode": { "name": "VS Code Style", "description": "Modern VS Code dark theme" },
+        "terminal": { "name": "Terminal", "description": "Retro black-green terminal" }
+      }
+    }
+  },
+  "guide": {
+    "title": "Markdown Guide",
+    "subtitle": "Learn Markdown quickly and efficiently",
+    "sections": {
+      "basic": "Basics",
+      "lists": "Lists",
+      "linksImages": "Links & Images",
+      "code": "Code Blocks",
+      "table": "Table",
+      "misc": "Other Syntax"
+    },
+    "h1": "Heading 1",
+    "h2": "Heading 2",
+    "h3": "Heading 3",
+    "bold": "Bold",
+    "italic": "Italic",
+    "strikethrough": "Strikethrough",
+    "quote": "Quote",
+    "inlineCode": "Inline code",
+    "unorderedList": "Unordered list",
+    "orderedList": "Ordered list",
+    "taskList": "Task list",
+    "done": "Done",
+    "todo": "Todo",
+    "link": "Link",
+    "image": "Image",
+    "imagePreview": "Image preview",
+    "codeBlock": "Code block",
+    "tableTitle": "Table",
+    "column1": "Column 1",
+    "column2": "Column 2",
+    "column3": "Column 3",
+    "content1": "Content 1",
+    "content2": "Content 2",
+    "content3": "Content 3",
+    "hr": "Horizontal rule",
+    "escape": "Escape characters",
+    "samples": {
+      "item1": "Item 1",
+      "item2": "Item 2",
+      "subitem": "Sub-item",
+      "first": "First",
+      "second": "Second",
+      "third": "Third",
+      "quoteText": "Quote text",
+      "text": "text",
+      "linkText": "Link text",
+      "altText": "Alt text"
+    }
+  },
+  "toolbar": {
+    "h1": "Heading 1",
+    "h2": "Heading 2",
+    "h3": "Heading 3",
+    "bold": "Bold (Ctrl+B)",
+    "italic": "Italic (Ctrl+I)",
+    "strikethrough": "Strikethrough",
+    "link": "Insert link (Ctrl+K)",
+    "image": "Insert image",
+    "code": "Inline code",
+    "codeBlock": "Code block",
+    "quote": "Quote",
+    "list": "Bullet list",
+    "orderedList": "Numbered list",
+    "table": "Insert table",
+    "horizontalRule": "Horizontal rule"
+  },
+
+  "copyFormat": {
+    "social": "WeChat Official Account format",
+    "markdown": "Markdown"
+  }
+}

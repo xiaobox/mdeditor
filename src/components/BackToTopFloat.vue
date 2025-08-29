@@ -3,8 +3,8 @@
     <button
       v-if="visible"
       class="btf"
-      :title="title || '回到顶部'"
-      aria-label="回到顶部"
+      :title="title || $t('common.backToTop')"
+      :aria-label="$t('common.backToTop')"
       @click="scrollToTop"
     >
       <svg viewBox="0 0 1024 1024" width="32" height="32" aria-hidden="true">
@@ -19,7 +19,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
   threshold: { type: Number, default: 50 },
-  title: { type: String, default: '回到顶部' }
+  title: { type: String, default: '' }
 })
 
 const visible = ref(false)

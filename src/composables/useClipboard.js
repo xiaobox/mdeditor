@@ -9,9 +9,10 @@
  * - 复制格式选择
  */
 
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { copySocialFormat, copyMarkdownFormat, getCopyFormatOptions } from '../core/editor/copy-formats.js'
 import { useGlobalThemeManager } from './index.js'
+import { i18n } from '../plugins/i18n.js'
 
 /**
  * 剪贴板功能管理 Composable
@@ -28,7 +29,7 @@ export function useClipboard(options = {}) {
 
   // 状态
   const copyFormatOptions = ref(getCopyFormatOptions())
-  const selectedCopyFormat = ref(copyFormatOptions.value[0]) // 默认选择第一个选项
+  const selectedCopyFormat = ref(copyFormatOptions.value[0]) // 存储选中项对象以保持向后兼容
 
   /**
    * 获取当前有效的颜色主题（包括临时自定义主题）
@@ -116,12 +117,21 @@ export function useClipboard(options = {}) {
    * 重新加载复制格式选项
    */
   const reloadCopyFormatOptions = () => {
+    const prevVal = selectedCopyFormat.value?.value
     copyFormatOptions.value = getCopyFormatOptions()
     // 如果当前选中的格式不在新选项中，重置为第一个
-    if (!copyFormatOptions.value.some(option => option.value === selectedCopyFormat.value.value)) {
-      selectedCopyFormat.value = copyFormatOptions.value[0]
-    }
+    const matched = copyFormatOptions.value.find(option => option.value === prevVal)
+    selectedCopyFormat.value = matched || copyFormatOptions.value[0]
   }
+
+  // 监听语言切换，实时刷新复制菜单
+  try {
+    const loc = i18n?.global?.locale
+    const localeRef = typeof loc === 'string' ? null : loc
+    if (localeRef && typeof localeRef === 'object' && 'value' in localeRef) {
+      watch(localeRef, () => reloadCopyFormatOptions())
+    }
+  } catch {}
 
   return {
     // 状态

@@ -31,8 +31,14 @@ import './styles/global.css';
 import './styles/components/index.css';
 import './styles/prism-variables.css';
 
+// i18n
+import { i18n } from './plugins/i18n.js'
+
 // 创建 Vue 应用实例
 const app = createApp(App);
+
+// 安装插件
+app.use(i18n)
 
 // 将应用挂载到 DOM 中 ID 为 'app' 的元素上
 app.mount('#app');

@@ -33,7 +33,8 @@
           @click="selectOption(option)"
         >
           <div class="dropdown-item-content">
-            <svg v-if="option.icon" class="dropdown-item-icon" :viewBox="option.viewBox || '0 0 24 24'" width="16" height="16">
+            <span v-if="option.emoji" class="dropdown-item-emoji">{{ option.emoji }}</span>
+            <svg v-else-if="option.icon" class="dropdown-item-icon" :viewBox="option.viewBox || '0 0 24 24'" width="16" height="16">
               <template v-if="Array.isArray(option.icon)">
                 <path v-for="(d, idx) in option.icon" :key="idx" fill="currentColor" :d="d" />
               </template>
@@ -200,6 +201,16 @@ onUnmounted(() => {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+.dropdown-item-emoji {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
 
 .dropdown-item-content {
   display: flex;

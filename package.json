@@ -46,7 +46,8 @@
     "prismjs": "^1.30.0",
     "svgo": "^4.0.0",
     "vue": "^3.3.8",
-    "vue-codemirror": "^6.1.1"
+    "vue-codemirror": "^6.1.1",
+    "vue-i18n": "^9.14.5"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.8.3",

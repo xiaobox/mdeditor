@@ -6,7 +6,7 @@
           <path fill="currentColor" d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z"/>
         </svg>
       </div>
-      <h3>主题风格</h3>
+      <h3>{{ $t('settings.nav.themeSystem') }}</h3>
     </div>
 
     <div class="theme-system-grid">
@@ -19,7 +19,7 @@
       >
         <div class="theme-system-preview">
           <div class="theme-system-header">
-            <div class="theme-system-title">{{ themeSystem.name }}</div>
+            <div class="theme-system-title">{{ tn(`settings.themeSystem.items.${themeSystem.id}.name`, themeSystem.name) }}</div>
             <div class="theme-system-colors">
               <span
                 v-for="colorId in themeSystem.supportedColors.slice(0, 4)"
@@ -32,7 +32,7 @@
               </span>
             </div>
           </div>
-          <div class="theme-system-description">{{ themeSystem.description }}</div>
+          <div class="theme-system-description">{{ tn(`settings.themeSystem.items.${themeSystem.id}.description`, themeSystem.description) }}</div>
         </div>
 
         <div class="theme-system-check" v-if="selectedThemeSystemId === themeSystem.id">
@@ -47,6 +47,11 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
+
+const { t, te } = useI18n()
+const tn = (key, fallback) => (te(key) ? t(key) : fallback)
+
 defineProps({
   layoutList: {
     type: Array,

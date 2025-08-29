@@ -6,7 +6,7 @@
           <path fill="currentColor" d="M8,3A2,2 0 0,0 6,5V9A2,2 0 0,1 4,11H3V13H4A2,2 0 0,1 6,15V19A2,2 0 0,0 8,21H10V19H8V14A2,2 0 0,0 6,12A2,2 0 0,0 8,10V5H10V3M16,3A2,2 0 0,1 18,5V9A2,2 0 0,0 20,11H21V13H20A2,2 0 0,0 18,15V19A2,2 0 0,1 16,21H14V19H16V14A2,2 0 0,1 18,12A2,2 0 0,1 16,10V5H14V3H16Z"/>
         </svg>
       </div>
-      <h3>代码样式</h3>
+      <h3>{{ $t('settings.nav.codeStyle') }}</h3>
     </div>
 
     <div class="code-style-grid">
@@ -35,7 +35,7 @@
               <span v-if="codeStyle.id === 'github'">📄</span>
               <span v-else-if="codeStyle.id === 'vscode'">⚡</span>
               <span v-else-if="codeStyle.id === 'terminal'">$</span>
-              {{ codeStyle.id === 'terminal' ? 'terminal' : '代码' }}
+              {{ codeStyle.id === 'terminal' ? 'terminal' : $t('settings.code.preview') }}
             </div>
             <div class="code-preview-content" :data-theme="codeStyle.id">
               <span class="code-keyword">function</span> <span class="code-function">hello</span>() {<br>
@@ -44,10 +44,10 @@
             </div>
           </div>
         </div>
-        
+
         <div class="code-style-info">
-          <div class="code-style-name">{{ codeStyle.name }}</div>
-          <div class="code-style-description">{{ codeStyle.description }}</div>
+          <div class="code-style-name">{{ tn(`settings.codeStyle.items.${codeStyle.id}.name`, codeStyle.name) }}</div>
+          <div class="code-style-description">{{ tn(`settings.codeStyle.items.${codeStyle.id}.description`, codeStyle.description) }}</div>
         </div>
         
         <div class="code-style-check" v-if="selectedCodeStyleId === codeStyle.id">
@@ -63,6 +63,10 @@
 
 <script setup>
 import { getCodeStyle } from '../../core/theme/index.js'
+import { useI18n } from 'vue-i18n'
+
+const { t, te } = useI18n()
+const tn = (key, fallback) => (te(key) ? t(key) : fallback)
 
 defineProps({
   codeStyleList: {
