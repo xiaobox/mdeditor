@@ -167,6 +167,11 @@ export default {
         inlineCodeObserver.disconnect()
         inlineCodeObserver = null
       }
+      // 清理可能未触发的节流定时器，避免内存泄漏
+      if (emitTimer) {
+        clearTimeout(emitTimer)
+        emitTimer = null
+      }
     })
 
 

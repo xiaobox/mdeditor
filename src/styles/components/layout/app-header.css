@@ -3,7 +3,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-3xl) var(--spacing-4xl);
+  padding: var(--spacing-xl) var(--spacing-4xl);
   background: #ffffff;
   border-bottom: 1px solid #e0e0e0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -129,7 +129,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-md);
-  padding: var(--spacing-lg) var(--spacing-xl);
+  padding: var(--spacing-md) var(--spacing-lg);
   border: none;
   border-radius: var(--radius-2xl);
   background: var(--gray-100);
@@ -252,26 +252,25 @@
 .view-toggle-group {
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-xs);
+  gap: var(--spacing-sm);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
   margin-right: var(--spacing-xl);
-  backdrop-filter: blur(10px);
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.1),
-    0 1px 4px rgba(0, 0, 0, 0.05);
+  backdrop-filter: none;
+  box-shadow: none;
 }
 
 .view-toggle-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: none;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--theme-border-light);
   border-radius: 8px;
-  background: transparent;
+  background: var(--theme-bg-primary);
   color: var(--gray-500);
   cursor: pointer;
   transition: var(--transition-all-normal);
@@ -279,13 +278,15 @@
 }
 
 .view-toggle-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--theme-bg-secondary);
   color: var(--theme-primary);
+  border-color: var(--theme-primary);
 }
 
 .view-toggle-btn.active {
   background: var(--theme-primary);
   color: white;
+  border-color: var(--theme-primary);
   box-shadow: 0 2px 4px rgba(var(--theme-primary-rgb), 0.3);
 }
 
@@ -336,9 +337,15 @@
 }
 
 /* 响应式设计 */
+@media (max-width: 1200px) {
+  .app-header {
+    padding: var(--spacing-xl) var(--spacing-3xl);
+  }
+}
+
 @media (max-width: 768px) {
   .app-header {
-    padding: var(--spacing-lg) var(--spacing-xl);
+    padding: var(--spacing-md) var(--spacing-3xl);
     flex-wrap: wrap;
     gap: var(--spacing-lg);
   }

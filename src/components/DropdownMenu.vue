@@ -7,7 +7,7 @@
       :disabled="disabled"
     >
       <slot name="trigger">
-        <svg :viewBox="triggerViewBox || '0 0 24 24'" width="18" height="18">
+        <svg :viewBox="triggerViewBox || '0 0 24 24'" width="16" height="16">
           <template v-if="Array.isArray(triggerIcon)">
             <path v-for="(d, i) in triggerIcon" :key="i" fill="currentColor" :d="d" />
           </template>
@@ -289,7 +289,7 @@ onUnmounted(() => {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-md);
-  padding: var(--spacing-lg) var(--spacing-xl);
+  padding: var(--spacing-md) var(--spacing-lg);
   border: none;
   border-radius: var(--radius-2xl);
   background: var(--gray-100);

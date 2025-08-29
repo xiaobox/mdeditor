@@ -173,7 +173,12 @@ class MermaidNodeView {
         const { svg } = await mermaid.render(id, code)
         this.svgContainer.innerHTML = svg
       } catch (err) {
-        this.svgContainer.innerHTML = `<pre class="md-mermaid__error">${String(err)}</pre>`
+        // 使用 DOM API 防止注入：不将错误内容作为 HTML 注入
+        const pre = document.createElement('pre')
+        pre.className = 'md-mermaid__error'
+        pre.textContent = String(err)
+        this.svgContainer.innerHTML = ''
+        this.svgContainer.appendChild(pre)
       }
     })
   }

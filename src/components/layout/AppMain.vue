@@ -45,7 +45,19 @@
           </svg>
           {{ viewMode === 'wysiwyg' ? '所见即所得' : '预览' }}
         </h3>
-        <div class="panel-actions"></div>
+        <div class="panel-actions" v-if="viewMode !== 'wysiwyg'">
+          <!-- 同步滚动开关（移自 Footer） -->
+          <label class="toggle-label" title="同步滚动">
+            <span class="toggle-text">同步滚动</span>
+            <input
+              type="checkbox"
+              :checked="syncScrollEnabled"
+              @change="$emit('toggle-sync-scroll')"
+              class="toggle-checkbox"
+            />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
       </div>
 
       <component
@@ -85,7 +97,8 @@ const emit = defineEmits([
   'clear-content',
   'load-sample',
   'html-generated',
-  'import-markdown'
+  'import-markdown',
+  'toggle-sync-scroll'
 ])
 </script>
 
@@ -150,7 +163,52 @@ const emit = defineEmits([
 .panel-actions {
   display: flex;
   gap: 8px;
+  align-items: center;
 }
+
+/* 轻量版同步滚动开关样式，贴合面板头部高度 */
+.toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+  transition: all 0.2s ease;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background: transparent;
+}
+.toggle-label:hover {
+  color: var(--theme-primary);
+  background: rgba(0,0,0,0.04);
+}
+.toggle-checkbox { display: none; }
+.toggle-slider {
+  position: relative;
+  width: 32px;
+  height: 18px;
+  background: #e2e8f0;
+  border-radius: 9px;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+.toggle-checkbox:checked + .toggle-slider { background: var(--theme-primary); }
+.toggle-checkbox:checked + .toggle-slider::before { transform: translateX(14px); }
 
 .btn-small {
   display: flex;

@@ -50,6 +50,7 @@
 import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { parseMarkdown } from '../core/markdown/parser/coordinator.js'
 import { useGlobalThemeManager } from '../composables/index.js'
+import { escapeHtml as sharedEscapeHtml } from '../shared/utils/text.js'
 import mermaid from 'mermaid'
 
 export default {
@@ -157,8 +158,8 @@ export default {
       // 保存滚动位置
       saveScrollPosition()
 
-      // 只有在启用同步滚动时才执行同步
-      if (!props.syncScrollEnabled) return
+      // 只有在启用同步滚动时才执行同步；程序触发的滚动需要跳过
+      if (!props.syncScrollEnabled || (typeof window !== 'undefined' && window.__scrollSyncLock)) return
 
       // 计算滚动百分比
       const maxScrollTop = Math.max(0, scrollHeight - clientHeight)
@@ -169,7 +170,9 @@ export default {
       if (editorElement) {
         const editorMaxScrollTop = Math.max(0, editorElement.scrollHeight - editorElement.clientHeight)
         const targetScrollTop = Math.round(editorMaxScrollTop * scrollPercentage)
+        if (typeof window !== 'undefined') window.__scrollSyncLock = true
         editorElement.scrollTop = targetScrollTop
+        if (typeof window !== 'undefined') setTimeout(() => { window.__scrollSyncLock = false }, 0)
       }
     }
 
@@ -334,9 +337,10 @@ export default {
         emit('html-generated', socialFormatted)
       } catch (error) {
         console.error('处理Markdown时出错:', error)
+        const safeMsg = (error && error.message) ? sharedEscapeHtml(String(error.message)) : '未知错误'
         const errorMessage = `<div class="error">
           <h3>❌ 处理错误</h3>
-          <p>错误信息: ${error.message}</p>
+          <p>错误信息: ${safeMsg}</p>
           <p>请检查Markdown语法或联系开发者。</p>
         </div>`
 

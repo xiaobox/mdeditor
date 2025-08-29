@@ -21,51 +21,56 @@
  * @returns {string} - 处理后的文本
  */
 export function processBoldAndItalic(text, theme) {
-  let result = text;
+  const transform = (input) => {
+    let result = input;
 
-  // 首先处理粗斜体 ***text*** 和 ___text___
-  result = result.replace(/\*\*\*(.*?)\*\*\*/g, (_, content) => {
-    return `<strong><em style="color: ${theme.primary}; font-style: italic; font-weight: 900;">${content}</em></strong>`;
-  });
+    // 首先处理粗斜体 ***text*** 和 ___text___
+    result = result.replace(/\*\*\*(.*?)\*\*\*/g, (_, content) => {
+      return `<strong><em style="color: ${theme.primary}; font-style: italic; font-weight: 900;">${content}</em></strong>`;
+    });
 
-  result = result.replace(/_{3}(.*?)_{3}/g, (_, content) => {
-    return `<strong><em style="color: ${theme.primary}; font-style: italic; font-weight: 900;">${content}</em></strong>`;
-  });
+    result = result.replace(/_{3}(.*?)_{3}/g, (_, content) => {
+      return `<strong><em style="color: ${theme.primary}; font-style: italic; font-weight: 900;">${content}</em></strong>`;
+    });
 
-  // 处理嵌套的粗体包含斜体的情况: **text*italic*text**
-  // 使用更精确的正则表达式，确保正确匹配完整的粗体块
-  result = result.replace(/\*\*([^*]*(?:\*[^*]+\*[^*]*)*)\*\*/g, (match, content) => {
-    // 处理内部的斜体
-    const processedContent = content.replace(/\*([^*]+)\*/g, '<em style="color: ' + theme.textSecondary + '; font-style: italic;">$1</em>');
-    return `<strong style="color: ${theme.primary}; font-weight: 900;">${processedContent}</strong>`;
-  });
+    // 处理嵌套的粗体包含斜体的情况: **text*italic*text**
+    // 使用更精确的正则表达式，确保正确匹配完整的粗体块
+    result = result.replace(/\*\*([^*]*(?:\*[^*]+\*[^*]*)*)\*\*/g, (match, content) => {
+      // 处理内部的斜体
+      const processedContent = content.replace(/\*([^*]+)\*/g, '<em style="color: ' + theme.textSecondary + '; font-style: italic;">$1</em>');
+      return `<strong style="color: ${theme.primary}; font-weight: 900;">${processedContent}</strong>`;
+    });
 
-  // 处理下划线粗体包含斜体: __text_italic_text__
-  result = result.replace(/__([^_]*(?:_[^_]+_[^_]*)*)__/g, (match, content) => {
-    // 处理内部的斜体
-    const processedContent = content.replace(/_([^_]+)_/g, '<em style="color: ' + theme.textSecondary + '; font-style: italic;">$1</em>');
-    return `<strong style="color: ${theme.primary}; font-weight: 900;">${processedContent}</strong>`;
-  });
+    // 处理下划线粗体包含斜体: __text_italic_text__
+    result = result.replace(/__([^_]*(?:_[^_]+_[^_]*)*)__/g, (match, content) => {
+      // 处理内部的斜体
+      const processedContent = content.replace(/_([^_]+)_/g, '<em style="color: ' + theme.textSecondary + '; font-style: italic;">$1</em>');
+      return `<strong style="color: ${theme.primary}; font-weight: 900;">${processedContent}</strong>`;
+    });
 
-  // 处理剩余的独立粗体 **text**（不包含嵌套格式）
-  result = result.replace(/\*\*([^*]+)\*\*/g, (_, content) => {
-    return `<strong style="color: ${theme.primary}; font-weight: 900;">${content}</strong>`;
-  });
+    // 处理剩余的独立粗体 **text**（不包含嵌套格式）
+    result = result.replace(/\*\*([^*]+)\*\*/g, (_, content) => {
+      return `<strong style="color: ${theme.primary}; font-weight: 900;">${content}</strong>`;
+    });
 
-  result = result.replace(/__([^_]+)__/g, (_, content) => {
-    return `<strong style="color: ${theme.primary}; font-weight: 900;">${content}</strong>`;
-  });
+    result = result.replace(/__([^_]+)__/g, (_, content) => {
+      return `<strong style="color: ${theme.primary}; font-weight: 900;">${content}</strong>`;
+    });
 
-  // 最后处理独立的斜体 *text*（不在粗体内的）
-  result = result.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, (_, content) => {
-    return `<em style="color: ${theme.textSecondary}; font-style: italic;">${content}</em>`;
-  });
+    // 最后处理独立的斜体 *text*（不在粗体内的）
+    result = result.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, (_, content) => {
+      return `<em style="color: ${theme.textSecondary}; font-style: italic;">${content}</em>`;
+    });
 
-  result = result.replace(/(?<!_)_([^_]+)_(?!_)/g, (_, content) => {
-    return `<em style="color: ${theme.textSecondary}; font-style: italic;">${content}</em>`;
-  });
+    result = result.replace(/(?<!_)_([^_]+)_(?!_)/g, (_, content) => {
+      return `<em style="color: ${theme.textSecondary}; font-style: italic;">${content}</em>`;
+    });
 
-  return result;
+    return result;
+  };
+
+  // 仅对标签外文本应用样式替换，避免破坏已有 HTML/属性（例如图片 src 中的下划线）
+  return text.split(/(<[^>]+>)/g).map(seg => (seg && seg.startsWith('<')) ? seg : transform(seg)).join('');
 }
 
 /**

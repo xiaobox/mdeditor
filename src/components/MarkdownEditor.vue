@@ -66,15 +66,17 @@ export default {
   setup(props, { emit }) {
     // 滚动同步处理
     const handleEditorScroll = (scrollPercentage) => {
-      // 只有在启用同步滚动时才执行同步
-      if (!props.syncScrollEnabled) return
+      // 只有在启用同步滚动时才执行同步；程序触发的滚动需要跳过
+      if (!props.syncScrollEnabled || (typeof window !== 'undefined' && window.__scrollSyncLock)) return
 
       // 同步到预览区
       const previewElement = document.querySelector('.preview-rendered')
       if (previewElement) {
         const previewMaxScrollTop = Math.max(0, previewElement.scrollHeight - previewElement.clientHeight)
         const targetScrollTop = Math.round(previewMaxScrollTop * scrollPercentage)
+        if (typeof window !== 'undefined') window.__scrollSyncLock = true
         previewElement.scrollTop = targetScrollTop
+        if (typeof window !== 'undefined') setTimeout(() => { window.__scrollSyncLock = false }, 0)
       }
     }
 

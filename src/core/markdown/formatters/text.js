@@ -136,6 +136,17 @@ const INLINE_FORMAT_PROCESSORS = [
     process: (text, theme, handleEscapes, baseFontSize) => processInlineCode(text, theme, baseFontSize),
     condition: () => true
   },
+  // 提前处理链接与图片，避免后续样式处理影响 URL（如下划线触发斜体）
+  {
+    name: 'images',
+    process: (text, theme, handleEscapes, baseFontSize) => processImages(text, theme),
+    condition: () => true
+  },
+  {
+    name: 'links',
+    process: (text, theme, handleEscapes, baseFontSize) => processLinks(text, theme),
+    condition: () => true
+  },
   {
     name: 'keyboard',
     process: (text, theme, handleEscapes, baseFontSize) => processKeyboard(text, theme),
@@ -164,16 +175,6 @@ const INLINE_FORMAT_PROCESSORS = [
   {
     name: 'subscript',
     process: (text, theme, handleEscapes, baseFontSize) => processSubscript(text, theme),
-    condition: () => true
-  },
-  {
-    name: 'images',
-    process: (text, theme, handleEscapes, baseFontSize) => processImages(text, theme),
-    condition: () => true
-  },
-  {
-    name: 'links',
-    process: (text, theme, handleEscapes, baseFontSize) => processLinks(text, theme),
     condition: () => true
   },
   {

@@ -237,7 +237,10 @@ async function rasterizeMermaidSvgs(container, scale = 2) {
         Math.floor(pad * effScale), Math.floor(pad * effScale),
         Math.floor(w * effScale), Math.floor(h * effScale)
       );
-      URL.revokeObjectURL(url);
+      // 仅对 blob: URL 进行释放；data: URL 不需要也不应调用 revokeObjectURL
+      if (typeof url === 'string' && url.startsWith('blob:')) {
+        try { URL.revokeObjectURL(url) } catch (_) {}
+      }
 
       const dataUrl = canvas.toDataURL('image/png');
       const imageEl = document.createElement('img');

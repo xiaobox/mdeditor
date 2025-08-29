@@ -14,7 +14,7 @@
       @set-view-mode="setViewMode"
       @show-guide="showGuide"
       @copy-format-select="handleCopyFormatSelect"
-      @update:selected-copy-format="selectedCopyFormat = $event"
+      @update:selected-copy-format="selectedCopyFormat.value = $event"
     />
 
     <!-- 隐藏文件输入：用于导入 .md -->
@@ -30,7 +30,11 @@
       @load-sample="loadSample"
       @html-generated="updateHtmlContent"
       @import-markdown="triggerImportMd"
+      @toggle-sync-scroll="toggleSyncScroll"
     />
+
+    <!-- 全局回到顶部悬浮按钮 -->
+    <BackToTopFloat />
 
     <!-- 应用底部 -->
     <AppFooter
@@ -80,6 +84,7 @@ import AppMain from './components/layout/AppMain.vue'
 import AppFooter from './components/layout/AppFooter.vue'
 import SettingsPanel from './components/SettingsPanel.vue'
 import MarkdownGuide from './components/MarkdownGuide.vue'
+import BackToTopFloat from './components/BackToTopFloat.vue'
 
 // 使用应用状态管理
 const {
@@ -143,7 +148,7 @@ nextTick(() => {
       
       const fileName = filePath.split('/').pop() || filePath.split('\\').pop();
       console.log('🔔 显示成功通知:', fileName);
-      showNotification('success', `已打开文件: ${fileName}`);
+      showNotification(`已打开文件: ${fileName}`, 'success');
       
       console.log('🎉 文件打开流程完成');
     },
@@ -154,14 +159,14 @@ nextTick(() => {
         if (result.success) {
           console.log('✅ 文件保存成功:', result.filePath);
           const fileName = result.filePath.split('/').pop() || result.filePath.split('\\').pop();
-          showNotification('success', `文件已保存: ${fileName}`);
+          showNotification(`文件已保存: ${fileName}`, 'success');
         } else {
           console.log('❌ 文件保存失败:', result.message);
-          showNotification('error', `保存失败: ${result.message}`);
+          showNotification(`保存失败: ${result.message}`, 'error');
         }
       } catch (error) {
         console.error('💥 保存文件时发生错误:', error);
-        showNotification('error', `保存失败: ${error.message}`);
+        showNotification(`保存失败: ${error.message}`, 'error');
       }
     }
   })

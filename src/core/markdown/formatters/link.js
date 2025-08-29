@@ -7,7 +7,7 @@
  */
 
 import { REGEX_PATTERNS } from '../../../config/constants/index.js';
-import { cleanUrl as sharedCleanUrl } from '../../../shared/utils/text.js';
+import { cleanUrl as sharedCleanUrl, escapeHtml as sharedEscapeHtml } from '../../../shared/utils/text.js';
 
 /**
  * 处理链接
@@ -20,8 +20,9 @@ import { cleanUrl as sharedCleanUrl } from '../../../shared/utils/text.js';
  */
 export function processLinks(text, theme) {
   return text.replace(REGEX_PATTERNS.LINK, (_, linkText, url) => {
-    const cleanUrl = url.trim();
-    return `<a href="${cleanUrl}" style="color: ${theme.primary}; text-decoration: none; border-bottom: 1px solid ${theme.primary}4D;" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
+    const sanitizedUrl = sharedCleanUrl(url);
+    if (!sanitizedUrl) return linkText; // 无效/不安全的 URL：不生成链接
+    return `<a href="${sanitizedUrl}" style="color: ${theme.primary}; text-decoration: none; border-bottom: 1px solid ${theme.primary}4D;" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
   });
 }
 
@@ -36,14 +37,19 @@ export function processLinks(text, theme) {
  */
 export function processImages(text, theme) {
   return text.replace(REGEX_PATTERNS.IMAGE, (_, altText, url) => {
-    const cleanUrl = url.trim();
+    const sanitizedUrl = sharedCleanUrl(url);
     const hasAlt = typeof altText === 'string' && altText.trim().length > 0;
     const cleanAlt = hasAlt ? altText.trim() : '图片';
 
     const safeAlt = sanitizeAttribute(cleanAlt);
     const captionAttr = hasAlt ? ' data-md-caption="true"' : '';
 
-    return `<img src="${cleanUrl}" alt="${safeAlt}"${captionAttr} style="max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 2px 8px ${theme.shadowColor}; margin: 8px 0; display: block;" loading="lazy">`;
+    if (!sanitizedUrl) {
+      const placeholderText = sharedEscapeHtml(cleanAlt || '图片');
+      return `<span class="md-image-placeholder">${placeholderText}</span>`;
+    }
+
+    return `<img src="${sanitizedUrl}" alt="${safeAlt}"${captionAttr} style="max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 2px 8px ${theme.shadowColor}; margin: 8px 0; display: block;" loading="lazy">`;
   });
 }
 

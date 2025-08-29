@@ -16,7 +16,7 @@ defineEmits(['apply'])
 
 <style scoped>
 .settings-footer {
-  padding: var(--spacing-4xl) var(--spacing-5xl);
+  padding: var(--spacing-xl) var(--spacing-3xl);
   background: linear-gradient(135deg, var(--theme-bg-secondary), var(--theme-bg-primary));
   border-top: 1px solid var(--theme-border-light);
   display: flex;
@@ -28,7 +28,7 @@ defineEmits(['apply'])
   background: var(--theme-primary);
   color: white;
   border: none;
-  padding: 16px 32px;
+  padding: 10px 20px;
   border-radius: 12px;
   font-weight: 700;
   font-size: 16px;
