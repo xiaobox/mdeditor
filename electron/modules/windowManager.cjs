@@ -78,8 +78,16 @@ class WindowManager {
           console.error('❌ 备用端口也失败:', err);
         });
       });
-      // 打开开发工具
-      this.mainWindow.webContents.openDevTools();
+      // 打开开发者工具（可选，通过环境变量控制）
+      const openDevtoolsEnv = (process.env.ELECTRON_OPEN_DEVTOOLS || '').toLowerCase();
+      const shouldOpenDevTools = openDevtoolsEnv === '1' || openDevtoolsEnv === 'true' || openDevtoolsEnv === 'yes';
+      if (shouldOpenDevTools) {
+        this.mainWindow.webContents.openDevTools({ mode: 'detach' });
+      }
+
+      if (!shouldOpenDevTools) {
+        console.log('ℹ️ 开发者工具未自动打开。设置 ELECTRON_OPEN_DEVTOOLS=1 可在启动时打开。');
+      }
     } else {
       // 生产环境：加载打包后的文件
       console.log('🔄 生产模式：加载本地文件');

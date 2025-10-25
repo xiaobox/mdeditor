@@ -1,0 +1,120 @@
+name: Build & Upload Release Artifacts
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CI: true
+
+jobs:
+  build-windows:
+    name: Windows (x64)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build renderer (Vite)
+        run: npm run build:electron
+
+      - name: Make Windows installers (Squirrel + ZIP)
+        run: npx electron-forge make --platform=win32 --arch=x64 --targets=@electron-forge/maker-squirrel,@electron-forge/maker-zip
+
+      - name: Upload Windows artifacts to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            out/make/**/*.exe
+            out/make/**/*.zip
+
+  build-linux:
+    name: Linux (x64)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build renderer (Vite)
+        run: npm run build:electron
+
+      - name: Install system dependencies (RPM tooling)
+        run: sudo apt-get update && sudo apt-get install -y rpm
+
+      - name: Make Linux packages (DEB + RPM)
+        run: npx electron-forge make --platform=linux --arch=x64 --targets=@electron-forge/maker-deb,@electron-forge/maker-rpm
+
+      - name: Upload Linux artifacts to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            out/make/**/*.deb
+            out/make/**/*.rpm
+            out/make/**/*.zip
+
+  build-macos:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-13
+            arch: x64
+          - runner: macos-14
+            arch: arm64
+    name: macOS (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build renderer (Vite)
+        run: npm run build:electron
+
+      - name: Make macOS artifacts (DMG + ZIP)
+        run: npx electron-forge make --platform=darwin --arch=${{ matrix.arch }} --targets=@electron-forge/maker-dmg,@electron-forge/maker-zip
+        env:
+          # 避免在 CI 中尝试自动使用本地签名身份；无证书时使用 ad-hoc 签名
+          CSC_IDENTITY_AUTO: "false"
+
+      - name: Upload macOS artifacts to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            out/make/**/*.dmg
+            out/make/**/*.zip
+

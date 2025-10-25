@@ -359,3 +359,4 @@ const { success, message } = await copyMarkdownFormat(markdownText)
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=xiaobox/mdeditor&type=Date)](https://www.star-history.com/#xiaobox/mdeditor&Date)
+
