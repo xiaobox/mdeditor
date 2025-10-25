@@ -76,7 +76,8 @@ module.exports = {
       config: {
         options: {
           name: 'modern-md-editor',
-          bin: 'social-markdown-editor'
+          bin: 'social-markdown-editor',
+          license: 'MIT'
         }
       }
     }
