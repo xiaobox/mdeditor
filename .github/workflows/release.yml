@@ -49,7 +49,6 @@ jobs:
           prerelease: ${{ inputs.prerelease }}
 
   build-windows:
-    needs: [create_release]
     name: Windows (x64)
     runs-on: windows-latest
     steps:
@@ -80,7 +79,6 @@ jobs:
             out/make/**/*.zip
 
   build-linux:
-    needs: [create_release]
     name: Linux (x64)
     runs-on: ubuntu-latest
     steps:
@@ -115,7 +113,6 @@ jobs:
             out/make/**/*.zip
 
   build-macos:
-    needs: [create_release]
     strategy:
       fail-fast: false
       matrix:
