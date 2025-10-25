@@ -3,20 +3,53 @@ name: Build & Upload Release Artifacts
 on:
   release:
     types: [published]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Tag to build and upload (e.g. v1.2.3)"
+        required: true
+        type: string
+      release_name:
+        description: "Release title (defaults to tag)"
+        required: false
+        type: string
+      prerelease:
+        description: "Mark as prerelease"
+        required: false
+        type: boolean
+        default: false
+      draft:
+        description: "Create as draft"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-${{ github.event_name }}-${{ inputs.tag_name || github.ref }}
   cancel-in-progress: false
 
 env:
   CI: true
 
 jobs:
+  create_release:
+    name: Create or ensure GitHub Release (for manual runs)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure release exists
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag_name }}
+          name: ${{ inputs.release_name || inputs.tag_name }}
+          draft: ${{ inputs.draft }}
+          prerelease: ${{ inputs.prerelease }}
+
   build-windows:
+    needs: [create_release]
     name: Windows (x64)
     runs-on: windows-latest
     steps:
@@ -41,11 +74,13 @@ jobs:
       - name: Upload Windows artifacts to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ inputs.tag_name || github.ref_name }}
           files: |
             out/make/**/*.exe
             out/make/**/*.zip
 
   build-linux:
+    needs: [create_release]
     name: Linux (x64)
     runs-on: ubuntu-latest
     steps:
@@ -73,12 +108,14 @@ jobs:
       - name: Upload Linux artifacts to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ inputs.tag_name || github.ref_name }}
           files: |
             out/make/**/*.deb
             out/make/**/*.rpm
             out/make/**/*.zip
 
   build-macos:
+    needs: [create_release]
     strategy:
       fail-fast: false
       matrix:
@@ -114,6 +151,7 @@ jobs:
       - name: Upload macOS artifacts to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ inputs.tag_name || github.ref_name }}
           files: |
             out/make/**/*.dmg
             out/make/**/*.zip

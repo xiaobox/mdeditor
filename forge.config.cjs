@@ -5,7 +5,7 @@ module.exports = {
   packagerConfig: {
     asar: true,
     name: 'Modern MD Editor',
-    executableName: 'markdown-editor',
+    executableName: 'social-markdown-editor',
     icon: path.join(__dirname, 'public', 'logo'), // 不需要文件扩展名，Forge 会自动添加
     ignore: [
       /^\/(?!dist|electron|package\.json|node_modules)/,
@@ -43,7 +43,12 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        name: 'Markdown编辑器',
+        // Windows Squirrel 需要 Authors 等元信息
+        authors: 'xiaobox',
+        description: 'Modern Markdown Editor',
+        title: 'Modern MD Editor',
+        // 指定主可执行文件名（与 packagerConfig.executableName 一致）
+        exe: 'social-markdown-editor.exe',
         setupIcon: path.join(__dirname, 'public', 'logo.ico'), // 指定 setup 图标
         iconUrl: 'file://' + path.join(__dirname, 'public', 'logo.ico') // 指定安装包图标
       }
@@ -56,12 +61,24 @@ module.exports = {
     // Linux DEB 包
     {
       name: '@electron-forge/maker-deb',
-      config: {}
+      config: {
+        options: {
+          // deb 包名需为小写且无需空格
+          name: 'modern-md-editor',
+          // 与可执行文件名保持一致，避免找不到二进制
+          bin: 'social-markdown-editor'
+        }
+      }
     },
     // Linux RPM 包
     {
       name: '@electron-forge/maker-rpm',
-      config: {}
+      config: {
+        options: {
+          name: 'modern-md-editor',
+          bin: 'social-markdown-editor'
+        }
+      }
     }
   ],
   plugins: [
