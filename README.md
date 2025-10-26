@@ -307,6 +307,13 @@ const { success, message } = await copyMarkdownFormat(markdownText)
 
 
 
+## 变更记录（近期）
+
+- 修复：改进下划线强调（_…_ / __…__ / ___…___）的匹配边界，避免在 URL、文件名、邮箱、snake_case 等“词内下划线”场景被误解析为斜体/粗体。
+  - 示例：链接 https://github.com/openai/openai-cookbook/blob/main/articles/what_makes_documentation_good.md 不会再将 `what_makes_documentation_good` 渲染为斜体。
+  - 实现：在 `src/core/markdown/formatters/style.js` 中为下划线强调正则增加“非词内边界”检查（仅在前后非 `[A-Za-z0-9_]` 时识别为标记），并保持与星号语法的兼容与嵌套处理。
+  - 验证：通过现有 Vitest 用例（含 `tests/bugs/url-underscore-italic-order.test.js`）与脚本 `node scripts/smoke-test-underscore.mjs` 验证典型场景。
+
 ## 贡献指南
 
 - **欢迎一切形式的贡献**：Bug 修复、特性提议、文档完善、示例补充等。
