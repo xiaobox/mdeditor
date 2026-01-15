@@ -28,6 +28,7 @@
  */
 
 import { defineConfig } from 'vite';
+import { resolve } from 'path';
 import vue from '@vitejs/plugin-vue';
 const isElectron = process.env.ELECTRON === 'true';
 
@@ -55,5 +56,19 @@ export default defineConfig({
     outDir: 'dist',
     // 静态资源目录
     assetsDir: 'assets'
+  },
+
+  // 路径别名配置
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+      '@shared': resolve(__dirname, './src/shared'),
+      '@config': resolve(__dirname, './src/config'),
+      '@utils': resolve(__dirname, './src/shared/utils'),
+      '@core': resolve(__dirname, './src/core'),
+      '@composables': resolve(__dirname, './src/composables'),
+      '@components': resolve(__dirname, './src/components'),
+      '@tests': resolve(__dirname, './tests')
+    }
   }
 });

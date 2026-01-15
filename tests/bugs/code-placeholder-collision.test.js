@@ -25,14 +25,14 @@ describe('代码占位符唯一 ID 防碰撞', () => {
   describe('processInlineCode/restoreCodePlaceholders 上下文隔离', () => {
     it('单次调用应正确处理内联代码', () => {
       const input = '这是 `code1` 和 `code2` 两个代码'
-      const processed = processInlineCode(input, theme, 16)
+      const { text: processed, context } = processInlineCode(input, theme, 16)
 
       // 应该包含唯一 ID 格式的占位符
       expect(processed).toMatch(/〖CODE_[a-z0-9]+_0〗/)
       expect(processed).toMatch(/〖CODE_[a-z0-9]+_1〗/)
 
       // 恢复后应包含正确的 HTML
-      const restored = restoreCodePlaceholders(processed)
+      const restored = restoreCodePlaceholders(processed, context)
       expect(restored).toContain('<code')
       expect(restored).toContain('code1')
       expect(restored).toContain('code2')
@@ -43,13 +43,13 @@ describe('代码占位符唯一 ID 防碰撞', () => {
       const input2 = '第二个 `bbb`'
 
       // 第一次调用
-      const processed1 = processInlineCode(input1, theme, 16)
+      const { text: processed1 } = processInlineCode(input1, theme, 16)
       const id1Match = processed1.match(/〖CODE_([a-z0-9]+)_0〗/)
       expect(id1Match).toBeTruthy()
       const id1 = id1Match[1]
 
       // 第二次调用
-      const processed2 = processInlineCode(input2, theme, 16)
+      const { text: processed2 } = processInlineCode(input2, theme, 16)
       const id2Match = processed2.match(/〖CODE_([a-z0-9]+)_0〗/)
       expect(id2Match).toBeTruthy()
       const id2 = id2Match[1]
@@ -77,11 +77,34 @@ describe('代码占位符唯一 ID 防碰撞', () => {
 
     it('空输入应返回空上下文', () => {
       const input = '没有代码的文本'
-      const processed = processInlineCode(input, theme, 16)
+      const { text: processed, context } = processInlineCode(input, theme, 16)
       expect(processed).toBe(input)
+      expect(context.placeholders).toHaveLength(0)
 
-      const restored = restoreCodePlaceholders(processed)
+      const restored = restoreCodePlaceholders(processed, context)
       expect(restored).toBe(input)
+    })
+
+    it('并发调用应互不干扰（上下文隔离验证）', () => {
+      const input1 = '第一个 `concurrent1`'
+      const input2 = '第二个 `concurrent2`'
+
+      // 模拟并发：先处理两个输入，再分别恢复
+      const result1 = processInlineCode(input1, theme, 16)
+      const result2 = processInlineCode(input2, theme, 16)
+
+      // 每个上下文应独立
+      expect(result1.context).not.toBe(result2.context)
+      expect(result1.context.id).not.toBe(result2.context.id)
+
+      // 恢复时使用各自的上下文，结果应正确
+      const restored1 = restoreCodePlaceholders(result1.text, result1.context)
+      const restored2 = restoreCodePlaceholders(result2.text, result2.context)
+
+      expect(restored1).toContain('concurrent1')
+      expect(restored1).not.toContain('concurrent2')
+      expect(restored2).toContain('concurrent2')
+      expect(restored2).not.toContain('concurrent1')
     })
   })
 

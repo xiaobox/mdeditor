@@ -73,6 +73,12 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
+      '@shared': resolve(__dirname, './src/shared'),
+      '@config': resolve(__dirname, './src/config'),
+      '@utils': resolve(__dirname, './src/shared/utils'),
+      '@core': resolve(__dirname, './src/core'),
+      '@composables': resolve(__dirname, './src/composables'),
+      '@components': resolve(__dirname, './src/components'),
       '@tests': resolve(__dirname, './tests')
     }
   },

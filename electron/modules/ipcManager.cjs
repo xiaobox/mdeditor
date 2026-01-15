@@ -70,8 +70,8 @@ class IpcManager {
           return { success: false, message: '不安全的文件路径' };
         }
 
-        const fs = require('fs');
-        fs.writeFileSync(filePath, content, 'utf8');
+        const fs = require('fs').promises;
+        await fs.writeFile(filePath, content, 'utf8');
         
         // 更新最后已知内容，避免保存后触发文件更新事件
         this.fileWatcher.updateContentRecord(filePath, content);

@@ -51,14 +51,11 @@ export function cleanReferenceLinks(text) {
 export { escapeHtml, preprocessEscapes, postprocessEscapes } from './escape.js';
 
 /**
- * 代码占位符上下文 - 使用闭包隔离每次处理的状态，避免并发竞态条件
+ * 代码占位符上下文 - 通过返回值传递，避免全局状态污染
  * @typedef {Object} CodePlaceholderContext
  * @property {string[]} placeholders - 代码 HTML 片段数组
  * @property {string} id - 当前上下文的唯一标识符
  */
-
-/** @type {CodePlaceholderContext|null} */
-let activeContext = null;
 
 /**
  * 生成唯一的占位符 ID
@@ -84,13 +81,13 @@ function createCodeContext() {
  * @param {string} text - 包含内联代码的文本
  * @param {Object} theme - 主题对象
  * @param {number} baseFontSize - 基础字号
- * @returns {string} - 处理后的文本
+ * @returns {{text: string, context: CodePlaceholderContext}} - 处理后的文本和上下文对象
  */
 export function processInlineCode(text, theme, baseFontSize = 16) {
   // 为每次处理创建独立的上下文，避免并发时状态互相覆盖
-  activeContext = createCodeContext();
+  const context = createCodeContext();
 
-  return text.replace(REGEX_PATTERNS.CODE, (_, code) => {
+  const processedText = text.replace(REGEX_PATTERNS.CODE, (_, code) => {
     const escapedCode = escapeHtml(code);
     // 内联代码字号固定为 14px，保持与代码块一致
     const codeFontSize = 14;
@@ -98,33 +95,34 @@ export function processInlineCode(text, theme, baseFontSize = 16) {
     const codeHtml = `<code style="background-color: ${theme.inlineCodeBg}; color: ${theme.inlineCodeText}; padding: 2px 4px; border-radius: 3px; font-family: Consolas, monospace; font-size: ${codeFontSize}px; border: 1px solid ${theme.inlineCodeBorder};">${escapedCode}</code>`;
 
     // 创建安全的占位符（使用唯一 ID 避免碰撞）
-    const placeholder = `〖CODE_${activeContext.id}_${activeContext.placeholders.length}〗`;
-    activeContext.placeholders.push(codeHtml);
+    const placeholder = `〖CODE_${context.id}_${context.placeholders.length}〗`;
+    context.placeholders.push(codeHtml);
 
     return placeholder;
   });
+
+  return { text: processedText, context };
 }
 
 /**
  * 恢复代码占位符
  * @param {string} text - 包含占位符的文本
+ * @param {CodePlaceholderContext|null} context - 代码占位符上下文
  * @returns {string} - 恢复后的文本
  */
-export function restoreCodePlaceholders(text) {
-  if (!activeContext) {
+export function restoreCodePlaceholders(text, context) {
+  if (!context) {
     return text;
   }
 
   let result = text;
-  const { placeholders, id } = activeContext;
+  const { placeholders, id } = context;
 
   placeholders.forEach((codeHtml, index) => {
     const placeholder = `〖CODE_${id}_${index}〗`;
     result = result.replace(placeholder, codeHtml);
   });
 
-  // 处理完成后清理上下文
-  activeContext = null;
   return result;
 }
 
@@ -158,68 +156,80 @@ export {
 } from './special.js';
 
 /**
+ * 管道状态 - 存储处理过程中的上下文信息
+ * @typedef {Object} PipelineState
+ * @property {CodePlaceholderContext|null} codeContext - 代码占位符上下文
+ */
+
+/**
  * 内联格式处理器配置
+ * @description 每个处理器接收 (text, theme, handleEscapes, baseFontSize, state) 参数
+ *              state 用于在处理器之间传递上下文（如代码占位符）
  */
 const INLINE_FORMAT_PROCESSORS = [
   {
     name: 'escapes',
-    process: (text, theme, handleEscapes, baseFontSize) => handleEscapes ? preprocessEscapes(text) : text,
+    process: (text, theme, handleEscapes, baseFontSize, state) => handleEscapes ? preprocessEscapes(text) : text,
     condition: (handleEscapes) => handleEscapes
   },
   {
     name: 'inlineCode',
-    process: (text, theme, handleEscapes, baseFontSize) => processInlineCode(text, theme, baseFontSize),
+    process: (text, theme, handleEscapes, baseFontSize, state) => {
+      const { text: processedText, context } = processInlineCode(text, theme, baseFontSize);
+      state.codeContext = context;
+      return processedText;
+    },
     condition: () => true
   },
   // 提前处理链接与图片，避免后续样式处理影响 URL（如下划线触发斜体）
   {
     name: 'images',
-    process: (text, theme, handleEscapes, baseFontSize) => processImages(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize, state) => processImages(text, theme),
     condition: () => true
   },
   {
     name: 'links',
-    process: (text, theme, handleEscapes, baseFontSize) => processLinks(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize, state) => processLinks(text, theme),
     condition: () => true
   },
   {
     name: 'keyboard',
-    process: (text, theme, handleEscapes, baseFontSize) => processKeyboard(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize, state) => processKeyboard(text, theme),
     condition: () => true
   },
   {
     name: 'highlight',
-    process: (text, theme, handleEscapes, baseFontSize) => processHighlight(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize, state) => processHighlight(text, theme),
     condition: () => true
   },
   {
     name: 'boldAndItalic',
-    process: (text, theme, handleEscapes, baseFontSize) => processBoldAndItalic(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize, state) => processBoldAndItalic(text, theme),
     condition: () => true
   },
   {
     name: 'strikethrough',
-    process: (text, theme, handleEscapes, baseFontSize) => processStrikethrough(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize, state) => processStrikethrough(text, theme),
     condition: () => true
   },
   {
     name: 'superscript',
-    process: (text, theme, handleEscapes, baseFontSize) => processSuperscript(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize, state) => processSuperscript(text, theme),
     condition: () => true
   },
   {
     name: 'subscript',
-    process: (text, theme, handleEscapes, baseFontSize) => processSubscript(text, theme),
+    process: (text, theme, handleEscapes, baseFontSize, state) => processSubscript(text, theme),
     condition: () => true
   },
   {
     name: 'restoreCode',
-    process: (text, theme, handleEscapes, baseFontSize) => restoreCodePlaceholders(text),
+    process: (text, theme, handleEscapes, baseFontSize, state) => restoreCodePlaceholders(text, state.codeContext),
     condition: () => true
   },
   {
     name: 'postprocessEscapes',
-    process: (text, theme, handleEscapes, baseFontSize) => handleEscapes ? postprocessEscapes(text) : text,
+    process: (text, theme, handleEscapes, baseFontSize, state) => handleEscapes ? postprocessEscapes(text) : text,
     condition: (handleEscapes) => handleEscapes
   }
 ];
@@ -235,9 +245,14 @@ const INLINE_FORMAT_PROCESSORS = [
 function executeFormattingPipeline(text, theme, handleEscapes, baseFontSize = 16) {
   let result = text;
 
+  // 创建管道状态，用于在处理器之间传递上下文
+  const state = {
+    codeContext: null
+  };
+
   for (const processor of INLINE_FORMAT_PROCESSORS) {
     if (processor.condition(handleEscapes)) {
-      result = processor.process(result, theme, handleEscapes, baseFontSize);
+      result = processor.process(result, theme, handleEscapes, baseFontSize, state);
     }
   }
 

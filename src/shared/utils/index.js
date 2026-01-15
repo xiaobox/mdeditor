@@ -15,4 +15,7 @@ export * from './theme.js';
 export * from './performance.js';
 
 // 错误处理工具
-export * from './error.js'; 
+export * from './error.js';
+
+// 日志工具
+export * from './logger.js'; 

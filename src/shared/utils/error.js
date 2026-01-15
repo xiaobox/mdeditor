@@ -158,3 +158,74 @@ export class ErrorHandler {
  * 便捷的错误处理函数 - 只导出实际使用的函数
  */
 export const handleClipboardError = ErrorHandler.handleClipboardError;
+
+/**
+ * 检测是否为开发环境
+ */
+const isDev = typeof import.meta !== 'undefined'
+  ? import.meta.env?.DEV
+  : process.env.NODE_ENV === 'development';
+
+/**
+ * 统一的错误处理函数
+ * @param {Error} error - 错误对象
+ * @param {string} context - 错误上下文描述
+ * @param {Object} options - 选项
+ * @param {boolean} options.silent - 是否静默处理（不输出日志）
+ * @param {*} options.fallback - 出错时返回的默认值
+ * @param {boolean} options.rethrow - 是否重新抛出错误
+ * @returns {*} fallback 值或 undefined
+ */
+export function handleError(error, context = '', options = {}) {
+  const { silent = false, fallback = undefined, rethrow = false } = options;
+
+  if (!silent && isDev) {
+    console.error(`[${context || 'Error'}]`, error);
+  }
+
+  if (rethrow) {
+    throw error instanceof AppError
+      ? error
+      : ErrorHandler.wrap(error, ERROR_TYPES.GENERIC, context);
+  }
+
+  return fallback;
+}
+
+/**
+ * 简化的 try-catch 包装器
+ * @param {Function} fn - 要执行的函数
+ * @param {string} context - 错误上下文
+ * @param {*} fallback - 出错时的返回值
+ * @returns {*} 函数执行结果或 fallback
+ */
+export function tryCatch(fn, context = '', fallback = null) {
+  try {
+    const result = fn();
+    // 处理 Promise
+    if (result instanceof Promise) {
+      return result.catch(error => {
+        handleError(error, context, { fallback });
+        return fallback;
+      });
+    }
+    return result;
+  } catch (error) {
+    return handleError(error, context, { fallback });
+  }
+}
+
+/**
+ * 异步版本的 try-catch 包装器
+ * @param {Function} fn - 要执行的异步函数
+ * @param {string} context - 错误上下文
+ * @param {*} fallback - 出错时的返回值
+ * @returns {Promise<*>} 函数执行结果或 fallback
+ */
+export async function tryCatchAsync(fn, context = '', fallback = null) {
+  try {
+    return await fn();
+  } catch (error) {
+    return handleError(error, context, { fallback });
+  }
+}
