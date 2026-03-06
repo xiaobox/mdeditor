@@ -238,14 +238,14 @@ describe('social-styler.js', () => {
       expect(SocialStyler.applyInlineStyles('<p>x</p>', null)).toBe('<p>x</p>')
     })
 
-    it('applyInlineStyles 中 <i 正则会干扰 <img（已知限制）', () => {
-      // 注意：原始代码中存在的问题 - <i 正则会先于 <img 处理匹配
-      // 图注功能应通过 SocialStyler.process 的预览模式使用
+    it('applyInlineStyles 不应让 <i 正则干扰 <img', () => {
       const html = '<div><img data-md-caption="true" alt="描述" src="img.jpg"></div>'
       const result = SocialStyler.applyInlineStyles(html, fontSettings)
 
-      // 当前行为：<img 被 <i 正则匹配
-      expect(result).toContain('<i style=')
+      expect(result).toContain('<figure')
+      expect(result).toContain('<img data-md-caption="true" alt="描述" src="img.jpg">')
+      expect(result).toContain('<figcaption')
+      expect(result).not.toContain('<i style=')
     })
 
     it('应为各种标签强制行高', () => {

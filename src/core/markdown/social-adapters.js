@@ -65,11 +65,11 @@ function addInlineStyles(html, fontFamily, fontSize, lineHeight, letterSpacing =
   const boldWeight = '700';
 
   let out = html
-    .replace(/<section(?![^>]*style=)/gi, `<section style="${baseStyle} line-height: ${lineHeightCss} !important;"`)
-    .replace(/<strong(?![^>]*style=)/gi, `<strong style="${baseStyle} font-weight: ${boldWeight};"`)
-    .replace(/<b(?![^>]*style=)/gi, `<b style="${baseStyle} font-weight: ${boldWeight};"`)
-    .replace(/<em(?![^>]*style=)/gi, `<em style="${baseStyle} font-weight: ${normalWeight}; font-style: italic;"`)
-    .replace(/<i(?![^>]*style=)/gi, `<i style="${baseStyle} font-weight: ${normalWeight}; font-style: italic;"`)
+    .replace(/<section\b(?![^>]*style=)/gi, `<section style="${baseStyle} line-height: ${lineHeightCss} !important;"`)
+    .replace(/<strong\b(?![^>]*style=)/gi, `<strong style="${baseStyle} font-weight: ${boldWeight};"`)
+    .replace(/<b\b(?![^>]*style=)/gi, `<b style="${baseStyle} font-weight: ${boldWeight};"`)
+    .replace(/<em\b(?![^>]*style=)/gi, `<em style="${baseStyle} font-weight: ${normalWeight}; font-style: italic;"`)
+    .replace(/<i\b(?![^>]*style=)/gi, `<i style="${baseStyle} font-weight: ${normalWeight}; font-style: italic;"`)
     .replace(/<img([^>]*?)data-md-caption=\"true\"([^>]*?)>/gi, (m, pre, post) => {
       const altMatch = m.match(/alt=\"([^\"]*)\"/i);
       const alt = altMatch ? altMatch[1] : '';
