@@ -57,8 +57,9 @@ coverage/
 .env.test.local
 .env.production.local
 
-# Claude Code 本地配置（包含敏感信息）
+# Claude Code 本地配置
 .claude/settings.local.json
+CLAUDE.md
 
 # ============ 缓存文件 ============
 # Vite 缓存
