@@ -15,6 +15,7 @@
     "settings": "设置",
     "guide": "语法指南",
     "copy": "复制",
+    "export": "下载",
     "github": "GitHub",
     "language": "语言"
   },
@@ -191,8 +192,9 @@
   "copyFormat": {
     "social": "公众号格式",
     "markdown": "MD 格式"
+  },
+  "exportFormat": {
+    "pdf": "导出 PDF",
+    "image": "导出图片"
   }
-
-
-
 }

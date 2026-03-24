@@ -15,6 +15,7 @@ import { useContentState } from './useContentState.js'
 import { useUIState } from './useUIState.js'
 import { useNotification } from './useNotification.js'
 import { useClipboard } from './useClipboard.js'
+import { useExport } from './useExport.js'
 import { EXTERNAL_LINKS } from '../config/constants/links.js'
 
 export function useAppState() {
@@ -31,6 +32,12 @@ export function useAppState() {
 
   // 剪贴板功能 - 传入通知回调和内容获取函数
   const clipboard = useClipboard({
+    onNotify: notification.showNotification,
+    getContent: () => contentState.markdownContent.value
+  })
+
+  // 导出功能 - 传入通知回调和内容获取函数
+  const exportState = useExport({
     onNotify: notification.showNotification,
     getContent: () => contentState.markdownContent.value
   })
@@ -82,6 +89,11 @@ export function useAppState() {
     copyFormatOptions: clipboard.copyFormatOptions,
     selectedCopyFormat: clipboard.selectedCopyFormat,
     handleCopyFormatSelect: clipboard.handleCopyFormatSelect,
+
+    // 导出功能 (来自 useExport)
+    exportFormatOptions: exportState.exportFormatOptions,
+    isExporting: exportState.isExporting,
+    handleExportFormatSelect: exportState.handleExportFormatSelect,
 
     // 其他功能
     openGithub

@@ -7,6 +7,8 @@
       :copy-format-options="copyFormatOptions"
       :selected-copy-format="selectedCopyFormat"
       :has-content="hasContent"
+      :export-format-options="exportFormatOptions"
+      :is-exporting="isExporting"
       logo-src="./logo.svg"
       logo-alt="Modern MD Editor"
       @open-github="openGithub"
@@ -15,6 +17,7 @@
       @show-guide="showGuide"
       @copy-format-select="handleCopyFormatSelect"
       @update:selected-copy-format="selectedCopyFormat.value = $event"
+      @export-format-select="handleExportFormatSelect"
     />
 
     <!-- 隐藏文件输入：用于导入 .md -->
@@ -99,6 +102,8 @@ const {
   notifications,
   selectedCopyFormat,
   copyFormatOptions,
+  exportFormatOptions,
+  isExporting,
 
   // 计算属性
   hasContent,
@@ -120,6 +125,7 @@ const {
   setViewMode,
   showNotification,
   handleCopyFormatSelect,
+  handleExportFormatSelect,
   openGithub
 } = useAppState()
 

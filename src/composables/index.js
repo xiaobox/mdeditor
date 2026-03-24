@@ -17,6 +17,7 @@ export { useContentState } from './useContentState.js';
 export { useUIState } from './useUIState.js';
 export { useNotification } from './useNotification.js';
 export { useClipboard } from './useClipboard.js';
+export { useExport } from './useExport.js';
 
 // Electron集成相关组合式API
 export { useElectron } from './useElectron.js';

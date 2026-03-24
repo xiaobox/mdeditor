@@ -72,6 +72,16 @@
         @select="$emit('copy-format-select', $event)"
       />
 
+      <DropdownMenu
+        :options="exportFormatOptions"
+        :trigger-text="$t('header.export')"
+        trigger-class="header-btn"
+        :show-selection="false"
+        :disabled="!hasContent || isExporting"
+        :trigger-icon="exportIcon"
+        @select="$emit('export-format-select', $event)"
+      />
+
       <!-- 语言切换器 -->
       <DropdownMenu
         :options="languageOptions"
@@ -126,6 +136,9 @@ function onLocaleChange(val) {
   setI18nLocale(val)
 }
 
+// 下载图标 SVG path
+const exportIcon = 'M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z'
+
 defineProps({
   showSettingsPanel: {
     type: Boolean,
@@ -142,6 +155,14 @@ defineProps({
   selectedCopyFormat: {
     type: [String, Object],
     default: null
+  },
+  exportFormatOptions: {
+    type: Array,
+    default: () => []
+  },
+  isExporting: {
+    type: Boolean,
+    default: false
   },
   hasContent: {
     type: Boolean,
@@ -164,6 +185,7 @@ const emit = defineEmits([
   'show-guide',
   'copy-format-select',
   'update:selected-copy-format',
+  'export-format-select',
   'set-view-mode'
 ])
 </script>

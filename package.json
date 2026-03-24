@@ -43,6 +43,8 @@
     "codemirror": "^6.0.1",
     "electron-squirrel-startup": "^1.0.1",
     "github-markdown-css": "^5.8.1",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1",
     "mathjax-full": "^3.2.2",
     "mermaid": "^11.9.0",
     "prismjs": "^1.30.0",

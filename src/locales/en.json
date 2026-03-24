@@ -15,6 +15,7 @@
     "settings": "Settings",
     "guide": "Markdown Guide",
     "copy": "Copy",
+    "export": "Download",
     "github": "GitHub",
     "language": "Language"
   },
@@ -192,5 +193,9 @@
   "copyFormat": {
     "social": "WeChat Official Account format",
     "markdown": "Markdown"
+  },
+  "exportFormat": {
+    "pdf": "Export PDF",
+    "image": "Export Image"
   }
 }

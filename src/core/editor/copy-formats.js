@@ -468,3 +468,6 @@ export function getCopyFormatOptions() {
 // 向后兼容性导出
 export const copyWechatFormat = copySocialFormat;
 export const generateWechatHtml = generateSocialHtml;
+
+// 导出内部工具函数，供导出模块复用
+export { generateSocialHtml, renderMermaidInContainer, rasterizeMermaidSvgs };
