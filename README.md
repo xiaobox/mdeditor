@@ -85,6 +85,10 @@
   - 自动注入内联样式（字体、字号、行高、字距、配色）。
   - 主题化适配与细节增强（标题、列表、引用、代码、表格等）。
   - 现代 Clipboard API 优先，失败时自动降级，增强兼容性。
+- **导出下载（PDF / 图片）**：
+  - 纯前端方案，无需后端服务，基于 html2canvas + jsPDF。
+  - 复用社交格式 HTML 管道（内联样式 + Mermaid 渲染 + 公式处理），导出效果与预览一致。
+  - 支持 A4 自动分页 PDF 和高清 PNG 长图两种格式。
 - **强大的主题与排版系统**：
   - 颜色主题（含自定义主题色实时预览与持久化）。
   - 代码样式（背景/字体/高亮变量一站式应用）。
@@ -241,6 +245,9 @@ docker run -d --name mdeditor -p 8080:80 helongisno1/mdeditor:latest
 - 顶部「复制」下拉：
   - 选择「公众号格式」即可一键复制为富文本 HTML，粘贴至微信公众号/社交平台编辑器。
   - 选择「MD 格式」复制为纯 Markdown 文本。
+- 顶部「下载」下拉：
+  - 选择「导出 PDF」将预览内容导出为 A4 分页 PDF 文件。
+  - 选择「导出图片」将预览内容导出为高清 PNG 长图。
 
 ### 组件/模块与扩展点
 
@@ -250,6 +257,7 @@ docker run -d --name mdeditor -p 8080:80 helongisno1/mdeditor:latest
 - **设置面板**：`src/components/SettingsPanel.vue`
 - **工具栏配置**：`src/config/toolbar.js`（数据驱动，便于新增/重排按钮）
 - **复制能力**：`src/core/editor/copy-formats.js`、`src/core/editor/clipboard.js`
+- **导出下载**：`src/core/editor/export-formats.js`（PDF / 图片导出，基于 html2canvas + jsPDF）
 - **Markdown 解析与社交样式后处理**：
   - 解析入口：`src/core/markdown/parser.js`
   - 行内格式：`src/core/markdown/inline-formatter.js`
@@ -286,6 +294,23 @@ const { success, message } = await copySocialFormat(markdownText, {
 import { copyMarkdownFormat } from './src/core/editor/copy-formats.js'
 
 const { success, message } = await copyMarkdownFormat(markdownText)
+```
+
+- **导出为 PDF / 图片**：
+
+```js
+import { exportAsPdf, exportAsImage } from './src/core/editor/export-formats.js'
+
+// 导出为 PDF（A4 自动分页）
+const { success, message } = await exportAsPdf(markdownText, {
+  theme: currentColorTheme,
+  codeTheme: currentCodeStyle,
+  themeSystem: currentThemeSystemId,
+  fontSettings: { fontFamily: 'system-default', fontSize: 16, lineHeight: 1.6, letterSpacing: 0 }
+})
+
+// 导出为 PNG 长图
+const result = await exportAsImage(markdownText, options)
 ```
 
 - **扩展社交主题适配**：在 `src/core/markdown/social-adapters.js` 中新增适配器，并通过 `registerThemeCopyAdapter` 注册，即可对标题、列表、引用、图片、表格等进行更细致的主题化修饰。

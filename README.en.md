@@ -82,6 +82,10 @@ Supports inline formulas `$E=mc^2$` and block formulas `$$...$$`, rendered to SV
   - Automatic inline styles (font family/size, line height, letter spacing, palette).
   - Themed adaptations and detail polish (headings, lists, quotes, code, tables, etc.).
   - Modern Clipboard API first with graceful fallback for broader compatibility.
+- Export & Download (PDF / Image)
+  - Pure frontend solution — no backend required — powered by html2canvas + jsPDF.
+  - Reuses the social HTML pipeline (inline styles + Mermaid rendering + formula processing) so exports match the preview.
+  - Supports A4 auto-paginated PDF and high-resolution PNG long image.
 - Powerful theme and typography system
   - Color themes with live preview and persistence.
   - Code styles (background/font/highlight tokens applied in one place).
@@ -234,6 +238,9 @@ docker run -d --name mdeditor -p 8080:80 helongisno1/mdeditor:latest
 - "Copy" dropdown on the top:
   - Choose "WeChat Format" to copy rich HTML and paste into WeChat/social editors.
   - Choose "MD Format" to copy plain Markdown text.
+- "Download" dropdown on the top:
+  - Choose "Export PDF" to download the preview as an A4-paginated PDF file.
+  - Choose "Export Image" to download the preview as a high-resolution PNG long image.
 
 ### Components/Modules & Extension Points
 
@@ -243,6 +250,7 @@ docker run -d --name mdeditor -p 8080:80 helongisno1/mdeditor:latest
 - Settings panel: `src/components/SettingsPanel.vue`
 - Toolbar config: `src/config/toolbar.js` (data-driven; add/reorder easily)
 - Copy features: `src/core/editor/copy-formats.js`, `src/core/editor/clipboard.js`
+- Export/Download: `src/core/editor/export-formats.js` (PDF/image export via html2canvas + jsPDF)
 - Markdown parsing & social styling:
   - Parser entry: `src/core/markdown/parser.js`
   - Inline formatting: `src/core/markdown/inline-formatter.js`
@@ -279,6 +287,23 @@ const { success, message } = await copySocialFormat(markdownText, {
 import { copyMarkdownFormat } from './src/core/editor/copy-formats.js'
 
 const { success, message } = await copyMarkdownFormat(markdownText)
+```
+
+- Export as PDF / Image
+
+```js
+import { exportAsPdf, exportAsImage } from './src/core/editor/export-formats.js'
+
+// Export as A4 paginated PDF
+const { success, message } = await exportAsPdf(markdownText, {
+  theme: currentColorTheme,
+  codeTheme: currentCodeStyle,
+  themeSystem: currentThemeSystemId,
+  fontSettings: { fontFamily: 'system-default', fontSize: 16, lineHeight: 1.6, letterSpacing: 0 }
+})
+
+// Export as PNG long image
+const result = await exportAsImage(markdownText, options)
 ```
 
 - Extend social theme adapters: add a new adapter in `src/core/markdown/social-adapters.js` and register it via `registerThemeCopyAdapter` to tweak headings, lists, quotes, images, tables, etc.

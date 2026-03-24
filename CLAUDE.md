@@ -18,7 +18,7 @@ npm run dev              # 启动开发服务器 (端口 3000)
 npm run build            # 生产构建
 npm run preview          # 预览构建输出
 
-# 测试 (354 个测试用例)
+# 测试 (394 个测试用例)
 npm run test             # 监听模式
 npm run test:run         # 单次运行 (CI)
 npm run test:coverage    # 覆盖率报告 (阈值 80%)
@@ -47,6 +47,7 @@ src/
 │   ├── editor/          # useEditor, useEditorState, useEditorEvents...
 │   ├── theme/           # useThemeManager, useThemeWatcher
 │   ├── useAppState      # 全局内容、视口、同步滚动
+│   ├── useExport        # PDF/图片导出
 │   ├── useElectron      # 桌面端 IPC 通信
 │   └── useNotification  # 消息提示
 ├── core/                # 核心业务逻辑
@@ -93,6 +94,12 @@ HTML 输出
 - `copySocialFormat()`: 内联样式 HTML + Mermaid SVG→PNG 转换 (微信公众号兼容)
 - `copyMarkdownFormat()`: 纯文本 Markdown
 
+### 导出下载
+
+- `exportAsImage()`: 预览内容 → PNG 图片下载
+- `exportAsPdf()`: 预览内容 → A4 分页 PDF 下载
+- 纯前端方案 (html2canvas + jsPDF)，复用社交 HTML 管道确保导出效果与预览一致
+
 ### 主题系统
 
 - CSS 变量驱动，`core/theme/manager.js` 统一管理
@@ -106,6 +113,7 @@ HTML 输出
 | 主题管理器 | `core/theme/manager.js` | CSS 变量 CRUD + localStorage |
 | 解析协调器 | `core/markdown/parser/coordinator.js` | 多策略 Markdown 解析入口 |
 | 复制格式 | `core/editor/copy-formats.js` | 社交/MD 格式生成 |
+| 导出下载 | `core/editor/export-formats.js` | PDF/图片导出 (html2canvas + jsPDF) |
 | 应用状态 | `composables/useAppState.js` | 全局内容、同步滚动状态 |
 | Electron IPC | `composables/useElectron.js` | 桌面端文件操作 |
 | 剪贴板 | `core/editor/clipboard.js` | HTML/text 复制实现 |
