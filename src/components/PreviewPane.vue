@@ -51,6 +51,7 @@ import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { parseMarkdown } from '../core/markdown/index.js'
 import { useGlobalThemeManager } from '../composables/index.js'
 import { escapeHtml as sharedEscapeHtml } from '../shared/utils/text.js'
+import { sanitizeHtml } from '../shared/utils/sanitize.js'
 import mermaid from 'mermaid'
 
 export default {
@@ -269,7 +270,7 @@ export default {
           fontSettings: currentFontSettings.value,
           isPreview: true
         })
-        renderedHtml.value = previewFormatted
+        renderedHtml.value = sanitizeHtml(previewFormatted)
 
         // 等待DOM更新后再渲染 Mermaid
         await nextTick()
