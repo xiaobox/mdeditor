@@ -45,7 +45,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Install DOMPurify, create sanitize.js module with TDD test coverage
+- [x] 02-01-PLAN.md — Install DOMPurify, create sanitize.js module with TDD test coverage
 - [ ] 02-02-PLAN.md — Integrate sanitizeHtml into PreviewPane and MarkdownGuide v-html sites
 
 ### Phase 3: Error Observability
