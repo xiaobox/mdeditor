@@ -42,7 +42,11 @@ Plans:
   3. Mermaid diagrams (SVG) and MathML content render correctly in the preview pane after sanitization
   4. Social copy and PDF/image export pipelines produce unchanged output (sanitization does not affect non-preview paths)
   5. A centralized `sanitize.js` utility exists and all v-html sites (PreviewPane, MarkdownGuide) consume it
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Install DOMPurify, create sanitize.js module with TDD test coverage
+- [ ] 02-02-PLAN.md — Integrate sanitizeHtml into PreviewPane and MarkdownGuide v-html sites
 
 ### Phase 3: Error Observability
 **Goal**: Every previously-silent error path surfaces diagnostic information through the existing module logger infrastructure
@@ -72,6 +76,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Dependency Vulnerability Patch | 0/1 | Planning complete | - |
-| 2. XSS Prevention | 0/0 | Not started | - |
+| 2. XSS Prevention | 0/2 | Planning complete | - |
 | 3. Error Observability | 0/0 | Not started | - |
 | 4. Bundle Optimization | 0/0 | Not started | - |
