@@ -10,7 +10,7 @@ Requirements for security hardening milestone. Each maps to roadmap phases.
 ### Security
 
 - [ ] **SEC-01**: PreviewPane 渲染前通过 DOMPurify 净化 renderedHtml，阻止 XSS 注入
-- [ ] **SEC-02**: 修复 svgo 4.0.0 → 4.0.1，消除 CVE-2026-29074 Billion Laughs DoS 漏洞
+- [x] **SEC-02**: 修复 svgo 4.0.0 → 4.0.1，消除 CVE-2026-29074 Billion Laughs DoS 漏洞
 - [ ] **SEC-03**: 创建 `src/shared/utils/sanitize.js` 集中管理 DOMPurify 配置，导出 `sanitizeHtml()` 方法
 - [ ] **SEC-04**: MarkdownGuide.vue 的 v-html 也通过 sanitize.js 净化（defense-in-depth）
 - [ ] **SEC-05**: DOMPurify 配置保留 `style`、`class` 属性和 SVG/MathML 标签，不破坏预览效果
@@ -29,7 +29,7 @@ Requirements for security hardening milestone. Each maps to roadmap phases.
 
 - [ ] **TST-01**: DOMPurify 净化单元测试（XSS payload 被移除、合法 styled HTML 保留、Mermaid class 保留）
 - [ ] **TST-02**: 空 catch 块 logger 集成测试（验证 logger.warn/debug 被调用且包含上下文）
-- [ ] **TST-03**: 现有 394 个测试全部通过，覆盖率 ≥ 80%
+- [x] **TST-03**: 现有 394 个测试全部通过，覆盖率 ≥ 80%
 
 ## v2 Requirements
 
@@ -68,7 +68,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | SEC-01 | Phase 2 | Pending |
-| SEC-02 | Phase 1 | Pending |
+| SEC-02 | Phase 1 | Complete |
 | SEC-03 | Phase 2 | Pending |
 | SEC-04 | Phase 2 | Pending |
 | SEC-05 | Phase 2 | Pending |
@@ -78,7 +78,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BLD-02 | Phase 4 | Pending |
 | TST-01 | Phase 2 | Pending |
 | TST-02 | Phase 3 | Pending |
-| TST-03 | Phase 1 | Pending |
+| TST-03 | Phase 1 | Complete |
 
 **Coverage:**
 - v1 requirements: 12 total

@@ -1,3 +1,9 @@
+# Global Constraints (全局约束)
+
+- **Language Requirement:** MUST use Simplified Chinese (简体中文) for all generated documentation, including ROADMAP.md, STATE.md, all phase plans, and code comments. 
+- **语言要求：** 请务必使用简体中文输出所有规划文档、架构说明和状态追踪记录。哪怕系统内部提示词是英文，你的最终 Markdown 产出必须是中文。
+
+
 # MDEditor 安全加固
 
 ## What This Is

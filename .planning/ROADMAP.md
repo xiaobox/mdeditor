@@ -30,7 +30,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 1 plan
 
 Plans:
-- [ ] 01-01-PLAN.md — 升级 svgo 至 4.0.1 并验证测试基线和构建完整性
+- [x] 01-01-PLAN.md — 升级 svgo 至 4.0.1 并验证测试基线和构建完整性
 
 ### Phase 2: XSS Prevention
 **Goal**: The preview pane is immune to XSS injection while preserving all visual rendering fidelity across themes, diagrams, and export paths
