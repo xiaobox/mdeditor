@@ -27,4 +27,7 @@ export * from './storage.js';
 export * from './dom.js';
 
 // 颜色工具
-export * from './color.js'; 
+export * from './color.js';
+
+// HTML 净化工具
+export * from './sanitize.js';
