@@ -27,7 +27,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. `npm audit --omit=dev` reports no HIGH-severity vulnerabilities in direct production dependencies
   2. All 394 existing tests pass without modification after the svgo upgrade
   3. Test coverage remains at or above the 80% threshold
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 01-01-PLAN.md — 升级 svgo 至 4.0.1 并验证测试基线和构建完整性
 
 ### Phase 2: XSS Prevention
 **Goal**: The preview pane is immune to XSS injection while preserving all visual rendering fidelity across themes, diagrams, and export paths
@@ -68,7 +71,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Dependency Vulnerability Patch | 0/0 | Not started | - |
+| 1. Dependency Vulnerability Patch | 0/1 | Planning complete | - |
 | 2. XSS Prevention | 0/0 | Not started | - |
 | 3. Error Observability | 0/0 | Not started | - |
 | 4. Bundle Optimization | 0/0 | Not started | - |
