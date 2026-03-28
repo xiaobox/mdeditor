@@ -69,7 +69,10 @@ Plans:
   1. `npm run build` produces multiple domain-based vendor chunks instead of a single 4.8MB monolith
   2. Mermaid's existing ~25 dynamic import chunks (diagram submodules) remain as separate files in the build output
   3. `npm run preview` loads the application with all features working identically to pre-optimization (editing, preview, themes, export, social copy)
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 04-01-PLAN.md — Add manualChunks vendor splitting to vite.config.js and verify build output
 
 ## Progress
 
@@ -81,4 +84,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | 1. Dependency Vulnerability Patch | 0/1 | Planning complete | - |
 | 2. XSS Prevention | 0/2 | Planning complete | - |
 | 3. Error Observability | 0/1 | Planning complete | - |
-| 4. Bundle Optimization | 0/0 | Not started | - |
+| 4. Bundle Optimization | 0/1 | Planning complete | - |
