@@ -56,7 +56,10 @@ Plans:
   1. All 7 previously-empty catch blocks produce structured log output (module name, operation description, error object) when triggered
   2. Cleanup and fallback catch blocks use debug level; recoverable failure catch blocks use warn level
   3. Triggering error paths in dev mode produces visible console output with actionable diagnostic context
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 03-01-PLAN.md — Instrument 7 empty catch blocks with createModuleLogger and add integration tests
 
 ### Phase 4: Bundle Optimization
 **Goal**: The production build is split into cache-friendly vendor chunks without altering runtime loading behavior
@@ -77,5 +80,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 |-------|----------------|--------|-----------|
 | 1. Dependency Vulnerability Patch | 0/1 | Planning complete | - |
 | 2. XSS Prevention | 0/2 | Planning complete | - |
-| 3. Error Observability | 0/0 | Not started | - |
+| 3. Error Observability | 0/1 | Planning complete | - |
 | 4. Bundle Optimization | 0/0 | Not started | - |
