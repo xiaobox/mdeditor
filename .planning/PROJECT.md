@@ -32,8 +32,8 @@
 - [ ] 修复 svgo 高危漏洞 (Billion Laughs DoS)
 - ✓ 预览面板 HTML 净化 (DOMPurify) — Validated in Phase 02: XSS Prevention
 - ✓ 消除静默 catch 块，接入 logger.js — Validated in Phase 03: Error Observability
-- [ ] Vite manualChunks 拆分 vendor 依赖
-- [ ] 每个改动点配套单元测试，现有 394 个测试全部通过
+- ✓ Vite manualChunks 拆分 vendor 依赖 — Validated in Phase 04: Bundle Optimization
+- ✓ 每个改动点配套单元测试，428 个测试全部通过 — Validated across all phases
 
 ### Out of Scope
 
@@ -66,7 +66,7 @@
 |----------|-----------|---------|
 | DOMPurify 仅包装预览面板 | 复制/导出管道有独立的净化逻辑，预览面板是直接 v-html 注入点 | ✓ Phase 02 完成 |
 | 空 catch 块接入现有 logger 而非 Sentry | 项目无外部错误监控，先用现有工具止血 | ✓ Phase 03 完成 |
-| manualChunks 拆分而非动态 import | 最小改动，不改变加载行为 | — Pending |
+| manualChunks 拆分而非动态 import | 最小改动，不改变加载行为 | ✓ Phase 04 完成 |
 
 ## Evolution
 
@@ -86,4 +86,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-28 after Phase 03 (Error Observability) completion*
+*Last updated: 2026-03-28 after Phase 04 (Bundle Optimization) completion — ALL PHASES COMPLETE*
