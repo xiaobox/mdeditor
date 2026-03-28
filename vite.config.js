@@ -32,6 +32,68 @@ import { resolve } from 'path';
 import vue from '@vitejs/plugin-vue';
 const isElectron = process.env.ELECTRON === 'true';
 
+/**
+ * manualChunks - 按领域拆分 vendor 依赖为独立 chunk (BLD-01)
+ *
+ * 将 4,788 kB 的单体 bundle 拆分为 6 个缓存友好的 vendor chunk。
+ * 浏览器可独立缓存稳定的 vendor 代码，部署后仅需重新加载变更的应用代码。
+ *
+ * 重要：Mermaid 图表子模块 (/dist/chunks/) 被排除在外，
+ * 以保留其现有的动态 import 拆分行为 (BLD-02)。
+ */
+function manualChunks(id) {
+  if (!id.includes('node_modules')) {
+    return undefined
+  }
+
+  // vendor-vue: Vue 核心 + 生态系统
+  if (
+    id.includes('node_modules/vue/') ||
+    id.includes('node_modules/@vue/') ||
+    id.includes('node_modules/vue-i18n/')
+  ) {
+    return 'vendor-vue'
+  }
+
+  // vendor-codemirror: CodeMirror 6 编辑器 + vue-codemirror 封装
+  if (
+    id.includes('node_modules/codemirror/') ||
+    id.includes('node_modules/@codemirror/') ||
+    id.includes('node_modules/vue-codemirror/')
+  ) {
+    return 'vendor-codemirror'
+  }
+
+  // vendor-milkdown: Milkdown WYSIWYG + ProseMirror (含 @milkdown/prose)
+  if (id.includes('node_modules/@milkdown/')) {
+    return 'vendor-milkdown'
+  }
+
+  // vendor-mermaid: Mermaid 核心，不含动态 import 的图表子模块 (D-04)
+  if (
+    id.includes('node_modules/mermaid/') &&
+    !id.includes('/dist/chunks/')
+  ) {
+    return 'vendor-mermaid'
+  }
+
+  // vendor-mathjax: MathJax 数学公式渲染引擎
+  if (id.includes('node_modules/mathjax-full/')) {
+    return 'vendor-mathjax'
+  }
+
+  // vendor-export: PDF/图片导出工具
+  if (
+    id.includes('node_modules/html2canvas/') ||
+    id.includes('node_modules/jspdf/')
+  ) {
+    return 'vendor-export'
+  }
+
+  // 其他 node_modules 依赖：交由 Rollup 自动处理 (D-03)
+  return undefined
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
     // Electron构建：使用相对路径 './'，解决file://协议下的路径问题
@@ -55,7 +117,13 @@ export default defineConfig({
     // 输出目录
     outDir: 'dist',
     // 静态资源目录
-    assetsDir: 'assets'
+    assetsDir: 'assets',
+    // Rollup 输出配置：vendor 分块
+    rollupOptions: {
+      output: {
+        manualChunks
+      }
+    }
   },
 
   // 路径别名配置
