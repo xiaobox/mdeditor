@@ -17,8 +17,8 @@ Requirements for security hardening milestone. Each maps to roadmap phases.
 
 ### Observability
 
-- [ ] **OBS-01**: 7 个空 catch 块全部接入 `createModuleLogger()`，按严重程度使用 warn/debug 级别
-- [ ] **OBS-02**: catch 块包含结构化上下文（模块名、操作描述、错误对象）
+- [x] **OBS-01**: 7 个空 catch 块全部接入 `createModuleLogger()`，按严重程度使用 warn/debug 级别
+- [x] **OBS-02**: catch 块包含结构化上下文（模块名、操作描述、错误对象）
 
 ### Build
 
@@ -28,7 +28,7 @@ Requirements for security hardening milestone. Each maps to roadmap phases.
 ### Testing
 
 - [ ] **TST-01**: DOMPurify 净化单元测试（XSS payload 被移除、合法 styled HTML 保留、Mermaid class 保留）
-- [ ] **TST-02**: 空 catch 块 logger 集成测试（验证 logger.warn/debug 被调用且包含上下文）
+- [x] **TST-02**: 空 catch 块 logger 集成测试（验证 logger.warn/debug 被调用且包含上下文）
 - [x] **TST-03**: 现有 394 个测试全部通过，覆盖率 ≥ 80%
 
 ## v2 Requirements
@@ -72,12 +72,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SEC-03 | Phase 2 | Pending |
 | SEC-04 | Phase 2 | Complete |
 | SEC-05 | Phase 2 | Pending |
-| OBS-01 | Phase 3 | Pending |
-| OBS-02 | Phase 3 | Pending |
+| OBS-01 | Phase 3 | Complete |
+| OBS-02 | Phase 3 | Complete |
 | BLD-01 | Phase 4 | Pending |
 | BLD-02 | Phase 4 | Pending |
 | TST-01 | Phase 2 | Pending |
-| TST-02 | Phase 3 | Pending |
+| TST-02 | Phase 3 | Complete |
 | TST-03 | Phase 1 | Complete |
 
 **Coverage:**
