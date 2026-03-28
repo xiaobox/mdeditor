@@ -39,6 +39,9 @@ import {
 import { ErrorHandler, ERROR_TYPES } from '../../shared/utils/error.js';
 import { OFFSCREEN_STYLES, DOMUtils } from '../../shared/utils/dom.js';
 import { TextUtils } from '../../shared/utils/text.js';
+import { createModuleLogger } from '../../shared/utils/logger.js'
+
+const log = createModuleLogger('Clipboard')
 
 /**
  * 创建一个用于富文本复制的临时 DOM 容器。
@@ -135,7 +138,9 @@ function copyWithExecCommandViaListener(html, plainText) {
         e.clipboardData.setData('text/plain', plainText || TextUtils.stripHtmlTags(html));
         e.preventDefault();
         succeeded = true;
-      } catch (_) {}
+      } catch (err) {
+        log.warn('clipboardData.setData failed in copy event listener', err)
+      }
     };
     document.addEventListener('copy', onCopy, true);
 

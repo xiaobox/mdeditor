@@ -14,6 +14,10 @@
  * 注意：此脚本是独立的，不依赖任何外部模块，以确保最快的执行速度。
  */
 
+import { createModuleLogger } from '../../shared/utils/logger.js'
+
+const log = createModuleLogger('ThemeLoader')
+
 export function loadThemeEarly() {
   // 预设颜色主题的最小化版本，确保脚本独立性
   const colorThemePresets = {
@@ -59,7 +63,9 @@ export function loadThemeEarly() {
         const customTheme = JSON.parse(savedCustom);
         return applyThemeObject(customTheme);
       }
-    } catch (_) {}
+    } catch (err) {
+      log.debug('Failed to parse custom theme from localStorage', err)
+    }
 
     const theme = colorThemePresets[themeId] || colorThemePresets[DEFAULT_THEME_ID];
     if (!theme) return;

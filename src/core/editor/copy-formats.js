@@ -12,6 +12,9 @@ import { copyToSocialClean } from './clipboard.js';
 import mermaid from 'mermaid';
 import { DOMUtils, OFFSCREEN_STYLES } from '../../shared/utils/dom.js';
 import { solveMathForWeChat } from '../markdown/math/image-converter.js';
+import { createModuleLogger } from '../../shared/utils/logger.js'
+
+const log = createModuleLogger('CopyFormats')
 
 /**
  * 运行 mermaid，将容器内的 mermaid 元素转换为 SVG
@@ -173,7 +176,9 @@ async function rasterizeMermaidSvgs(container, scale = 2) {
           const cs = window.getComputedStyle(el);
           const sw = parseFloat(cs.strokeWidth || '0');
           if (Number.isFinite(sw)) maxStroke = Math.max(maxStroke, sw);
-        } catch (_) {}
+        } catch (err) {
+          log.debug('SVG element getBBox measurement failed', err)
+        }
       });
 
       let w = 0, h = 0, x0 = 0, y0 = 0;
@@ -193,7 +198,9 @@ async function rasterizeMermaidSvgs(container, scale = 2) {
           svg.setAttribute('width', `${w}px`);
           svg.setAttribute('height', `${h}px`);
         }
-      } catch (_) {}
+      } catch (err) {
+        log.debug('SVG root getBBox measurement failed', err)
+      }
 
       if (!w || !h) {
         if (isFinite(minX) && isFinite(minY) && isFinite(maxX) && isFinite(maxY)) {
@@ -234,7 +241,7 @@ async function rasterizeMermaidSvgs(container, scale = 2) {
         img.onerror = reject;
         img.src = url;
       });
-      if (img.decode) { try { await img.decode(); } catch (_) {} }
+      if (img.decode) { try { await img.decode(); } catch (err) { log.debug('Image decode optional step failed', err) } }
 
       const baseW = Math.max(1, Math.floor(w + pad * 2));
       const baseH = Math.max(1, Math.floor(h + pad * 2));
@@ -263,7 +270,7 @@ async function rasterizeMermaidSvgs(container, scale = 2) {
       );
       // 仅对 blob: URL 进行释放；data: URL 不需要也不应调用 revokeObjectURL
       if (typeof url === 'string' && url.startsWith('blob:')) {
-        try { URL.revokeObjectURL(url) } catch (_) {}
+        try { URL.revokeObjectURL(url) } catch (err) { log.debug('URL.revokeObjectURL cleanup failed', err) }
       }
 
       const dataUrl = canvas.toDataURL('image/png');
@@ -315,7 +322,9 @@ async function rasterizeMermaidSvgs(container, scale = 2) {
         svg.replaceWith(wrapper);
       } catch (_) {
         // 最终兜底：移除该 SVG，确保不会复制到公众号
-        try { svg.remove(); } catch (_) {}
+        try { svg.remove(); } catch (removeErr) {
+          log.debug('SVG DOM removal cleanup failed', removeErr)
+        }
       }
     }
   }
