@@ -22,8 +22,8 @@ Requirements for security hardening milestone. Each maps to roadmap phases.
 
 ### Build
 
-- [ ] **BLD-01**: Vite manualChunks 将 4.8MB 单体 bundle 拆分为 vendor 分组（vue-core、codemirror、milkdown、mermaid、mathjax、export-tools）
-- [ ] **BLD-02**: manualChunks 不干扰 Mermaid 已有的动态 import 分块
+- [x] **BLD-01**: Vite manualChunks 将 4.8MB 单体 bundle 拆分为 vendor 分组（vue-core、codemirror、milkdown、mermaid、mathjax、export-tools）
+- [x] **BLD-02**: manualChunks 不干扰 Mermaid 已有的动态 import 分块
 
 ### Testing
 
@@ -74,8 +74,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SEC-05 | Phase 2 | Pending |
 | OBS-01 | Phase 3 | Complete |
 | OBS-02 | Phase 3 | Complete |
-| BLD-01 | Phase 4 | Pending |
-| BLD-02 | Phase 4 | Pending |
+| BLD-01 | Phase 4 | Complete |
+| BLD-02 | Phase 4 | Complete |
 | TST-01 | Phase 2 | Pending |
 | TST-02 | Phase 3 | Complete |
 | TST-03 | Phase 1 | Complete |

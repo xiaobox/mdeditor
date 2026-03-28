@@ -72,7 +72,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 04-01-PLAN.md — Add manualChunks vendor splitting to vite.config.js and verify build output
+- [x] 04-01-PLAN.md — Add manualChunks vendor splitting to vite.config.js and verify build output
 
 ## Progress
 
