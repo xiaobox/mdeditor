@@ -9,10 +9,10 @@ Requirements for security hardening milestone. Each maps to roadmap phases.
 
 ### Security
 
-- [ ] **SEC-01**: PreviewPane 渲染前通过 DOMPurify 净化 renderedHtml，阻止 XSS 注入
+- [x] **SEC-01**: PreviewPane 渲染前通过 DOMPurify 净化 renderedHtml，阻止 XSS 注入
 - [x] **SEC-02**: 修复 svgo 4.0.0 → 4.0.1，消除 CVE-2026-29074 Billion Laughs DoS 漏洞
 - [ ] **SEC-03**: 创建 `src/shared/utils/sanitize.js` 集中管理 DOMPurify 配置，导出 `sanitizeHtml()` 方法
-- [ ] **SEC-04**: MarkdownGuide.vue 的 v-html 也通过 sanitize.js 净化（defense-in-depth）
+- [x] **SEC-04**: MarkdownGuide.vue 的 v-html 也通过 sanitize.js 净化（defense-in-depth）
 - [ ] **SEC-05**: DOMPurify 配置保留 `style`、`class` 属性和 SVG/MathML 标签，不破坏预览效果
 
 ### Observability
@@ -67,10 +67,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SEC-01 | Phase 2 | Pending |
+| SEC-01 | Phase 2 | Complete |
 | SEC-02 | Phase 1 | Complete |
 | SEC-03 | Phase 2 | Pending |
-| SEC-04 | Phase 2 | Pending |
+| SEC-04 | Phase 2 | Complete |
 | SEC-05 | Phase 2 | Pending |
 | OBS-01 | Phase 3 | Pending |
 | OBS-02 | Phase 3 | Pending |

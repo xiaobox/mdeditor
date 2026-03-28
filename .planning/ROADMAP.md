@@ -46,7 +46,7 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md — Install DOMPurify, create sanitize.js module with TDD test coverage
-- [ ] 02-02-PLAN.md — Integrate sanitizeHtml into PreviewPane and MarkdownGuide v-html sites
+- [x] 02-02-PLAN.md — Integrate sanitizeHtml into PreviewPane and MarkdownGuide v-html sites
 
 ### Phase 3: Error Observability
 **Goal**: Every previously-silent error path surfaces diagnostic information through the existing module logger infrastructure
