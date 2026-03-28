@@ -381,6 +381,7 @@
 
 <script>
 import katex from 'katex'
+import { sanitizeHtml } from '../shared/utils/sanitize.js'
 
 export default {
   name: 'MarkdownGuide',
@@ -397,22 +398,22 @@ export default {
     },
     renderInlineMath(latex) {
       try {
-        return katex.renderToString(latex, {
+        return sanitizeHtml(katex.renderToString(latex, {
           displayMode: false,
           throwOnError: false,
           output: 'html'
-        })
+        }))
       } catch (e) {
         return latex
       }
     },
     renderBlockMath(latex) {
       try {
-        return katex.renderToString(latex, {
+        return sanitizeHtml(katex.renderToString(latex, {
           displayMode: true,
           throwOnError: false,
           output: 'html'
-        })
+        }))
       } catch (e) {
         return latex
       }
