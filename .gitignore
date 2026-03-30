@@ -61,6 +61,9 @@ coverage/
 .claude/settings.local.json
 CLAUDE.md
 
+# GSD 规划文件
+.planning/
+
 # ============ 缓存文件 ============
 # Vite 缓存
 .vite/
