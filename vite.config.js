@@ -64,8 +64,11 @@ function manualChunks(id) {
     return 'vendor-codemirror'
   }
 
-  // vendor-milkdown: Milkdown WYSIWYG + ProseMirror (含 @milkdown/prose)
-  if (id.includes('node_modules/@milkdown/')) {
+  // vendor-milkdown: Milkdown WYSIWYG + ProseMirror 全家桶
+  if (
+    id.includes('node_modules/@milkdown/') ||
+    id.includes('node_modules/prosemirror-')
+  ) {
     return 'vendor-milkdown'
   }
 

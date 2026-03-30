@@ -11,7 +11,8 @@
  * 这样做可以确保浏览器在首次渲染页面时就拥有正确的主题颜色，
  * 从而避免了从默认主题到用户选择主题之间的视觉闪烁。
  *
- * 注意：此脚本是独立的，不依赖任何外部模块，以确保最快的执行速度。
+ * 注意：此脚本通过 Vite 构建打包，依赖 createModuleLogger 进行错误日志记录。
+ * 若需内联到 <head> 中使用，需移除 import 语句并替换为 console.debug。
  */
 
 import { createModuleLogger } from '../../shared/utils/logger.js'
