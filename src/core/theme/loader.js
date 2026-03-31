@@ -2,7 +2,7 @@
  * @file src/core/theme/loader.js
  * @description 主题预加载器，用于防止主题闪烁 (FOUC)
  *
- * 该脚本应在 `index.html` 的 `<head>` 中、在主应用脚本加载前以内联方式或同步加载。
+ * 该脚本在应用入口 (main.js) 中作为首个副作用模块导入，确保在 Vue 挂载前执行。
  * 它的核心职责是：
  * 1.  在页面渲染前，立即从 localStorage 读取已保存的主题设置。
  * 2.  根据这些设置，生成对应的 CSS 变量。
