@@ -52,7 +52,14 @@ import { parseMarkdown } from '../core/markdown/index.js'
 import { useGlobalThemeManager } from '../composables/index.js'
 import { escapeHtml as sharedEscapeHtml } from '../shared/utils/text.js'
 import { sanitizeHtml } from '../shared/utils/sanitize.js'
-import mermaid from 'mermaid'
+let _mermaid = null
+const loadMermaid = async () => {
+  if (!_mermaid) {
+    const mod = await import('mermaid')
+    _mermaid = mod.default || mod
+  }
+  return _mermaid
+}
 
 export default {
   name: 'PreviewPane',
@@ -275,6 +282,7 @@ export default {
         // 等待DOM更新后再渲染 Mermaid
         await nextTick()
         try {
+          const mermaid = await loadMermaid()
           mermaid.initialize({
             startOnLoad: false,
             securityLevel: 'strict',
