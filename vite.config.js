@@ -82,7 +82,9 @@ function manualChunks(id) {
     return 'vendor-milkdown'
   }
 
-  // vendor-mermaid: Mermaid 核心，不含动态 import 的图表子模块 (D-04)
+  // vendor-mermaid: Mermaid 核心入口 (verified: mermaid@11.x)
+  // 排除 /dist/chunks/ 下的图表子模块以保留动态 import 拆分
+  // 注意：mermaid 的子依赖 (cytoscape, dagre-d3-es, d3 等) 由 Rollup 自动拆分，随各图表类型按需加载
   if (
     id.includes('node_modules/mermaid/') &&
     !id.includes('/dist/chunks/')
@@ -103,7 +105,8 @@ function manualChunks(id) {
     return 'vendor-export'
   }
 
-  // 其他 node_modules 依赖：交由 Rollup 自动处理 (D-03)
+  // 其他 node_modules 依赖：交由 Rollup 自动处理
+  // 包括 canvg (jsPDF SVG 转换依赖, ~150KB) 等自动拆分的 chunk
   return undefined
 }
 
