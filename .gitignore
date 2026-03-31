@@ -63,6 +63,7 @@ CLAUDE.md
 
 # GSD 规划文件
 .planning/
+docs/plans/
 
 # ============ 缓存文件 ============
 # Vite 缓存
