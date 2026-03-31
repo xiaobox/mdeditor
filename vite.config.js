@@ -64,6 +64,11 @@ function manualChunks(id) {
     return 'vendor-codemirror'
   }
 
+  // vendor-prism: Prism.js 语法高亮
+  if (id.includes('node_modules/prismjs/')) {
+    return 'vendor-prism'
+  }
+
   // vendor-milkdown: Milkdown WYSIWYG + ProseMirror 全家桶
   if (
     id.includes('node_modules/@milkdown/') ||
