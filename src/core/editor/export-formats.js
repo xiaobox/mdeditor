@@ -10,8 +10,29 @@
  * - PDF 导出：同上 → jsPDF 分页生成 PDF 下载
  */
 
-import html2canvas from 'html2canvas'
-import { jsPDF } from 'jspdf'
+/**
+ * 延迟加载导出依赖 (html2canvas + jsPDF)
+ * 仅在用户触发导出操作时加载，节省 ~580KB 首屏体积
+ */
+let _html2canvas = null
+let _jsPDF = null
+
+async function getHtml2Canvas() {
+  if (!_html2canvas) {
+    const mod = await import('html2canvas')
+    _html2canvas = mod.default || mod
+  }
+  return _html2canvas
+}
+
+async function getJsPDF() {
+  if (!_jsPDF) {
+    const mod = await import('jspdf')
+    _jsPDF = mod.jsPDF || mod.default
+  }
+  return _jsPDF
+}
+
 import { i18n } from '../../plugins/i18n.js'
 import { generateSocialHtml, renderMermaidInContainer, rasterizeMermaidSvgs } from './copy-formats.js'
 import { DOMUtils } from '../../shared/utils/dom.js'
@@ -129,6 +150,7 @@ async function buildExportContainer(markdownText, options = {}) {
  * @returns {Promise<HTMLCanvasElement>}
  */
 async function captureContainer(container, scale = 2) {
+  const html2canvas = await getHtml2Canvas()
   return html2canvas(container, {
     scale,
     useCORS: true,
@@ -205,6 +227,7 @@ export async function exportAsPdf(markdownText, options = {}) {
     const pageHeight = contentHeight
     const totalPages = Math.ceil(imgHeight / pageHeight)
 
+    const jsPDF = await getJsPDF()
     const pdf = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
