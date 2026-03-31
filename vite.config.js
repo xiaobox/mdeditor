@@ -69,6 +69,11 @@ function manualChunks(id) {
     return 'vendor-prism'
   }
 
+  // vendor-sanitize: DOMPurify HTML 净化 (安全关键依赖，独立于 vendor-mermaid)
+  if (id.includes('node_modules/dompurify/')) {
+    return 'vendor-sanitize'
+  }
+
   // vendor-milkdown: Milkdown WYSIWYG + ProseMirror 全家桶
   if (
     id.includes('node_modules/@milkdown/') ||
