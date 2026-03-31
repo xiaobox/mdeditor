@@ -10,6 +10,11 @@
  * - PDF 导出：同上 → jsPDF 分页生成 PDF 下载
  */
 
+import { i18n } from '../../plugins/i18n.js'
+import { generateSocialHtml, renderMermaidInContainer, rasterizeMermaidSvgs } from './copy-formats.js'
+import { DOMUtils } from '../../shared/utils/dom.js'
+import { solveMathForWeChat } from '../markdown/math/image-converter.js'
+
 /**
  * 延迟加载导出依赖 (html2canvas + jsPDF)
  * 仅在用户触发导出操作时加载，节省 ~580KB 首屏体积
@@ -32,11 +37,6 @@ async function getJsPDF() {
   }
   return _jsPDF
 }
-
-import { i18n } from '../../plugins/i18n.js'
-import { generateSocialHtml, renderMermaidInContainer, rasterizeMermaidSvgs } from './copy-formats.js'
-import { DOMUtils } from '../../shared/utils/dom.js'
-import { solveMathForWeChat } from '../markdown/math/image-converter.js'
 
 /** 导出容器宽度 (px)，模拟预览宽度 */
 const EXPORT_WIDTH = 750
