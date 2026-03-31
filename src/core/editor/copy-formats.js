@@ -9,12 +9,20 @@
 
 import { parseMarkdown } from '../markdown/index.js';
 import { copyToSocialClean } from './clipboard.js';
-import mermaid from 'mermaid';
 import { DOMUtils, OFFSCREEN_STYLES } from '../../shared/utils/dom.js';
 import { solveMathForWeChat } from '../markdown/math/image-converter.js';
 import { createModuleLogger } from '../../shared/utils/logger.js'
 
 const log = createModuleLogger('CopyFormats')
+
+let _mermaid = null
+const loadMermaid = async () => {
+  if (!_mermaid) {
+    const mod = await import('mermaid')
+    _mermaid = mod.default || mod
+  }
+  return _mermaid
+}
 
 /**
  * 运行 mermaid，将容器内的 mermaid 元素转换为 SVG
@@ -22,6 +30,7 @@ const log = createModuleLogger('CopyFormats')
  */
 async function renderMermaidInContainer(container) {
   try {
+    const mermaid = await loadMermaid()
     mermaid.initialize({
       startOnLoad: false,
       securityLevel: 'strict',
