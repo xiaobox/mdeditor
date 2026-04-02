@@ -138,7 +138,7 @@ const adjustColorBrightness = (color, factor) => {
   border-radius: 16px;
   padding: 32px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .settings-section:hover {
@@ -203,7 +203,7 @@ const adjustColorBrightness = (color, factor) => {
   border-radius: 16px;
   padding: 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   overflow: hidden;
 }
@@ -231,7 +231,7 @@ const adjustColorBrightness = (color, factor) => {
   height: 6px;
   border-radius: 3px;
   width: 100%;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, height 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -248,7 +248,7 @@ const adjustColorBrightness = (color, factor) => {
   font-weight: 700;
   font-size: 16px;
   margin-bottom: 6px;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, transform 0.3s ease;
   letter-spacing: -0.3px;
 }
 
@@ -274,9 +274,8 @@ const adjustColorBrightness = (color, factor) => {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(10px);
 }
 
 /* 自定义颜色卡片样式 */
@@ -338,9 +337,8 @@ const adjustColorBrightness = (color, factor) => {
   justify-content: center;
   width: 36px;
   height: 36px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.35);
   border-radius: 10px;
-  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
@@ -382,19 +380,17 @@ const adjustColorBrightness = (color, factor) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(4px);
 }
 
 .simple-check {
   width: 22px;
   height: 22px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.35);
   border: 2px solid rgba(255, 255, 255, 0.8);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(10px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -407,7 +403,7 @@ const adjustColorBrightness = (color, factor) => {
 .custom-color-card:hover .custom-icon {
   background: rgba(255, 255, 255, 0.3);
   transform: scale(1.05);
-  transition: all 0.3s ease;
+  transition: background 0.3s ease, transform 0.3s ease;
 }
 
 /* 选中状态 */

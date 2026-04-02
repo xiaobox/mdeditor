@@ -25,7 +25,7 @@
   border-radius: 12px;
   padding: 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
   position: relative;
   overflow: hidden;
 }
@@ -131,7 +131,7 @@
   background: var(--theme-primary);
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .font-size-slider::-webkit-slider-thumb:hover {
@@ -147,7 +147,7 @@
   cursor: pointer;
   border: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .font-size-marks {
@@ -226,7 +226,6 @@
   -webkit-appearance: none;
   appearance: none;
   cursor: pointer;
-  transition: all 0.3s ease;
 }
 
 .spacing-slider::-webkit-slider-thumb {
@@ -239,7 +238,7 @@
   cursor: pointer;
   border: 2px solid white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .spacing-slider::-webkit-slider-thumb:hover {
@@ -255,7 +254,7 @@
   cursor: pointer;
   border: 2px solid white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .spacing-slider::-moz-range-thumb:hover {
@@ -280,7 +279,7 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
 .font-size-preset-btn:hover {

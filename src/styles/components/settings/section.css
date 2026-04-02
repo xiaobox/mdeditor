@@ -5,7 +5,8 @@
   border-radius: 16px;
   padding: 32px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  contain: layout style;
 }
 
 .settings-section:hover {
@@ -65,9 +66,10 @@
   border-radius: 16px;
   padding: 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   overflow: hidden;
+  contain: layout style;
 }
 
 .card-base:hover {
@@ -103,9 +105,8 @@
 .check-indicator.small {
   width: 28px;
   height: 28px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.97);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(10px);
   border: none;
 }
 
@@ -133,7 +134,7 @@
   font-weight: 700;
   font-size: 18px;
   color: var(--theme-text-primary);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, transform 0.3s ease;
   letter-spacing: -0.3px;
 }
 
@@ -141,7 +142,7 @@
   font-weight: 700;
   font-size: 16px;
   margin-bottom: 6px;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, transform 0.3s ease;
   letter-spacing: -0.3px;
 }
 

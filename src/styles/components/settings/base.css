@@ -17,8 +17,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(var(--spacing-xs));
+  background: rgba(0, 0, 0, 0.55);
   z-index: 0;
 }
 
@@ -42,6 +41,8 @@
   overflow-y: auto;
   padding: var(--spacing-5xl);
   background: linear-gradient(135deg, var(--theme-bg-primary) 0%, var(--theme-bg-secondary) 100%);
+  will-change: scroll-position;
+  contain: layout style;
 }
 
 .settings-sections {
@@ -112,7 +113,6 @@
   justify-content: center;
   z-index: 1200;
   /* 禁用底层的指针事件，防止hover效果穿透 */
-  backdrop-filter: blur(var(--spacing-xs));
 }
 
 .color-picker-modal {
@@ -125,10 +125,15 @@
   z-index: 1201;
 }
 
-/* 过渡动画，保持与 markdown-guide 一致 */
+/* 过渡动画 */
 .modal-enter-active,
 .modal-leave-active {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-enter-active .settings-content,
+.modal-leave-active .settings-content {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .modal-enter-from,

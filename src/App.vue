@@ -18,6 +18,8 @@
       @copy-format-select="handleCopyFormatSelect"
       @update:selected-copy-format="selectedCopyFormat.value = $event"
       @export-format-select="handleExportFormatSelect"
+      @preload-settings="preloadSettingsPanel"
+      @preload-guide="preloadMarkdownGuide"
     />
 
     <!-- 隐藏文件输入：用于导入 .md -->
@@ -81,13 +83,20 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, defineAsyncComponent } from 'vue'
 import { useAppState, useElectron, useGlobalThemeManager } from './composables/index.js'
 import AppHeader from './components/layout/AppHeader.vue'
 import AppMain from './components/layout/AppMain.vue'
 import AppFooter from './components/layout/AppFooter.vue'
-import SettingsPanel from './components/SettingsPanel.vue'
-import MarkdownGuide from './components/MarkdownGuide.vue'
+// 提取 import 函数，支持 hover 预加载
+const loadSettingsPanel = () => import('./components/SettingsPanel.vue')
+const loadMarkdownGuide = () => import('./components/MarkdownGuide.vue')
+const SettingsPanel = defineAsyncComponent(loadSettingsPanel)
+const MarkdownGuide = defineAsyncComponent(loadMarkdownGuide)
+
+// 预加载方法：鼠标悬停按钮时提前加载 chunk
+const preloadSettingsPanel = () => { loadSettingsPanel() }
+const preloadMarkdownGuide = () => { loadMarkdownGuide() }
 import BackToTopFloat from './components/BackToTopFloat.vue'
 import OutlinePanel from './components/OutlinePanel.vue'
 

@@ -33,7 +33,7 @@ defineEmits(['apply'])
   font-weight: 700;
   font-size: 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   letter-spacing: -0.3px;
 }

@@ -30,8 +30,6 @@ import './styles/global.css';
 // `components/index.css` 作为组件样式的统一入口
 import './styles/components/index.css';
 import './styles/prism-variables.css';
-// KaTeX 数学公式样式
-import 'katex/dist/katex.min.css';
 
 // i18n
 import { i18n } from './plugins/i18n.js'

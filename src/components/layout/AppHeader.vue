@@ -46,6 +46,7 @@
       <button
         class="header-btn"
         @click="$emit('toggle-settings')"
+        @mouseenter="$emit('preload-settings')"
         :class="{ 'active': showSettingsPanel }"
       >
         <svg viewBox="0 0 24 24" width="16" height="16">
@@ -54,7 +55,7 @@
         <span>{{ $t('header.settings') }}</span>
       </button>
 
-      <button class="header-btn" @click="$emit('show-guide')">
+      <button class="header-btn" @click="$emit('show-guide')" @mouseenter="$emit('preload-guide')">
         <svg viewBox="0 0 24 24" width="16" height="16">
           <path fill="currentColor" d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/>
         </svg>
@@ -186,7 +187,9 @@ const emit = defineEmits([
   'copy-format-select',
   'update:selected-copy-format',
   'export-format-select',
-  'set-view-mode'
+  'set-view-mode',
+  'preload-settings',
+  'preload-guide'
 ])
 </script>
 

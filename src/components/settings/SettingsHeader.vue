@@ -94,7 +94,7 @@ defineEmits(['close'])
   border-radius: 12px;
   cursor: pointer;
   color: var(--theme-text-secondary);
-  transition: all 0.3s ease;
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;

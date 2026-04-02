@@ -299,9 +299,6 @@ export default {
       }
     )
 
-    // React to theme changes; actual variables are applied globally
-    watch([currentColorTheme, currentCodeStyle, currentFontSettings, currentLayoutId], () => {}, { deep: true })
-
     onMounted(async () => {
       initialize()
       await createEditor()

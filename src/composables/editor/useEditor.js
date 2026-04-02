@@ -66,9 +66,9 @@ export function useMarkdownEditor(options = {}) {
     editorTheme
   })
 
-  // 监听主题变化，自动重新初始化编辑器
+  // 监听主题变化，使用 Compartment 热替换主题扩展（保留编辑器状态）
   const stopThemeWatcher = watch(editorTheme.currentTheme, () => {
-    editorLifecycle.reinitEditor()
+    editorTheme.reconfigureTheme(editorState.getEditorView())
   })
 
   // --- 返回 API ---

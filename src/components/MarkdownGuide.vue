@@ -269,7 +269,7 @@
                       <code>$E = mc^2$</code>
                     </div>
                     <div class="syntax-right">
-                      <span class="demo-math-inline" v-html="renderInlineMath('E = mc^2')"></span>
+                      <span class="demo-math-inline" v-html="mathInlineHtml"></span>
                     </div>
                   </div>
 
@@ -280,7 +280,7 @@
                       <code>$$<br>x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}<br>$$</code>
                     </div>
                     <div class="syntax-right">
-                      <div class="demo-math-block" v-html="renderBlockMath('x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}')"></div>
+                      <div class="demo-math-block" v-html="mathBlockHtml"></div>
                     </div>
                   </div>
 
@@ -380,8 +380,41 @@
 </template>
 
 <script>
-import katex from 'katex'
 import { sanitizeHtml } from '../shared/utils/sanitize.js'
+
+// KaTeX 动态导入 + 缓存（公式内容固定，只需渲染一次）
+let _katex = null
+let _mathCache = null
+let _cssLoaded = false
+
+async function loadAndRenderMath() {
+  if (_mathCache) return _mathCache
+  // 并行加载 KaTeX JS 和 CSS
+  const loads = []
+  if (!_katex) {
+    loads.push(import('katex').then(mod => { _katex = mod.default || mod }))
+  }
+  if (!_cssLoaded) {
+    loads.push(import('katex/dist/katex.min.css').then(() => { _cssLoaded = true }))
+  }
+  if (loads.length) await Promise.all(loads)
+  const render = (latex, displayMode) => {
+    try {
+      return sanitizeHtml(_katex.renderToString(latex, {
+        displayMode,
+        throwOnError: false,
+        output: 'html'
+      }))
+    } catch (e) {
+      return latex
+    }
+  }
+  _mathCache = {
+    inline: render('E = mc^2', false),
+    block: render('x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}', true)
+  }
+  return _mathCache
+}
 
 export default {
   name: 'MarkdownGuide',
@@ -392,31 +425,28 @@ export default {
     }
   },
   emits: ['close'],
+  data() {
+    return {
+      mathInlineHtml: 'E = mc²',
+      mathBlockHtml: 'x = (-b ± √(b²-4ac)) / 2a'
+    }
+  },
+  watch: {
+    show(val) {
+      if (val) this.loadMath()
+    }
+  },
+  mounted() {
+    if (this.show) this.loadMath()
+  },
   methods: {
     close() {
       this.$emit('close')
     },
-    renderInlineMath(latex) {
-      try {
-        return sanitizeHtml(katex.renderToString(latex, {
-          displayMode: false,
-          throwOnError: false,
-          output: 'html'
-        }))
-      } catch (e) {
-        return latex
-      }
-    },
-    renderBlockMath(latex) {
-      try {
-        return sanitizeHtml(katex.renderToString(latex, {
-          displayMode: true,
-          throwOnError: false,
-          output: 'html'
-        }))
-      } catch (e) {
-        return latex
-      }
+    async loadMath() {
+      const result = await loadAndRenderMath()
+      this.mathInlineHtml = result.inline
+      this.mathBlockHtml = result.block
     }
   }
 }

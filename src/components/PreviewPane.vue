@@ -52,6 +52,7 @@ import { parseMarkdown } from '../core/markdown/index.js'
 import { useGlobalThemeManager } from '../composables/index.js'
 import { escapeHtml as sharedEscapeHtml } from '../shared/utils/text.js'
 import { sanitizeHtml } from '../shared/utils/sanitize.js'
+import { debounce } from '@utils/performance.js'
 let _mermaid = null
 const loadMermaid = async () => {
   if (!_mermaid) {
@@ -93,6 +94,11 @@ export default {
     const currentViewportMode = ref('desktop')
     const scrollPosition = ref(0)
     // 移除多余的变量声明，现在在滚动时实时获取
+
+    // Mermaid 竞态保护：递增计数器，防止旧的异步渲染覆盖新结果
+    let renderGeneration = 0
+    // 组件卸载标志，防止卸载后更新 ref
+    let isUnmounted = false
 
     // 预览模式配置
     const viewportModes = [
@@ -230,9 +236,9 @@ export default {
       if (viewBox) {
         const parts = viewBox.split(/\s+/).map(Number)
         if (parts.length === 4) {
-          const widthExpand = Math.max(parts[2] * 0.08, 24)
-          const heightExpand = Math.max(parts[3] * 0.06, 16)
-          parts[0] = parts[0] - widthExpand * 0.4
+          const widthExpand = Math.max(parts[2] * 0.15, 40)
+          const heightExpand = Math.max(parts[3] * 0.08, 20)
+          parts[0] = parts[0] - widthExpand * 0.5
           parts[1] = parts[1] - heightExpand / 2
           parts[2] = parts[2] + widthExpand
           parts[3] = parts[3] + heightExpand
@@ -249,12 +255,16 @@ export default {
     }
 
     const processMarkdown = async () => {
+      if (isUnmounted) return
       if (!props.markdown) {
         renderedHtml.value = ''
         socialHtml.value = ''
         emit('html-generated', '')
         return
       }
+
+      // 递增 generation，用于 Mermaid 竞态保护
+      const currentGeneration = ++renderGeneration
 
       try {
         // 获取当前有效主题（可能是临时自定义主题）
@@ -281,6 +291,10 @@ export default {
 
         // 等待DOM更新后再渲染 Mermaid
         await nextTick()
+
+        // 竞态检查：如果已有更新的渲染请求，放弃本次 Mermaid 渲染
+        if (currentGeneration !== renderGeneration || isUnmounted) return
+
         try {
           const mermaid = await loadMermaid()
           mermaid.initialize({
@@ -331,6 +345,9 @@ export default {
               // 按块渲染；对每个 mermaid 源只保留一个渲染结果或一个错误提示
               const blocks = Array.from(containerEl.querySelectorAll('.mermaid'))
               for (let i = 0; i < blocks.length; i++) {
+                // 竞态检查：每个块渲染前检查
+                if (currentGeneration !== renderGeneration || isUnmounted) return
+
                 const el = blocks[i]
                 const def = (el.textContent || '').trim()
                 // 非法/非 mermaid 指令的片段直接跳过，避免 mermaid 注入错误卡片
@@ -372,7 +389,9 @@ export default {
         }
 
         // 3. 发送给父组件
-        emit('html-generated', socialFormatted)
+        if (currentGeneration === renderGeneration && !isUnmounted) {
+          emit('html-generated', socialFormatted)
+        }
       } catch (error) {
         console.error('处理Markdown时出错:', error)
         const safeMsg = (error && error.message) ? sharedEscapeHtml(String(error.message)) : '未知错误'
@@ -388,34 +407,19 @@ export default {
       }
     }
 
-    // 监听markdown内容变化 - 不使用immediate，等待初始化完成
-    watch(() => props.markdown, () => {
-      processMarkdown()
-    })
+    // 合并所有触发 processMarkdown 的 watcher 为一个 debounced 调用
+    const debouncedProcessMarkdown = debounce(processMarkdown, 200)
 
-    // 监听颜色主题变化
-    watch(currentColorTheme, () => {
-      processMarkdown()
-    }, { deep: true })
+    // 统一监听所有影响预览的响应式源
+    watch(
+      [() => props.markdown, currentColorTheme, currentCodeStyle, currentLayoutId, currentFontSettings],
+      () => { debouncedProcessMarkdown() },
+      { deep: true }
+    )
 
-    // 监听代码样式变化
-    watch(currentCodeStyle, () => {
-      processMarkdown()
-    }, { deep: true })
-
-    // 监听布局主题系统变化
-    watch(currentLayoutId, () => {
-      processMarkdown()
-    })
-
-    // 监听字体设置变化
-    watch(currentFontSettings, () => {
-      processMarkdown()
-    }, { deep: true })
-
-    // 监听临时自定义主题变化
+    // 临时自定义主题变化事件也走 debounce，与 watcher 共享同一 debounce 窗口
     const handleCustomThemeChange = () => {
-      processMarkdown()
+      debouncedProcessMarkdown()
     }
 
     // 组件生命周期
@@ -423,20 +427,16 @@ export default {
       // 初始化主题系统
       initialize()
 
-      // 初始化完成后立即处理markdown
+      // 初始化完成后立即处理 markdown（不走 debounce，避免首屏空白闪烁）
       processMarkdown()
 
       // 监听自定义主题变化事件
       window.addEventListener('custom-theme-changed', handleCustomThemeChange)
-
-      // 保存清理函数
-      onUnmounted(() => {
-        window.removeEventListener('custom-theme-changed', handleCustomThemeChange)
-      })
     })
 
     onUnmounted(() => {
-      // 组件卸载清理
+      isUnmounted = true
+      window.removeEventListener('custom-theme-changed', handleCustomThemeChange)
     })
 
     return {

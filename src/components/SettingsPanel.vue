@@ -126,7 +126,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, defineAsyncComponent } from "vue";
 import { useSettingsPanel } from "../composables/useSettingsPanel.js";
 import { useScrollNavigation } from "../composables/useScrollNavigation.js";
 import SettingsHeader from "./settings/SettingsHeader.vue";
@@ -137,7 +137,7 @@ import CodeStyleSection from "./settings/CodeStyleSection.vue";
 import FontSettingsSection from "./settings/FontSettingsSection.vue";
 import FontSizeSection from "./settings/FontSizeSection.vue";
 import SpacingSettingsSection from "./settings/SpacingSettingsSection.vue";
-import ColorPicker from "./ColorPicker.vue";
+const ColorPicker = defineAsyncComponent(() => import("./ColorPicker.vue"));
 
 // Props
 const props = defineProps({

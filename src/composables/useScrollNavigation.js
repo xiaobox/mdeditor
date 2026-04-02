@@ -31,6 +31,8 @@ export function useScrollNavigation(options) {
 
   // 缓存滚动容器引用，避免重复查询 DOM
   let scrollContainerCache = null
+  // rAF 节流：pending 的 requestAnimationFrame ID
+  let rafId = null
 
   /**
    * 获取滚动容器（带缓存）
@@ -75,32 +77,44 @@ export function useScrollNavigation(options) {
   }
 
   /**
-   * 处理滚动事件，更新当前激活的导航项
+   * 滚动事件的实际处理逻辑
+   * 使用 scrollTop + offsetTop 代替 getBoundingClientRect()，避免强制同步布局重排
    */
-  const handleScroll = () => {
+  const updateActiveSection = () => {
+    rafId = null
+
     // 如果是点击导航触发的滚动，跳过更新（避免闪烁）
     if (isScrollingByClick.value) return
 
     const container = getScrollContainer()
     if (!container) return
 
-    const containerHeight = container.clientHeight
-    const containerRect = container.getBoundingClientRect()
+    const scrollTop = container.scrollTop
+    const threshold = container.clientHeight / 3
     const sectionIds = sections.map(s => s.id)
 
-    for (const sectionId of sectionIds) {
-      const element = document.getElementById(sectionId)
+    for (let i = sectionIds.length - 1; i >= 0; i--) {
+      const element = document.getElementById(sectionIds[i])
       if (!element) continue
 
-      const rect = element.getBoundingClientRect()
-      const relativeTop = rect.top - containerRect.top
-
-      // 如果元素在视口的上 1/3 区域，则认为是当前激活的区域
-      if (relativeTop <= containerHeight / 3 && relativeTop >= -rect.height / 2) {
-        activeSection.value = sectionId
-        break
+      // offsetTop 相对于 offsetParent，不触发布局重排
+      if (element.offsetTop <= scrollTop + threshold) {
+        activeSection.value = sectionIds[i]
+        return
       }
     }
+    // 滚动位置在所有 section 之前，激活第一个
+    if (sectionIds.length) {
+      activeSection.value = sectionIds[0]
+    }
+  }
+
+  /**
+   * 处理滚动事件（rAF 节流，避免高频回调）
+   */
+  const handleScroll = () => {
+    if (rafId !== null) return
+    rafId = requestAnimationFrame(updateActiveSection)
   }
 
   /**
@@ -109,7 +123,7 @@ export function useScrollNavigation(options) {
   const addScrollListener = () => {
     const container = getScrollContainer()
     if (container) {
-      container.addEventListener('scroll', handleScroll)
+      container.addEventListener('scroll', handleScroll, { passive: true })
     }
   }
 
@@ -139,6 +153,10 @@ export function useScrollNavigation(options) {
    * 销毁导航（面板关闭时调用）
    */
   const destroyNavigation = () => {
+    if (rafId !== null) {
+      cancelAnimationFrame(rafId)
+      rafId = null
+    }
     removeScrollListener()
   }
 

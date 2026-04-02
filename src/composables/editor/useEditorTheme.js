@@ -7,6 +7,7 @@
 
 import { computed } from 'vue';
 import { EditorView } from 'codemirror';
+import { Compartment } from '@codemirror/state';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { useGlobalThemeManager } from '../theme/useThemeManager.js';
 
@@ -18,6 +19,9 @@ import { useGlobalThemeManager } from '../theme/useThemeManager.js';
 export function useEditorTheme(theme = 'auto') {
   // 获取全局主题管理器实例
   const themeManager = useGlobalThemeManager();
+
+  // 使用 Compartment 支持运行时主题热替换，无需重建编辑器
+  const themeCompartment = new Compartment();
 
   /**
    * 根据配置和全局主题计算出当前应使用的编辑器主题
@@ -65,25 +69,41 @@ export function useEditorTheme(theme = 'auto') {
   };
 
   /**
-   * 获取编辑器扩展数组
+   * 获取当前主题对应的 dark mode 扩展
+   * @returns {import('@codemirror/state').Extension}
+   */
+  const getDarkModeExtension = () => {
+    return currentTheme.value === 'dark' ? oneDark : [];
+  };
+
+  /**
+   * 获取编辑器扩展数组（使用 Compartment 包裹 dark mode 扩展）
    * @returns {Array} 扩展数组
    */
   const getEditorExtensions = () => {
-    const extensions = [
-      getEditorTheme()
+    return [
+      getEditorTheme(),
+      themeCompartment.of(getDarkModeExtension())
     ];
+  };
 
-    if (currentTheme.value === 'dark') {
-      extensions.push(oneDark);
-    }
-
-    return extensions;
+  /**
+   * 运行时重配置主题扩展，无需重建编辑器
+   * 保留光标位置、撤销历史和滚动位置
+   * @param {import('@codemirror/view').EditorView} editorView
+   */
+  const reconfigureTheme = (editorView) => {
+    if (!editorView) return
+    editorView.dispatch({
+      effects: themeCompartment.reconfigure(getDarkModeExtension())
+    })
   };
 
   return {
     currentTheme,
     themeManager,
     getEditorTheme,
-    getEditorExtensions
+    getEditorExtensions,
+    reconfigureTheme
   };
 } 
