@@ -11,6 +11,12 @@
  */
 
 import { calculateLineHeight as calcLH } from '../../shared/utils/typography.js';
+import {
+  generateFontCSSVariables,
+  getDefaultFontId,
+  getFontFamily,
+  getValidFontSize
+} from '../../config/theme-presets.js';
 
 // ============================================================================
 // 工具函数
@@ -44,13 +50,25 @@ function mixWithBlack(hex, percentPrimary = 0.6) {
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 
-const FONT_FAMILY_MAP = {
-  'microsoft-yahei': 'Microsoft YaHei, Arial, sans-serif',
-  'pingfang-sc': 'PingFang SC, Microsoft YaHei, Arial, sans-serif',
-  'hiragino-sans': 'Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif',
-  'arial': 'Arial, sans-serif',
-  'system-safe': 'Microsoft YaHei, Arial, sans-serif'
-};
+export function resolveCopyFontSettings(fontSettings = {}) {
+  const fontSize = getValidFontSize(Number(fontSettings?.fontSize) || 16);
+  const mergedSettings = {
+    fontFamily: fontSettings?.fontFamily || getDefaultFontId(),
+    fontSize,
+    lineHeight: fontSettings?.lineHeight,
+    letterSpacing: fontSettings?.letterSpacing
+  };
+  const variables = generateFontCSSVariables(mergedSettings);
+  const fallbackFont = getFontFamily(getDefaultFontId());
+  const fontFamily = variables['--markdown-font-family'] || fallbackFont?.value || 'sans-serif';
+
+  return {
+    fontFamily: fontFamily.replace(/"/g, "'"),
+    fontSize,
+    lineHeight: variables['--markdown-line-height'] || calcLH(fontSize, mergedSettings.lineHeight),
+    letterSpacing: typeof fontSettings?.letterSpacing === 'number' ? fontSettings.letterSpacing : 0
+  };
+}
 
 // ============================================================================
 // 内联样式注入
@@ -61,8 +79,28 @@ function addInlineStyles(html, fontFamily, fontSize, lineHeight, letterSpacing =
   const fallback = calcLH(fontSize, lh);
   const lineHeightCss = Number.isFinite(lh) ? String(lineHeight) : (/[empx%]/i.test(String(lineHeight)) ? String(lineHeight) : fallback);
   const baseStyle = `font-family: ${fontFamily}; color: #333; letter-spacing: ${letterSpacing}px;`;
+  const blockTags = new Set(['section', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'table', 'th', 'td', 'figcaption']);
+  const textTags = ['section', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'table', 'th', 'td', 'a', 'span', 'figcaption'];
   const normalWeight = '400';
   const boldWeight = '700';
+
+  const setDecl = (style, prop, value) => {
+    const re = new RegExp(`${prop}\\s*:\\s*[^;]*;?`, 'i');
+    const decl = `${prop}: ${value};`;
+    if (re.test(style)) return style.replace(re, decl);
+    const s = String(style || '').trim();
+    return `${s}${s && !s.endsWith(';') ? ';' : ''} ${decl}`.trim();
+  };
+
+  const normalizeTextStyle = (style, tag) => {
+    let updated = style || '';
+    updated = setDecl(updated, 'font-family', `${fontFamily} !important`);
+    updated = setDecl(updated, 'letter-spacing', `${letterSpacing}px`);
+    if (blockTags.has(tag)) {
+      updated = setDecl(updated, 'line-height', `${lineHeightCss} !important`);
+    }
+    return updated.replace(/\s+/g, ' ').trim();
+  };
 
   let out = html
     .replace(/<section\b(?![^>]*style=)/gi, `<section style="${baseStyle} line-height: ${lineHeightCss} !important;"`)
@@ -79,27 +117,23 @@ function addInlineStyles(html, fontFamily, fontSize, lineHeight, letterSpacing =
       return `<figure style=\"${figureStyle}\">${img}<figcaption style=\"${captionStyle}\">${alt}</figcaption></figure>`;
     });
 
-  const enforce = (inputHtml, tag) => {
+  const ensureTextFont = (inputHtml, tag) => {
+    const missingStyleRe = new RegExp(`<${tag}\\b(?![^>]*style=)`, 'gi');
+    let normalized = inputHtml.replace(missingStyleRe, `<${tag} style="${normalizeTextStyle('', tag)}"`);
     const re = new RegExp(`<${tag}([^>]*?)style="([^"]*)"([^>]*)>`, 'gi');
-    return inputHtml.replace(re, (_m, pre, style, post) => {
-      let updated = style;
-      if (/line-height\s*:/i.test(updated)) {
-        updated = updated.replace(/line-height\s*:\s*[^;]*;?/gi, `line-height: ${lineHeightCss} !important;`);
-      } else {
-        const needsSemicolon = updated.trim().length > 0 && !(/[;\s]$/.test(updated.trim()));
-        updated = `${updated}${needsSemicolon ? '; ' : ' '}line-height: ${lineHeightCss} !important;`;
-      }
+    return normalized.replace(re, (_m, pre, style, post) => {
+      const updated = normalizeTextStyle(style, tag);
       return `<${tag}${pre}style="${updated}"${post}>`;
     });
   };
-  for (const t of ['section', 'p', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'blockquote']) out = enforce(out, t);
+  for (const t of textTags) out = ensureTextFont(out, t);
 
   const wrapInner = (inputHtml, tag) => {
-    const re = new RegExp(`<${tag}([^>]*)>([\s\S]*?)<\/${tag}>`, 'gi');
+    const re = new RegExp(`<${tag}([^>]*)>([\\s\\S]*?)<\\/${tag}>`, 'gi');
     return inputHtml.replace(re, (m, attrs, inner) => {
       if (/data-wx-lh-wrap/.test(inner)) return m;
       if (/^\s*<(p|div|ul|ol|li|h1|h2|h3|blockquote|pre|table)\b/i.test(inner)) return m;
-      const span = `<span data-wx-lh-wrap style="line-height: ${lineHeightCss} !important; letter-spacing: ${letterSpacing}px; display: inline-block; width: 100%;">${inner}</span>`;
+      const span = `<span data-wx-lh-wrap style="font-family: ${fontFamily} !important; line-height: ${lineHeightCss} !important; letter-spacing: ${letterSpacing}px; display: inline-block; width: 100%;">${inner}</span>`;
       return `<${tag}${attrs}>${span}</${tag}>`;
     });
   };
@@ -112,10 +146,7 @@ function addInlineStyles(html, fontFamily, fontSize, lineHeight, letterSpacing =
  */
 export function wrapWithFontStyles(html, fontSettings) {
   if (!fontSettings || !html) return html;
-  const fontFamily = FONT_FAMILY_MAP[fontSettings.fontFamily] || FONT_FAMILY_MAP['microsoft-yahei'];
-  const fontSize = fontSettings.fontSize || 16;
-  const lineHeight = calcLH(fontSize, fontSettings.lineHeight);
-  const letterSpacing = typeof fontSettings.letterSpacing === 'number' ? fontSettings.letterSpacing : 0;
+  const { fontFamily, fontSize, lineHeight, letterSpacing } = resolveCopyFontSettings(fontSettings);
   const styledHtml = addInlineStyles(html, fontFamily, fontSize, lineHeight, letterSpacing);
   const lh2 = parseFloat(lineHeight);
   const fallback = calcLH(fontSize, lh2);
@@ -151,14 +182,20 @@ function sanitizeHeadingInlineStyle(originalStyle, { marginTop, marginBottom } =
 }
 
 function stripLeadingDecorativeSpan(html, tag) {
-  const re = new RegExp(`<${tag}([^>]*)>(\s*)<span([^>]*)style="([^"]*?\\bwidth\\s*:\\s*\\d+px\\b[^"]*)"([^>]*)><\\/span>(\s*)`, 'gi');
+  const re = new RegExp(`<${tag}([^>]*)>(\\s*)<span([^>]*)style="([^"]*?\\bwidth\\s*:\\s*\\d+px\\b[^"]*)"([^>]*)><\\/span>(\\s*)`, 'gi');
   return html.replace(re, (m, pre, s1) => `<${tag}${pre}>${s1}`);
+}
+
+function extractFontFamilyStyle(style) {
+  const match = String(style || '').match(/font-family\s*:\s*([^;]+);?/i);
+  return match ? `font-family: ${match[1]};` : '';
 }
 
 function ensureDecorativeSpan(html, tag, config, color) {
   const tagOpenRe = new RegExp(`<${tag}([^>]*)style=\"([^\"]*)\"([^>]*)>([\\s\\S]*?)<\/${tag}>`, 'gi');
   return html.replace(tagOpenRe, (m, pre, style, post, inner) => {
     const cleaned = sanitizeHeadingInlineStyle(style, { marginTop: config.marginTop, marginBottom: config.marginBottom });
+    const fontFamilyStyle = extractFontFamilyStyle(cleaned);
     const innerStripped = inner.replace(/^(\s*)<span([^>]*)style=\"([^\"]*?\bwidth\s*:\s*\d+px\b[^\"]*)\"([^>]*)><\/span>(\s*)/i, '$1');
 
     const decoBar = [
@@ -172,7 +209,7 @@ function ensureDecorativeSpan(html, tag, config, color) {
 
     const containerStyle = 'display: table; width: 100%;';
     const leftCellStyle = 'display: table-cell; vertical-align: middle; width: 1px;';
-    const rightCellStyle = 'display: table-cell; vertical-align: middle; padding-left: 0.5em;';
+    const rightCellStyle = `display: table-cell; vertical-align: middle; padding-left: 0.5em; ${fontFamilyStyle}`;
 
     const content = `<span style=\"${leftCellStyle}\"><span style=\"${decoBar}\">&#8203;</span></span><span style=\"${rightCellStyle}\">${innerStripped}</span>`;
     return `<${tag}${pre}style=\"${cleaned}; ${containerStyle}\"${post}>${content}</${tag}>`;
@@ -279,8 +316,9 @@ export const breezeCopyAdapter = {
         .replace(/margin[^;]*;?/gi, '')
         .replace(/font-size:[^;]*;?/gi, '')
         .replace(/text-align[^;]*;?/gi, '');
+      const fontFamilyStyle = extractFontFamilyStyle(cleaned);
       const h1Style = `text-align: center; margin: 2.2em 0 1.6em;`;
-      const pill = `display: inline-block; padding: 8px 16px; border-radius: 12px; background: ${primary}; color: #fff; font-size: ${baseFontSize}px; margin: 0 auto; box-shadow: 0 8px 20px rgba(${primaryRgbStr}, 0.22); letter-spacing: .5px;`;
+      const pill = `display: inline-block; padding: 8px 16px; border-radius: 12px; background: ${primary}; color: #fff; font-size: ${baseFontSize}px; margin: 0 auto; box-shadow: 0 8px 20px rgba(${primaryRgbStr}, 0.22); letter-spacing: .5px; ${fontFamilyStyle}`;
       const unwrapped = inner.replace(/^\s*<span[^>]*data-wx-lh-wrap[^>]*>([\s\S]*?)<\/span>\s*$/i, '$1');
       const trimmed = unwrapped.replace(/[\u00A0\s]+$/g, '').replace(/^[\u00A0\s]+/g, '');
       const wrapper = `<span style=\"display:block; text-align:center;\"><span data-wx-h1-pill style=\"${pill}\">${trimmed}</span></span>`;
@@ -373,9 +411,8 @@ export class SocialStyler {
 
     // 预览模式
     if (isPreview) {
-      const fontFamily = FONT_FAMILY_MAP[fontSettings?.fontFamily] || FONT_FAMILY_MAP['microsoft-yahei'];
-      const fontSize = fontSettings?.fontSize || 16;
-      const baseStyle = `font-family: ${fontFamily}; color: #333; letter-spacing: ${typeof fontSettings?.letterSpacing === 'number' ? fontSettings.letterSpacing : 0}px;`;
+      const { fontFamily, fontSize, letterSpacing } = resolveCopyFontSettings(fontSettings);
+      const baseStyle = `font-family: ${fontFamily}; color: #333; letter-spacing: ${letterSpacing}px;`;
       const out = html.replace(/<img([^>]*?)data-md-caption="true"([^>]*?)>/gi, (m, pre, post) => {
         const altMatch = m.match(/alt="([^"]*)"/i);
         const alt = altMatch ? altMatch[1] : '';
@@ -405,10 +442,7 @@ export class SocialStyler {
 
   static applyInlineStyles(html, fontSettings) {
     if (!fontSettings || !html) return html;
-    const fontFamily = FONT_FAMILY_MAP[fontSettings.fontFamily] || FONT_FAMILY_MAP['microsoft-yahei'];
-    const fontSize = fontSettings.fontSize || 16;
-    const lineHeight = calcLH(fontSize, fontSettings.lineHeight);
-    const letterSpacing = typeof fontSettings.letterSpacing === 'number' ? fontSettings.letterSpacing : 0;
+    const { fontFamily, fontSize, lineHeight, letterSpacing } = resolveCopyFontSettings(fontSettings);
     return addInlineStyles(html, fontFamily, fontSize, lineHeight, letterSpacing);
   }
 }

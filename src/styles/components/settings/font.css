@@ -11,12 +11,46 @@
   margin-bottom: 16px;
 }
 
+/* OS 提示信息 */
+.font-os-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  background: var(--theme-bg-tertiary);
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--theme-text-secondary);
+}
+
+.font-os-notice .notice-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  opacity: 0.6;
+}
+
+/* 字体类别分组 */
+.font-category-group {
+  margin-bottom: 24px;
+}
+
+.font-category-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--theme-text-secondary);
+  margin-bottom: 12px;
+  padding-left: 2px;
+  letter-spacing: 0.5px;
+}
+
 /* 字体族网格 */
 .font-family-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
 }
 
 .font-family-card {

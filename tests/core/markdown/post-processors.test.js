@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import { getThemeCopyAdapter, registerThemeCopyAdapter, wrapWithFontStyles, SocialStyler } from '../../../src/core/markdown/social-adapters.js'
+import { getThemeCopyAdapter, registerThemeCopyAdapter, resolveCopyFontSettings, wrapWithFontStyles, SocialStyler } from '../../../src/core/markdown/social-adapters.js'
 
 describe('adapters.js', () => {
   describe('getThemeCopyAdapter', () => {
@@ -53,12 +53,26 @@ describe('adapters.js', () => {
       expect(result).toContain('标题一')
     })
 
+    it('H1 胶囊应保留父级字体', () => {
+      const html = '<h1 style="font-family: \'Kaiti SC\', \'STKaiti\', \'华文楷体\', KaiTi, \'楷体\', serif !important;">标题一</h1>'
+      const result = adapter.transform(html, baseCtx)
+      expect(result).toContain("data-wx-h1-pill")
+      expect(result).toContain("font-family: 'Kaiti SC', 'STKaiti', '华文楷体', KaiTi, '楷体', serif !important;")
+    })
+
     it('应为 H2/H3/H4 添加装饰', () => {
       const html = '<h2 style="margin: 10px;">二级标题</h2><h3 style="color:blue;">三级标题</h3><h4 style="padding:5px;">四级标题</h4>'
       const result = adapter.transform(html, baseCtx)
       expect(result).toContain('<h2')
       expect(result).toContain('<h3')
       expect(result).toContain('<h4')
+    })
+
+    it('H2/H3/H4 装饰布局应保留父级字体', () => {
+      const html = '<h2 style="font-family: \'Kaiti SC\', \'STKaiti\', \'华文楷体\', KaiTi, \'楷体\', serif !important;">二级标题</h2>'
+      const result = adapter.transform(html, baseCtx)
+      expect(result).toContain('display: table-cell')
+      expect(result).toContain("font-family: 'Kaiti SC', 'STKaiti', '华文楷体', KaiTi, '楷体', serif !important;")
     })
 
     it('应为链接添加内联样式', () => {
@@ -145,16 +159,47 @@ describe('social-styler.js', () => {
     })
 
     it('应支持不同的字体系列', () => {
-      const families = ['microsoft-yahei', 'pingfang-sc', 'hiragino-sans', 'arial', 'system-safe']
+      const families = ['microsoft-yahei', 'pingfang-sc', 'hiragino-sans', 'songti-sc', 'kaiti-mac', 'sf-mono']
       families.forEach(fontFamily => {
         const result = wrapWithFontStyles('<p>测试</p>', { ...fontSettings, fontFamily })
         expect(result).toContain('font-family:')
       })
     })
 
+    it('复制输出应使用当前字体库中的新增字体', () => {
+      const result = wrapWithFontStyles('<p>测试</p>', { ...fontSettings, fontFamily: 'kaiti-mac' })
+      expect(result).toContain('Kaiti SC')
+      expect(result).toContain('STKaiti')
+      expect(result).toContain('华文楷体')
+      expect(result).toContain('KaiTi')
+    })
+
+    it('复制输出应把字体强制内联到正文和内部包裹 span', () => {
+      const result = wrapWithFontStyles('<p style="margin: 1em 0;">测试</p>', { ...fontSettings, fontFamily: 'kaiti-mac' })
+      expect(result).toContain("<p style=\"margin: 1em 0; font-family: 'Kaiti SC', 'STKaiti', '华文楷体', KaiTi, '楷体', serif !important;")
+      expect(result).toContain("data-wx-lh-wrap style=\"font-family: 'Kaiti SC', 'STKaiti', '华文楷体', KaiTi, '楷体', serif !important;")
+    })
+
     it('应处理未知字体系列（使用默认）', () => {
       const result = wrapWithFontStyles('<p>测试</p>', { ...fontSettings, fontFamily: 'unknown' })
-      expect(result).toContain('Microsoft YaHei')
+      expect(result).toContain('font-family:')
+      expect(result).not.toContain('unknown')
+    })
+  })
+
+  describe('resolveCopyFontSettings', () => {
+    it('应与预览 CSS 变量使用同一套字体解析', () => {
+      const resolved = resolveCopyFontSettings({
+        fontFamily: 'songti-sc',
+        fontSize: 18,
+        lineHeight: 1.8,
+        letterSpacing: 1
+      })
+
+      expect(resolved.fontFamily).toContain("'Songti SC'")
+      expect(resolved.fontSize).toBe(18)
+      expect(resolved.lineHeight).toBe('1.8')
+      expect(resolved.letterSpacing).toBe(1)
     })
   })
 
@@ -175,6 +220,16 @@ describe('social-styler.js', () => {
       expect(result).toContain('<figcaption')
       expect(result).toContain('图片说明')
       expect(result).not.toContain('data-role="outer"')
+    })
+
+    it('预览模式图片说明应使用所选字体', () => {
+      const html = '<img data-md-caption="true" alt="图片说明" src="test.jpg">'
+      const result = SocialStyler.process(html, {
+        fontSettings: { ...fontSettings, fontFamily: 'songti-sc' },
+        isPreview: true
+      })
+
+      expect(result).toContain('Songti SC')
     })
 
     it('非预览模式应注入完整样式', () => {
@@ -257,13 +312,12 @@ describe('social-styler.js', () => {
       })
     })
 
-    it('wrapInner 正则在原代码中未正确工作（已知限制）', () => {
-      // 注意：原始代码中正则 [\s\S]*? 转义问题导致未正确匹配
+    it('应为纯文本块添加微信行高包裹', () => {
       const html = '<p style="margin: 10px;">纯文本内容</p>'
       const result = wrapWithFontStyles(html, fontSettings)
-      // 当前行为：不添加 data-wx-lh-wrap 包裹
       expect(result).toContain('<p style="margin: 10px;')
-      expect(result).toContain('纯文本内容</p>')
+      expect(result).toContain('data-wx-lh-wrap')
+      expect(result).toContain('纯文本内容</span></p>')
     })
 
     it('不应重复包裹已有 data-wx-lh-wrap 的内容', () => {

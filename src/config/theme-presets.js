@@ -797,45 +797,217 @@ export const themeSystemPresets = {
 // ============================================================================
 
 /**
- * 可用的字体族选项 - 微信公众号兼容版本
+ * 检测当前操作系统
+ * @returns {'macos'|'windows'|'android'|'ios'|'linux'|'unknown'}
  */
-export const fontFamilyOptions = [
-  {
-    id: 'microsoft-yahei',
-    name: '微软雅黑',
-    description: '微信公众号推荐字体，兼容性最佳',
-    value: '"Microsoft YaHei", "微软雅黑", Arial, sans-serif',
-    category: 'recommended'
-  },
+export function detectOS() {
+  if (typeof navigator === 'undefined') return 'unknown';
+  const ua = navigator.userAgent || '';
+  const platform = navigator.platform || '';
+  if (/Android/i.test(ua)) return 'android';
+  if (/iPad|iPhone|iPod/.test(ua) || (platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return 'ios';
+  if (/Mac/i.test(platform)) return 'macos';
+  if (/Win/i.test(platform)) return 'windows';
+  if (/Linux/i.test(platform)) return 'linux';
+  return 'unknown';
+}
+
+/**
+ * OS 显示名称映射
+ */
+const osDisplayNames = {
+  macos: 'macOS',
+  ios: 'iOS',
+  windows: 'Windows',
+  android: 'Android',
+  linux: 'Linux',
+  unknown: ''
+};
+
+/**
+ * 获取 OS 的显示名称
+ * @param {string} os
+ * @returns {string}
+ */
+export function getOSDisplayName(os) {
+  return osDisplayNames[os] || '';
+}
+
+/**
+ * 字体类别
+ */
+export const FONT_CATEGORIES = Object.freeze({
+  SANS_SERIF: 'sans-serif',
+  SERIF: 'serif',
+  MONOSPACE: 'monospace'
+});
+
+/**
+ * 完整字体库。按 OS 和类别组织，每个字体的 value 带完整跨平台 fallback 链。
+ */
+const fontDatabase = [
+  // macOS / iOS 无衬线
   {
     id: 'pingfang-sc',
-    name: '苹方',
-    description: 'Apple 设备优选，微信支持',
-    value: '"PingFang SC", "苹方-简", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
-    category: 'recommended'
+    value: '"PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif',
+    category: FONT_CATEGORIES.SANS_SERIF,
+    os: ['macos', 'ios'],
+    preview: '苹方体预览'
   },
   {
     id: 'hiragino-sans',
-    name: '冬青黑体',
-    description: 'Mac 系统经典字体，微信支持',
-    value: '"Hiragino Sans GB", "冬青黑体简体中文", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
-    category: 'recommended'
+    value: '"Hiragino Sans GB", "PingFang SC", "Microsoft YaHei", sans-serif',
+    category: FONT_CATEGORIES.SANS_SERIF,
+    os: ['macos', 'ios'],
+    preview: '冬青黑预览'
+  },
+  // macOS / iOS 衬线
+  {
+    id: 'songti-sc',
+    value: '"Songti SC", STSong, SimSun, "Noto Serif SC", serif',
+    category: FONT_CATEGORIES.SERIF,
+    os: ['macos', 'ios'],
+    preview: '宋体预览文'
   },
   {
-    id: 'arial',
-    name: 'Arial',
-    description: '通用西文字体，全平台支持',
-    value: 'Arial, sans-serif',
-    category: 'basic'
+    id: 'kaiti-mac',
+    value: '"Kaiti SC", "STKaiti", "华文楷体", KaiTi, "楷体", serif',
+    category: FONT_CATEGORIES.SERIF,
+    os: ['macos', 'ios'],
+    preview: '楷体预览文'
+  },
+  // macOS / iOS 等宽
+  {
+    id: 'sf-mono',
+    value: '"SF Mono", Menlo, Monaco, Consolas, monospace',
+    category: FONT_CATEGORIES.MONOSPACE,
+    os: ['macos', 'ios'],
+    preview: '等宽对齐 Mono'
+  },
+
+  // Windows 无衬线
+  {
+    id: 'microsoft-yahei',
+    value: '"Microsoft YaHei", "微软雅黑", "PingFang SC", sans-serif',
+    category: FONT_CATEGORIES.SANS_SERIF,
+    os: ['windows'],
+    preview: '雅黑体预览'
   },
   {
-    id: 'system-safe',
-    name: '系统安全字体',
-    description: '微信公众号安全字体组合',
-    value: '"Microsoft YaHei", "微软雅黑", "PingFang SC", "Hiragino Sans GB", Arial, sans-serif',
-    category: 'basic'
+    id: 'simhei',
+    value: 'SimHei, "黑体", "Microsoft YaHei", sans-serif',
+    category: FONT_CATEGORIES.SANS_SERIF,
+    os: ['windows'],
+    preview: '黑体风预览'
+  },
+  // Windows 衬线
+  {
+    id: 'simsun',
+    value: 'SimSun, "宋体", "Songti SC", "Noto Serif SC", serif',
+    category: FONT_CATEGORIES.SERIF,
+    os: ['windows'],
+    preview: '宋体预览文'
+  },
+  {
+    id: 'kaiti-win',
+    value: 'KaiTi, "楷体", "Kaiti SC", "STKaiti", "华文楷体", serif',
+    category: FONT_CATEGORIES.SERIF,
+    os: ['windows'],
+    preview: '楷体预览文'
+  },
+  {
+    id: 'fangsong',
+    value: 'FangSong, "仿宋", STFangsong, serif',
+    category: FONT_CATEGORIES.SERIF,
+    os: ['windows'],
+    preview: '仿宋预览文'
+  },
+  // Windows 等宽
+  {
+    id: 'consolas',
+    value: 'Consolas, "Courier New", Menlo, monospace',
+    category: FONT_CATEGORIES.MONOSPACE,
+    os: ['windows'],
+    preview: '等宽对齐 Mono'
+  },
+
+  // Android / Linux 无衬线
+  {
+    id: 'noto-sans-sc',
+    value: '"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
+    category: FONT_CATEGORIES.SANS_SERIF,
+    os: ['android', 'linux'],
+    preview: '思源黑预览'
+  },
+  // Android / Linux 衬线
+  {
+    id: 'noto-serif-sc',
+    value: '"Noto Serif SC", "Songti SC", SimSun, serif',
+    category: FONT_CATEGORIES.SERIF,
+    os: ['android', 'linux'],
+    preview: '思源宋预览'
+  },
+  // Android / Linux 等宽
+  {
+    id: 'noto-sans-mono',
+    value: '"Noto Sans Mono", "Droid Sans Mono", Consolas, monospace',
+    category: FONT_CATEGORIES.MONOSPACE,
+    os: ['android', 'linux'],
+    preview: '等宽对齐 Mono'
+  },
+
+  // 全平台通用
+  {
+    id: 'system-default',
+    value: '-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif',
+    category: FONT_CATEGORIES.SANS_SERIF,
+    os: ['macos', 'ios', 'windows', 'android', 'linux', 'unknown'],
+    preview: '系统默认体'
   }
 ];
+
+/**
+ * 所有字体的扁平列表（向后兼容）
+ */
+export const fontFamilyOptions = fontDatabase;
+
+/**
+ * 获取当前 OS 可用的字体列表，按类别分组
+ * @param {string} [os] - 操作系统，默认自动检测
+ * @returns {{ os: string, osName: string, categories: Array<{ id: string, fonts: Array }> }}
+ */
+export function getAvailableFonts(os) {
+  const detectedOS = os || detectOS();
+  const osName = getOSDisplayName(detectedOS);
+  const available = fontDatabase.filter(font => font.os.includes(detectedOS));
+  const categoryOrder = [FONT_CATEGORIES.SANS_SERIF, FONT_CATEGORIES.SERIF, FONT_CATEGORIES.MONOSPACE];
+  const categories = categoryOrder
+    .map(category => ({
+      id: category,
+      fonts: available.filter(font => font.category === category)
+    }))
+    .filter(group => group.fonts.length > 0);
+
+  return { os: detectedOS, osName, categories };
+}
+
+/**
+ * 获取指定 OS 的默认字体 ID
+ * @param {string} [os]
+ * @returns {string}
+ */
+export function getDefaultFontId(os) {
+  const detectedOS = os || detectOS();
+  const defaults = {
+    macos: 'pingfang-sc',
+    ios: 'pingfang-sc',
+    windows: 'microsoft-yahei',
+    android: 'noto-sans-sc',
+    linux: 'noto-sans-sc',
+    unknown: 'system-default'
+  };
+  return defaults[detectedOS] || 'system-default';
+}
 
 /**
  * 字号选项配置
@@ -857,26 +1029,31 @@ export const fontSizeOptions = {
 };
 
 /**
- * 字体族分组
+ * 字体族分组（向后兼容；新代码推荐使用 getAvailableFonts）
  */
-export const fontFamilyGroups = {
-  recommended: {
-    name: '推荐字体',
-    description: '微信公众号兼容性最佳的字体',
-    options: fontFamilyOptions.filter(font => font.category === 'recommended')
-  },
-  basic: {
-    name: '基础字体',
-    description: '通用安全字体选择',
-    options: fontFamilyOptions.filter(font => font.category === 'basic')
-  }
-};
+export const fontFamilyGroups = (() => {
+  const { categories } = getAvailableFonts();
+  const sans = categories.find(category => category.id === FONT_CATEGORIES.SANS_SERIF);
+  const serif = categories.find(category => category.id === FONT_CATEGORIES.SERIF);
+  return {
+    recommended: {
+      name: '推荐字体',
+      description: '当前系统可用的字体',
+      options: sans ? sans.fonts : []
+    },
+    basic: {
+      name: '衬线字体',
+      description: '衬线风格字体选择',
+      options: serif ? serif.fonts : []
+    }
+  };
+})();
 
 /**
  * 默认字体设置
  */
 export const defaultFontSettings = {
-  fontFamily: 'microsoft-yahei',
+  fontFamily: getDefaultFontId(),
   fontSize: 16,
   letterSpacing: 0,
   lineHeight: 1.6
@@ -888,20 +1065,23 @@ export const defaultFontSettings = {
  * @returns {object|null} 字体配置对象
  */
 export function getFontFamily(fontId) {
-  return fontFamilyOptions.find(font => font.id === fontId) || null;
+  return fontDatabase.find(font => font.id === fontId) || null;
 }
 
 /**
- * 获取字体族列表（用于 UI 显示）
+ * 获取字体族列表（用于 UI 显示，返回当前 OS 可用的字体）
  * @returns {Array} 简化的字体族列表
  */
 export function getFontFamilyList() {
-  return fontFamilyOptions.map(font => ({
-    id: font.id,
-    name: font.name,
-    description: font.description,
-    category: font.category
-  }));
+  const os = detectOS();
+  return fontDatabase
+    .filter(font => font.os.includes(os))
+    .map(font => ({
+      id: font.id,
+      name: font.id,
+      description: '',
+      category: font.category
+    }));
 }
 
 /**
@@ -937,9 +1117,10 @@ export function generateFontCSSVariables(fontSettings) {
   const fontSize = getValidFontSize(fontSettings.fontSize);
   const letterSpacing = typeof fontSettings.letterSpacing === 'number' ? fontSettings.letterSpacing : 0;
   const lineHeight = typeof fontSettings.lineHeight === 'number' ? fontSettings.lineHeight : (fontSize <= 14 ? 1.7 : fontSize <= 18 ? 1.6 : 1.5);
+  const defaultFont = getFontFamily(getDefaultFontId());
 
   return {
-    '--markdown-font-family': fontFamily ? fontFamily.value : fontFamilyOptions[0].value,
+    '--markdown-font-family': fontFamily ? fontFamily.value : (defaultFont ? defaultFont.value : 'sans-serif'),
     '--markdown-font-size': `${fontSize}px`,
     '--markdown-line-height': String(lineHeight),
     '--markdown-letter-spacing': `${letterSpacing}px`
@@ -952,6 +1133,9 @@ export function generateFontCSSVariables(fontSettings) {
 export const fontSettingsUtils = {
   getFontFamily,
   getFontFamilyList,
+  getAvailableFonts,
+  getDefaultFontId,
+  detectOS,
   isValidFontSize,
   getValidFontSize,
   generateFontCSSVariables,
@@ -978,6 +1162,6 @@ export const fontSettingsUtils = {
    * @returns {boolean} 是否可用
    */
   isFontAvailable(fontId) {
-    return fontFamilyOptions.some(font => font.id === fontId);
+    return fontDatabase.some(font => font.id === fontId);
   }
 };

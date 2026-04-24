@@ -7,6 +7,7 @@
  */
 
 import { debounce } from '../../shared/utils/performance.js';
+import { generateFontCSSVariables } from '../../config/theme-presets.js';
 
 // ============================================================================
 // 颜色工具函数（从 variables.js 合并）
@@ -304,32 +305,7 @@ class CSSVariableManager {
    * @returns {object} CSS 变量对象
    */
   _generateFontCSSVariables(fontSettings) {
-    // 字体族映射 - 微信公众号兼容版本
-    const fontFamilyMap = {
-      'microsoft-yahei': '"Microsoft YaHei", "微软雅黑", Arial, sans-serif',
-      'pingfang-sc': '"PingFang SC", "苹方-简", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
-      'hiragino-sans': '"Hiragino Sans GB", "冬青黑体简体中文", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
-      'arial': 'Arial, sans-serif',
-      'system-safe': '"Microsoft YaHei", "微软雅黑", "PingFang SC", "Hiragino Sans GB", Arial, sans-serif',
-      'system-default': '"Microsoft YaHei", "微软雅黑", "PingFang SC", "Hiragino Sans GB", Arial, sans-serif'
-    };
-
-    const fontFamily = fontFamilyMap[fontSettings.fontFamily] || fontFamilyMap['system-default'];
-    const fontSize = Math.max(12, Math.min(24, fontSettings.fontSize || 16));
-    const resolvedLineHeight = typeof fontSettings.lineHeight === 'number'
-      ? String(fontSettings.lineHeight)
-      : (fontSize <= 14 ? '1.7' : fontSize <= 18 ? '1.6' : '1.5');
-    const resolvedLetterSpacing = typeof fontSettings.letterSpacing === 'number'
-      ? `${fontSettings.letterSpacing}px`
-      : '0px';
-
-    return {
-      // 只更新预览区域的字体变量，不影响全局主题字体
-      '--markdown-font-family': fontFamily,
-      '--markdown-font-size': `${fontSize}px`,
-      '--markdown-line-height': resolvedLineHeight,
-      '--markdown-letter-spacing': resolvedLetterSpacing
-    };
+    return generateFontCSSVariables(fontSettings);
   }
 
   /**

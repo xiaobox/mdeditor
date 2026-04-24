@@ -40,6 +40,7 @@ import { ErrorHandler, ERROR_TYPES } from '../../shared/utils/error.js';
 import { OFFSCREEN_STYLES, DOMUtils } from '../../shared/utils/dom.js';
 import { TextUtils } from '../../shared/utils/text.js';
 import { createModuleLogger } from '../../shared/utils/logger.js'
+import { resolveCopyFontSettings } from '../markdown/social-adapters.js';
 
 const log = createModuleLogger('Clipboard')
 
@@ -60,32 +61,11 @@ function createRichTextContainer(html, fontSettings = null) {
 
   if (fontSettings) {
     try {
-      // 使用与coordinator.js一致的字体映射，微信公众号兼容版本
-      const fontFamilyMap = {
-        'microsoft-yahei': '"Microsoft YaHei", "微软雅黑", Arial, sans-serif',
-        'pingfang-sc': '"PingFang SC", "苹方-简", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
-        'hiragino-sans': '"Hiragino Sans GB", "冬青黑体简体中文", "Microsoft YaHei", "微软雅黑", Arial, sans-serif',
-        'arial': 'Arial, sans-serif',
-        'system-safe': '"Microsoft YaHei", "微软雅黑", "PingFang SC", "Hiragino Sans GB", Arial, sans-serif',
-        'system-default': '"Microsoft YaHei", "微软雅黑", "PingFang SC", "Hiragino Sans GB", Arial, sans-serif'
-      };
-
-      if (fontSettings.fontFamily && fontFamilyMap[fontSettings.fontFamily]) {
-        fontFamily = fontFamilyMap[fontSettings.fontFamily];
-      }
-      // 如果没有匹配的字体，保持默认的微信兼容字体
-
-      if (fontSettings.fontSize && typeof fontSettings.fontSize === 'number') {
-        fontSize = `${fontSettings.fontSize}px`;
-        // 根据字号调整行高，与coordinator.js保持一致
-        lineHeight = fontSettings.lineHeight && typeof fontSettings.lineHeight === 'number'
-          ? String(fontSettings.lineHeight)
-          : (fontSettings.fontSize <= 14 ? '1.7' : fontSettings.fontSize <= 18 ? '1.6' : '1.5');
-      }
-
-      if (typeof fontSettings.letterSpacing === 'number') {
-        letterSpacing = fontSettings.letterSpacing;
-      }
+      const resolvedFont = resolveCopyFontSettings(fontSettings);
+      fontFamily = resolvedFont.fontFamily;
+      fontSize = `${resolvedFont.fontSize}px`;
+      lineHeight = resolvedFont.lineHeight;
+      letterSpacing = resolvedFont.letterSpacing;
     } catch (error) {
       console.warn('Failed to apply font settings to clipboard container:', error);
     }

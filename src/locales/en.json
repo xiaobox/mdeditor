@@ -65,12 +65,28 @@
       }
     },
     "fontFamily": {
+      "osNotice": "Detected system: {osName}. Showing fonts supported on your system.",
+      "category": {
+        "sans-serif": "Sans-serif",
+        "serif": "Serif",
+        "monospace": "Monospace — equal-width characters, neatly aligned"
+      },
       "items": {
-        "microsoft-yahei": { "name": "Microsoft YaHei", "description": "WeChat-friendly Chinese font" },
-        "pingfang-sc": { "name": "PingFang SC", "description": "Preferred on Apple devices" },
-        "hiragino-sans": { "name": "Hiragino Sans", "description": "Classic Mac Chinese font" },
-        "arial": { "name": "Arial", "description": "Universal Latin font" },
-        "system-safe": { "name": "System Safe", "description": "Safe combination for public platforms" }
+        "pingfang-sc": { "name": "PingFang SC", "description": "Apple default Chinese font" },
+        "hiragino-sans": { "name": "Hiragino Sans", "description": "Classic macOS Chinese font" },
+        "songti-sc": { "name": "Songti SC", "description": "Apple classic serif font" },
+        "kaiti-mac": { "name": "STKaiti", "description": "Handwritten calligraphy style" },
+        "sf-mono": { "name": "SF Mono", "description": "Equal-width characters, clean and aligned" },
+        "microsoft-yahei": { "name": "Microsoft YaHei", "description": "Windows default Chinese font" },
+        "simhei": { "name": "SimHei", "description": "Windows classic sans-serif" },
+        "simsun": { "name": "SimSun", "description": "Windows classic serif font" },
+        "kaiti-win": { "name": "KaiTi", "description": "Handwritten calligraphy style" },
+        "fangsong": { "name": "FangSong", "description": "Traditional printing style" },
+        "consolas": { "name": "Consolas", "description": "Equal-width characters, clean and aligned" },
+        "noto-sans-sc": { "name": "Noto Sans SC", "description": "Google open-source sans-serif" },
+        "noto-serif-sc": { "name": "Noto Serif SC", "description": "Google open-source serif" },
+        "noto-sans-mono": { "name": "Noto Sans Mono", "description": "Equal-width characters, clean and aligned" },
+        "system-default": { "name": "System Default", "description": "Auto-match current system font" }
       }
     },
     "footer": {

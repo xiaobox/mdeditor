@@ -22,6 +22,7 @@ import {
   themeSystems,
   getFontFamily,
   getFontFamilyList,
+  getAvailableFonts,
   defaultFontSettings,
   fontSettingsUtils,
   getValidFontSize
@@ -87,8 +88,11 @@ export function useThemeManager() {
   /** 排版主题列表 */
   const themeSystemList = computed(() => getThemeSystemList())
 
-  /** 字体族列表 */
+  /** 字体族列表（扁平，向后兼容） */
   const fontFamilyList = computed(() => getFontFamilyList())
+
+  /** 按 OS 分类的字体数据 */
+  const availableFonts = computed(() => getAvailableFonts())
 
   // --- 设置方法 ---
 
@@ -266,6 +270,7 @@ export function useThemeManager() {
     codeStyleList,
     themeSystemList,
     fontFamilyList,
+    availableFonts,
 
     // 设置方法
     setColorTheme,

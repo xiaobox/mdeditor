@@ -79,12 +79,28 @@
       }
     },
     "fontFamily": {
+      "osNotice": "已识别当前系统为 {osName}，以下是该系统支持的字体。",
+      "category": {
+        "sans-serif": "无衬线字体",
+        "serif": "衬线字体",
+        "monospace": "等宽字体 — 每个字符宽度相同，排列整齐"
+      },
       "items": {
-        "microsoft-yahei": { "name": "微软雅黑", "description": "公众号兼容性最佳" },
-        "pingfang-sc": { "name": "苹方", "description": "Apple 设备优选" },
-        "hiragino-sans": { "name": "冬青黑体", "description": "Mac 经典中文字体" },
-        "arial": { "name": "Arial", "description": "通用西文字体" },
-        "system-safe": { "name": "系统安全字体", "description": "社交平台安全组合" }
+        "pingfang-sc": { "name": "苹方", "description": "Apple 系统默认中文字体" },
+        "hiragino-sans": { "name": "冬青黑体", "description": "macOS 经典中文字体" },
+        "songti-sc": { "name": "宋体-简", "description": "Apple 经典衬线字体" },
+        "kaiti-mac": { "name": "华文楷体", "description": "手写风格，文艺气息" },
+        "sf-mono": { "name": "SF Mono", "description": "每个字符等宽对齐，整齐清晰" },
+        "microsoft-yahei": { "name": "微软雅黑", "description": "Windows 默认中文字体" },
+        "simhei": { "name": "黑体", "description": "Windows 经典黑体" },
+        "simsun": { "name": "宋体", "description": "Windows 经典衬线字体" },
+        "kaiti-win": { "name": "楷体", "description": "手写风格，文艺气息" },
+        "fangsong": { "name": "仿宋", "description": "传统印刷体风格" },
+        "consolas": { "name": "Consolas", "description": "每个字符等宽对齐，整齐清晰" },
+        "noto-sans-sc": { "name": "思源黑体", "description": "Google 开源无衬线字体" },
+        "noto-serif-sc": { "name": "思源宋体", "description": "Google 开源衬线字体" },
+        "noto-sans-mono": { "name": "Noto Sans Mono", "description": "每个字符等宽对齐，整齐清晰" },
+        "system-default": { "name": "系统默认", "description": "自动匹配当前系统字体" }
       }
     },
     "themeSystem": {

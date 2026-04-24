@@ -181,6 +181,7 @@ export function useSettingsPanel(props, emit) {
     layoutList: themeSettings.layoutList,
     codeStyleList: themeSettings.codeStyleList,
     fontFamilyList: fontSettings.fontFamilyList,
+    availableFonts: fontSettings.availableFonts,
     currentColorTheme: themeSettings.currentColorTheme,
 
     // 方法 - 主题选择

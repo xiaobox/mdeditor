@@ -72,7 +72,7 @@
               <!-- 字体设置 -->
               <section id="font-settings" class="settings-section-wrapper">
                 <FontSettingsSection
-                  :font-family-list="fontFamilyList"
+                  :available-fonts="availableFonts"
                   :selected-font-family="selectedFontFamily"
                   @select-font-family="selectFontFamily"
                 />
@@ -171,7 +171,7 @@ const {
   isCustomColorActive,
   layoutList,
   codeStyleList,
-  fontFamilyList,
+  availableFonts,
   currentColorTheme,
 
   // 方法

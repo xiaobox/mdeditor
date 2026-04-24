@@ -22,6 +22,7 @@ export function useFontSettings(themeManager) {
     currentFontSize,
     currentFontSettings,
     fontFamilyList,
+    availableFonts,
     setFontFamily,
     setFontSize,
     setLetterSpacing,
@@ -123,8 +124,7 @@ export function useFontSettings(themeManager) {
     // 分别处理字体族和字号的通知
     if (fontFamilyChanged) {
       safeSetTimeout(() => {
-        const fontName = fontFamilyList.value.find(f => f.id === selectedFontFamily.value)?.name || '字体'
-        emit('show-notification', `字体族已更新为${fontName}`, 'success')
+        emit('show-notification', '字体已更新', 'success')
       }, delay)
       delay += 100
     }
@@ -168,6 +168,7 @@ export function useFontSettings(themeManager) {
 
     // 列表数据
     fontFamilyList,
+    availableFonts,
 
     // 方法
     selectFontFamily,
