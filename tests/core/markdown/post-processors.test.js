@@ -71,7 +71,8 @@ describe('adapters.js', () => {
     it('H2/H3/H4 装饰布局应保留父级字体', () => {
       const html = '<h2 style="font-family: \'Kaiti SC\', \'STKaiti\', \'华文楷体\', KaiTi, \'楷体\', serif !important;">二级标题</h2>'
       const result = adapter.transform(html, baseCtx)
-      expect(result).toContain('display: table-cell')
+      expect(result).toContain('display: inline-block')
+      expect(result).toContain('vertical-align: middle')
       expect(result).toContain("font-family: 'Kaiti SC', 'STKaiti', '华文楷体', KaiTi, '楷体', serif !important;")
     })
 

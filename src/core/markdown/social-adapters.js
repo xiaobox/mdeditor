@@ -198,21 +198,26 @@ function ensureDecorativeSpan(html, tag, config, color) {
     const fontFamilyStyle = extractFontFamilyStyle(cleaned);
     const innerStripped = inner.replace(/^(\s*)<span([^>]*)style=\"([^\"]*?\bwidth\s*:\s*\d+px\b[^\"]*)\"([^>]*)><\/span>(\s*)/i, '$1');
 
+    // Use inline-block instead of display:table/table-cell for WeChat MP compatibility.
+    // WeChat's rich text editor strips display:table-cell during paste, causing the
+    // decorative bar to disappear. inline-block + background is well supported.
+    const heightPx = Math.round(config.heightEm * 20); // convert em to approx px for WeChat compat
     const decoBar = [
-      'display: block;',
+      'display: inline-block;',
+      'vertical-align: middle;',
       `width: ${config.widthPx}px;`,
-      `height: ${config.heightEm}em;`,
+      `height: ${heightPx}px;`,
       `border-radius: ${config.radiusPx}px;`,
       `background: ${color};`,
-      'box-shadow: 0 0 6px rgba(0,0,0,0.08);'
     ].join(' ');
 
-    const containerStyle = 'display: table; width: 100%;';
-    const leftCellStyle = 'display: table-cell; vertical-align: middle; width: 1px;';
-    const rightCellStyle = `display: table-cell; vertical-align: middle; padding-left: 0.5em; ${fontFamilyStyle}`;
+    const textStyle = `display: inline; vertical-align: middle; padding-left: 0.5em; ${fontFamilyStyle}`;
 
-    const content = `<span style=\"${leftCellStyle}\"><span style=\"${decoBar}\">&#8203;</span></span><span style=\"${rightCellStyle}\">${innerStripped}</span>`;
-    return `<${tag}${pre}style=\"${cleaned}; ${containerStyle}\"${post}>${content}</${tag}>`;
+    // Remove width:100% from data-wx-lh-wrap spans inside headings to prevent line break
+    const innerFixed = innerStripped.replace(/(<span[^>]*data-wx-lh-wrap[^>]*style="[^"]*)width:\s*100%[;]?/gi, '$1');
+
+    const content = `<span style=\"${decoBar}\">&nbsp;</span><span style=\"${textStyle}\">${innerFixed}</span>`;
+    return `<${tag}${pre}style=\"${cleaned}\"${post}>${content}</${tag}>`;
   });
 }
 
